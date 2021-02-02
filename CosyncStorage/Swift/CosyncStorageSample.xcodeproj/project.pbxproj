@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -23,6 +23,9 @@
 		56DD451B255D95950040B917 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 56DD451A255D95950040B917 /* Preview Assets.xcassets */; };
 		56DD453E255DBBAD0040B917 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 56DD453D255DBBAD0040B917 /* README.md */; };
 		56DD4547255DC0AC0040B917 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56DD4546255DC0AC0040B917 /* Constants.swift */; };
+		56DF55D425C9C335001F1819 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 56DF55D325C9C335001F1819 /* Kingfisher */; };
+		56DF55D825C9C3C4001F1819 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = 56DF55D725C9C3C4001F1819 /* Realm */; };
+		56DF55DA25C9C3C4001F1819 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 56DF55D925C9C3C4001F1819 /* RealmSwift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -51,6 +54,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				56DF55DA25C9C3C4001F1819 /* RealmSwift in Frameworks */,
+				56DF55D825C9C3C4001F1819 /* Realm in Frameworks */,
+				56DF55D425C9C335001F1819 /* Kingfisher in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -120,17 +126,20 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 56DD451F255D95950040B917 /* Build configuration list for PBXNativeTarget "CosyncStorageSample" */;
 			buildPhases = (
-				8FA134697D9B0FABE2B8B46E /* [CP] Check Pods Manifest.lock */,
 				56DD450C255D95940040B917 /* Sources */,
 				56DD450D255D95940040B917 /* Frameworks */,
 				56DD450E255D95940040B917 /* Resources */,
-				B7E58AC25C348CF0BD3C841C /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = CosyncStorageSample;
+			packageProductDependencies = (
+				56DF55D325C9C335001F1819 /* Kingfisher */,
+				56DF55D725C9C3C4001F1819 /* Realm */,
+				56DF55D925C9C3C4001F1819 /* RealmSwift */,
+			);
 			productName = CosyncStorageSample;
 			productReference = 56DD4510255D95940040B917 /* CosyncStorageSample.app */;
 			productType = "com.apple.product-type.application";
@@ -158,6 +167,10 @@
 				Base,
 			);
 			mainGroup = 56DD4507255D95940040B917;
+			packageReferences = (
+				56DF55D225C9C335001F1819 /* XCRemoteSwiftPackageReference "Kingfisher" */,
+				56DF55D625C9C3C4001F1819 /* XCRemoteSwiftPackageReference "realm-cocoa" */,
+			);
 			productRefGroup = 56DD4511255D95940040B917 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -179,48 +192,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		8FA134697D9B0FABE2B8B46E /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-CosyncStorageSample-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		B7E58AC25C348CF0BD3C841C /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-CosyncStorageSample/Pods-CosyncStorageSample-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-CosyncStorageSample/Pods-CosyncStorageSample-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CosyncStorageSample/Pods-CosyncStorageSample-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		56DD450C255D95940040B917 /* Sources */ = {
@@ -428,6 +399,43 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		56DF55D225C9C335001F1819 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.1.0;
+			};
+		};
+		56DF55D625C9C3C4001F1819 /* XCRemoteSwiftPackageReference "realm-cocoa" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/realm/realm-cocoa.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 10.5.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		56DF55D325C9C335001F1819 /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 56DF55D225C9C335001F1819 /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
+		};
+		56DF55D725C9C3C4001F1819 /* Realm */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 56DF55D625C9C3C4001F1819 /* XCRemoteSwiftPackageReference "realm-cocoa" */;
+			productName = Realm;
+		};
+		56DF55D925C9C3C4001F1819 /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 56DF55D625C9C3C4001F1819 /* XCRemoteSwiftPackageReference "realm-cocoa" */;
+			productName = RealmSwift;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 56DD4508255D95940040B917 /* Project object */;
 }
