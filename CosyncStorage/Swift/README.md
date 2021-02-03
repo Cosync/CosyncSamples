@@ -10,7 +10,7 @@ http://www.apache.org/licenses/LICENSE-2.0
 
 On the MongoDB Realm Application Side
 
-* install the Cosync Engine from the *Cosync Portal* as instructed in the Cosync Documentation
+* install the Cosync Storage from the *Cosync Portal* as instructed in the Cosync Documentation
 
 On the iOS client side
 
