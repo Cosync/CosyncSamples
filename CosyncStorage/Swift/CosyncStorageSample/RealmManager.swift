@@ -118,34 +118,11 @@ class RealmManager {
         if  let user = self.app.currentUser,
             let uid = self.currentUserId {
             
-            // open user realm
-            Realm.asyncOpen(configuration: user.configuration(partitionValue: "user_id=\(uid)"),
-            callback: { result in
-                
-                switch result {
-                case .success(let realm):
-                    self.userRealm = realm
-                    
-                    Realm.asyncOpen(configuration: user.configuration(partitionValue: "public"),
-                    callback: { result in
-                        
-                        switch result {
-                        case .success(let realm):
-                            self.publicRealm = realm
-                            completion(nil)
-
-                        case .failure(let error):
-                            fatalError("Failed to open public realm: \(error)")
-                        }
-                        
-                    })
-
-                case .failure(let error):
-                    fatalError("Failed to open user realm: \(error)")
-                }
-                
-            })
-        }
+            
+            self.userRealm = try! Realm(configuration: user.configuration(partitionValue: "user_id=\(uid)"))
+            self.publicRealm = try! Realm(configuration: user.configuration(partitionValue: "public"))
+            completion(nil)
+         }
     }
     
 }
