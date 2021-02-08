@@ -29,6 +29,6 @@ import Foundation
 
 struct Constants {
     
-    static let REALM_APP_ID = "cosyncstoragetest-agmju" // <- update this with your Realm App ID
+    static let REALM_APP_ID = "" // <- update this with your Realm App ID
 
 }
