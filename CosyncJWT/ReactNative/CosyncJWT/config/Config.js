@@ -24,7 +24,7 @@
 //
 
 exports.Realm = {
-    appId: 'application-jwtlocal-zstcl',
+    appId: 'application-cosyncjwt-rpbgd',
     publicPartition: 'public', 
     cosyncAsset:'CosyncAsset', 
     cosyncAssetUpload : 'CosyncAssetUpload'
@@ -32,5 +32,5 @@ exports.Realm = {
 
 exports.CosyncApp = { 
     apiURL: "https://rest-dev.cosync.net",
-    appToken: "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBJZCI6IjE1MWY2ZmJjZmYyODRkODM4MDhkNGQ1MTMyNzYwOTI3Iiwic2NvcGUiOiJhcHAiLCJpYXQiOjE2MTM2MzU3NjB9.Dp-kQNLR88pdN1Ykxb9JP-Be45u1WxVwEVwUAdxNuob3Lp1gD3WdADKhVW8vKSfZN4kYHe3FfLb8l2_K72P4pvTaxC8Np-3I2xScgIGBLsdMyt-RhXEeWhbFYkdtJFAM1hd8YBJQMYl1_aUgMDUWN0wiG13MRnaNy6yLy_zzUKCzuJtbCixiwYnwSltvWM6aDTG3ux5yOagaLBUyUYJ-2grc34owySeUiCO2L7Iq8-iWQQMPfQEMt-vXp2Yd6ltM-3fqVUTbc3g29qxZ_y3XuLjmFJtnBvwnwdzadfc12nhuKNFNHtB8e1wwMJHQGjBW5S6ZfaDAO8Clg4p1iacWJxKzzH2D4YdIee3etwtG0aEXlgKOajfUW09qwXJ1IFXDw0FfrVF25-zpaWAx_5wXoDaJX7wUqZaOmu7MRmaNPm9crXkDlpJTPhoCWvAs0Qqqh0bND3chuJANUM_tBfIbX8WE9rJB9vq5KtjI26ZYsnzFZD5_PYLR3bd-j_sU_KeL"
+    appToken: "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBJZCI6ImZhY2ZjMjhhOTkwNDQ3NWE4ZTNiNjZmNTNmZmNkNzA3Iiwic2NvcGUiOiJhcHAiLCJpYXQiOjE2MTMwMjM5ODZ9.hTJY3xj1lFjG0uRnJHFfTXmVhEGmNDWPX2H1-BNYIgtpHEDEI8u7lYGmgX0AQbQYaSABdktRMyDBSu_3o_ROqGXOzaGPo54utyukNP78AgAbDX2Nim324XDchkDf_22EuoWjnRvuWRMya1PjzM4tlpIbQA88WvVI5cSomrYrqNUbLCbDfSdHozjsfqEQvgd60ZsolGYW5CvDtKjSS-W4Fg4x4S7RyiJCEom-A-j0NSfDY2xPfxAz2_n755UFpWAeB0AST0NigC2BmReHD-wsElf6jteVNjSh_fcdhED5s0BN5V6FfGr5eRFXrjnr3dpMs4GYc1g0EHcP-VmS9WWS5dP_D1oDh22TWJWhAqppoAwgqWPoPTW0We9co4cwvyh7Pd9HlQTpZCeyYFAtcJNaS2DNQX5FHT8E_QPYki3dafxURE_-fPcn4tlRNXeHtvtgk097sQSOhuD7Zv_YfvjXd6f9Z9RAU-oxrJLq3-VLcM2JWJ2_Y8UPtHZlCY6prm4x"
 }

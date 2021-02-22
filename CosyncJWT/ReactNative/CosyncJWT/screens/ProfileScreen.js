@@ -115,7 +115,7 @@ const ProfileScreen = props => {
         if(result == true){
           setVerifyPhone(false);
 
-          alert('Success')
+          alert('Phone number is verified.')
         } 
         else{ 
           alert(`Error: ${result.message}`);
@@ -141,7 +141,8 @@ const ProfileScreen = props => {
     CosyncJWT.postData('/api/appuser/setPhone', {phone:userPhone}).then(result => { 
 
       if(result == true){
-        alert('Success')
+        setVerifyPhone(true);
+        alert('Please enter phone verification')
       } 
       else{ 
         alert(`Error: ${result.message}`);
