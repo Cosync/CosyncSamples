@@ -127,7 +127,7 @@ const SignupScreen = props => {
 
         loginToMongoDBRealm(result.jwt);
         setInfoText('Successfully Register.');  
-        props.navigation.navigate('DrawerNavigationRoutes');
+        //props.navigation.navigate('DrawerNavigationRoutes');
       }
       else{
         
