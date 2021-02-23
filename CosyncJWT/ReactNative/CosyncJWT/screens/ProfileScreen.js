@@ -44,9 +44,13 @@ const ProfileScreen = props => {
   let [loading, setLoading] = useState(false);
   let [userEmail, setUserEmail] = useState('');
   let [userPhone, setUserPhone] = useState(''); 
+  let [currentUserPhone, setCurrentUserPhone] = useState(''); 
   let [userPhoneCode, setUserPhoneCode] = useState(''); 
   let [isVerifyPhone, setVerifyPhone] = useState(false);
+  let [phoneVerified, setPhoneVerified] = useState(false);
+
   let [isGoogleTwoFactor, setGoogleTwoFactor] = useState(false); 
+  let [isPhoneTwoFactor, setPhoneTwoFactor] = useState(false); 
   let [googleSecretKey, setGoogleSecretKey] = useState(''); 
 
   global.appId = Configure.Realm.appId;   
@@ -58,6 +62,14 @@ const ProfileScreen = props => {
       console.log("global.userData.data ", global.userData.data);
       let twoFactor = global.userData.data ? global.userData.data.twoFactorGoogleVerification : false;
       setGoogleTwoFactor(twoFactor);
+
+      let phone2Facor = global.userData.data ? global.userData.data.twoFactorPhoneVerification : false;
+      setPhoneTwoFactor(phone2Facor);
+
+      let phoneVerified = global.userData.data ? global.userData.data.phoneVerified : false;
+      setPhoneVerified(phoneVerified);
+
+      if(global.userData.data.phone) setCurrentUserPhone(global.userData.data.phone);
     });
   }, []);
 
@@ -100,6 +112,29 @@ const ProfileScreen = props => {
     
   };
 
+  const updatePhoneTwoFactor = () => {  
+    
+    setPhoneTwoFactor(previousState => !previousState); 
+    let isTwoFactor = !isPhoneTwoFactor;
+    setGoogleSecretKey(''); 
+
+    CosyncJWT.postData('/api/appuser/setTwoFactorPhoneVerification', {twoFactor: isTwoFactor}).then(result => {   
+
+      if(result == true){ 
+        global.userData.data.twoFactorPhoneVerification = isTwoFactor; 
+        if(isTwoFactor) alert('Turn on Phone Two Factor');
+        else alert('Turn off Phone Two Factor');
+      } 
+      else{ 
+        setPhoneTwoFactor(previousState => !previousState);
+        alert(`Error: ${result.message}`);
+      }
+    }).catch(err => {
+      
+      setPhoneTwoFactor(previousState => !previousState);
+      alert(`Error: ${err.message}`);
+    })
+  }
 
   const handleAddPhone = () => {  
 
@@ -113,8 +148,15 @@ const ProfileScreen = props => {
       CosyncJWT.postData('/api/appuser/verifyPhone', {code:userPhoneCode}).then(result => { 
 
         if(result == true){
+          
           setVerifyPhone(false);
+          global.userData.data.phoneVerified = true;
 
+          global.userData.data.phone = userPhone;
+
+          setCurrentUserPhone(global.userData.data.phone);
+
+          setPhoneVerified(true);
           alert('Phone number is verified.')
         } 
         else{ 
@@ -231,71 +273,96 @@ const ProfileScreen = props => {
               onPress={handleInvite}>
               <Text style={styles.buttonTextStyle}>Invite</Text>
         </TouchableOpacity>
+
       </View>
 
+      {global.appData.twoFactorVerification == 'phone' ? 
+        <View style={styles.viewSection}>
+          <Text style={styles.registerTextStyle}> Add Phone </Text>
 
-      <View style={styles.viewSection}>
-        <Text style={styles.registerTextStyle}> Add Phone </Text>
-        <View style={styles.SectionStyle}>
-      
-              <TextInput
-                style={styles.inputStyle}
-                onChangeText={value => setUserPhone(value)} 
-                placeholder="Enter your phone number"
-                autoCapitalize="none" 
-                autoCorrect={false} 
-                returnKeyType="next" 
-                onSubmitEditing={() => handleAddPhone}
-                blurOnSubmit={false}
-                
-              />
-        </View> 
-
-        {isVerifyPhone ?
-         <View style={styles.SectionStyle}>
-      
-          <TextInput
-            style={styles.inputStyle}
-            onChangeText={value => setUserPhoneCode(value)} 
-            placeholder="Enter verify code"
-            autoCapitalize="none" 
-            autoCorrect={false} 
-            returnKeyType="next" 
-            onSubmitEditing={() => handleAddPhone}
-            blurOnSubmit={false}
+          
+            <View style={styles.SectionStyle}>
             
-          />
-          </View>  : null}
-       
-          <TouchableOpacity
-              style={styles.buttonStyle}
-              activeOpacity={0.5}
-              onPress={handleAddPhone}>
-              <Text style={styles.buttonTextStyle}>Submit</Text>
-          </TouchableOpacity>
+                  <TextInput
+                    style={styles.inputStyle}
+                    onChangeText={value => setUserPhone(value)} 
+                    placeholder="Enter your phone number"
+                    autoCapitalize="none" 
+                    autoCorrect={false} 
+                    returnKeyType="next" 
+                    onSubmitEditing={() => handleAddPhone}
+                    blurOnSubmit={false}
+                    
+                  />
+            </View> 
 
-      </View>
+          {currentUserPhone != "" ? 
+          <Text style={styles.registerTextStyle}> Current Phone Number: {currentUserPhone}</Text>
 
+          : null}
 
-      <View style={styles.viewSection}>
-        <Text style={styles.registerTextStyle}> Add Google Two Factor </Text>  
+          {isVerifyPhone ?
+          <View style={styles.SectionStyle}>
+        
+            <TextInput
+              style={styles.inputStyle}
+              onChangeText={value => setUserPhoneCode(value)} 
+              placeholder="Enter verify code"
+              autoCapitalize="none" 
+              autoCorrect={false} 
+              returnKeyType="next" 
+              onSubmitEditing={() => handleAddPhone}
+              blurOnSubmit={false}
+              
+            />
+            </View>  : null}
+        
+            <TouchableOpacity
+                style={styles.buttonStyle}
+                activeOpacity={0.5}
+                onPress={handleAddPhone}>
+                <Text style={styles.buttonTextStyle}>Submit</Text>
+            </TouchableOpacity>
 
-        <Switch
-           
-          trackColor={{ false: "#767577", true: "#81b0ff" }}
-          thumbColor={isGoogleTwoFactor ? "#4638ab" : "#f4f3f4"}
-          ios_backgroundColor="#3e3e3e"
-          onValueChange={handleAddGoogleTwoFactor}
-          value={isGoogleTwoFactor}
-        /> 
+            {global.userData.data.phoneVerified ? 
+              <View style={styles.viewSection}>
+                <Text style={styles.registerTextStyle}> Turn on Phone Two Factor </Text>  
 
-        {googleSecretKey != "" ?  <TouchableOpacity onPress={copyGoogleSecret}>
-          <Text>Click here to copy Google Secret Key</Text>
-        </TouchableOpacity> : null}
+                <Switch
+                  
+                  trackColor={{ false: "#767577", true: "#81b0ff" }}
+                  thumbColor={isGoogleTwoFactor ? "#4638ab" : "#f4f3f4"}
+                  ios_backgroundColor="#3e3e3e"
+                  onValueChange={updatePhoneTwoFactor}
+                  value={isPhoneTwoFactor}
+                />  
 
-      </View>
+              </View>
+            : null}
+        </View>
 
+      : null}   
 
+      {global.appData.twoFactorVerification == 'google' ? 
+            <View style={styles.viewSection}>
+              <Text style={styles.registerTextStyle}> Add Google Two Factor </Text>  
+
+              <Switch
+                
+                trackColor={{ false: "#767577", true: "#81b0ff" }}
+                thumbColor={isGoogleTwoFactor ? "#4638ab" : "#f4f3f4"}
+                ios_backgroundColor="#3e3e3e"
+                onValueChange={handleAddGoogleTwoFactor}
+                value={isGoogleTwoFactor}
+              /> 
+
+              {googleSecretKey != "" ?  <TouchableOpacity onPress={copyGoogleSecret}>
+                <Text>Click here to copy Google Secret Key</Text>
+              </TouchableOpacity> : null}
+
+            </View>
+
+      : null}
     </View>
   );
 };
