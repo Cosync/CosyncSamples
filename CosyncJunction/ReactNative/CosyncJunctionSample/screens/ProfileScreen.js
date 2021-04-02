@@ -24,7 +24,7 @@
 //  Copyright © 2020 cosync. All rights reserved.
 //
 
-import React, { useState, useRef } from 'react'; 
+import React, { useState, useRef , useEffect} from 'react'; 
 import {
   StyleSheet,
   TextInput,
@@ -40,9 +40,10 @@ import AsyncStorage from '@react-native-community/async-storage';
 import Loader from '../components/Loader'; 
 import Configure from '../config/Config'; 
 import * as RealmLib from '../managers/RealmManager'; 
+import { ObjectId } from 'bson';  
 
-const LoginScreen = props => {
-  
+const ProfileScreen = props => {
+  let [formFeilds, setFormField] = useState([]);
   let [userEmail, setUserEmail] = useState('');
   let [userPassword, setUserPassword] = useState('');
   let [loading, setLoading] = useState(false);
@@ -53,6 +54,126 @@ const LoginScreen = props => {
   global.appId = Configure.Realm.appId; 
   AsyncStorage.setItem('appId', global.appId);  
 
+  useEffect(() => { 
+     
+    setFormField(prevItems => { 
+      return [];
+    }); 
+    openRealm();
+
+    async function openRealm(){ 
+      await RealmLib.openRealm();   
+      let results = await global.realm.objects("UserSchema"); 
+
+      results.forEach(element => { 
+
+        element.userProfile.forEach(field => { 
+
+            if(field.fieldType == 'object' || field.fieldType == 'array' ){
+                
+
+              let form =  <View style={styles.SectionStyle}>
+                            <Text style={styles.titleText}>
+                               {field.display}:
+                            </Text>
+                          </View>;
+              setFormField(prevItems => { 
+                return [...prevItems, form];
+              });
+
+              
+              
+              getFieldDefChildren(field); 
+
+              
+            }
+            else{
+              let form = <View style={styles.SectionStyle}>
+                          <TextInput
+                            style={styles.inputStyle} 
+                            placeholder={field.display}
+                            autoCapitalize="none" 
+                            returnKeyType="next"  
+                            blurOnSubmit={false} 
+                          />
+                        </View>;
+              setFormField(prevItems => { 
+                return [...prevItems, form];
+              });
+            };
+
+            
+        });
+
+      });
+
+
+    }
+  }, [])
+
+ 
+  async function getFieldDefChildren(fieldDef){
+
+    fieldDef.properties.forEach(child => {
+      console.log('getFieldDefChildren ', child.fieldName);
+
+      if(child.fieldType == 'object' || child.fieldType == 'array' ){
+        let line = <View
+          style={styles.lineStyle}
+        />;
+
+        setFormField(prevItems => { 
+          return [...prevItems, line];
+        });
+
+        let form =  <View style={styles.SectionChildStyle}>
+                      <Text style={styles.titleText}>
+                      {child.display}:
+                      </Text>
+                    </View>;
+
+        setFormField(prevItems => { 
+          return [...prevItems, form];
+        }); 
+        
+        
+        getFieldDefChildren(child);
+
+       
+
+        
+      } 
+      else {
+        let form =  <View style={styles.SectionChildStyle}>
+                <TextInput
+                  style={styles.inputChildStyle} 
+                  placeholder={child.display}
+                  autoCapitalize="none" 
+                  returnKeyType="next"  
+                  blurOnSubmit={false} 
+                />
+              </View>;
+
+        setFormField(prevItems => { 
+          return [...prevItems, form];
+        });
+      }
+    });
+
+    return;
+
+  }
+
+  function addedDefEventListener(items, changes) { 
+    // Update UI in response to inserted objects
+    changes.insertions.forEach((index) => {
+      let item = items[index]; 
+      console.log(' addedDefEventListener ', item);
+       
+    });
+     
+  }
+
 
   const validateEmail = (text) => {
    
@@ -61,6 +182,8 @@ const LoginScreen = props => {
     else return true;
   }
 
+
+  
   
   const handleSubmitPress = () => {
     setErrortext('');
@@ -104,46 +227,15 @@ const LoginScreen = props => {
 
         <View style={{ marginTop: 100 }}>
           <KeyboardAvoidingView enabled>
-            <View style={{ alignItems: 'center' }}>
-              <Image
-                source={require('../assets/cosynclogo.png')}
-                style={{ 
-                  height: 200,
-                  resizeMode: 'contain',
-                  margin: 30,
-                }}
-              />
-            </View>
-            <View style={styles.SectionStyle}>
-              <TextInput
-                style={styles.inputStyle}
-                onChangeText={UserEmail => setUserEmail(UserEmail)}
-                //underlineColorAndroid="#4638ab"
-                placeholder="Enter Email" 
-                autoCapitalize="none"
-                keyboardType="email-address" 
-                returnKeyType="next" 
-                onSubmitEditing={() => ref_input_pwd.current.focus()}
-                blurOnSubmit={false}
-                
-              />
-            </View>
-            <View style={styles.SectionStyle}>
-              <TextInput
-                style={styles.inputStyle}
-                onChangeText={UserPassword => setUserPassword(UserPassword)}
-                //underlineColorAndroid="#4638ab"
-                placeholder="Enter Password" 
-                keyboardType="default" 
-                returnKeyType="go"
-                onSubmitEditing={() => Keyboard.dismiss, handleSubmitPress}
-                blurOnSubmit={false}
-                textContentType={'none'}
-                autoComplete= {'off'}
-                secureTextEntry={true}
-                ref={ref_input_pwd}
-              />
-            </View>
+           
+          <Text style={styles.headerTextStyle}>
+            Update your profile
+          </Text>
+                     
+        {
+         formFeilds
+        }
+        
             {errortext != '' ? (
               <Text style={styles.errorTextStyle}> {errortext} </Text>
             ) : null}
@@ -151,14 +243,10 @@ const LoginScreen = props => {
               style={styles.buttonStyle}
               activeOpacity={0.5}
               onPress={handleSubmitPress}>
-              <Text style={styles.buttonTextStyle}>LOGIN</Text>
+              <Text style={styles.buttonTextStyle}>Submit</Text>
             </TouchableOpacity>
 
-            { <Text
-              style={styles.registerTextStyle}
-              onPress={() => props.navigation.navigate('RegisterScreen')}>
-              Create New Account
-            </Text>}
+            
 
           </KeyboardAvoidingView>
         </View>
@@ -166,7 +254,7 @@ const LoginScreen = props => {
     </View>
   );
 };
-export default LoginScreen;
+export default ProfileScreen;
 
 const styles = StyleSheet.create({
   mainBody: {
@@ -174,13 +262,27 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#fff',
   },
+
+  SectionChildStyle: {
+    flexDirection: 'row',
+    height: 40, 
+    marginBottom: 20,
+    marginLeft: 45,
+    marginRight: 45 
+  },
+
   SectionStyle: {
     flexDirection: 'row',
-    height: 40,
-    marginTop: 20,
+    height: 40, 
+    marginBottom: 20,
     marginLeft: 35,
-    marginRight: 35,
-    margin: 10,
+    marginRight: 35 
+  },
+
+  lineStyle:{
+    borderWidth: 0.5,
+    borderColor: '#4638ab',
+    margin: 10 
   },
   buttonStyle: {
     backgroundColor: '#4638ab',
@@ -209,15 +311,31 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     borderColor: '#4638ab',
   },
-  registerTextStyle: {
+  inputChildStyle: {
+    flex: 1,
+    color: '#2196f3',
+    paddingLeft: 15,
+    paddingRight: 15,
+    borderWidth: 1,
+    borderRadius: 30,
+    borderColor: '#2196f3',
+  },
+  headerTextStyle: {
     color: '#4638ab',
     textAlign: 'center',
     fontWeight: 'bold',
     fontSize: 14,
+    marginBottom: 20,
   },
   errorTextStyle: {
     color: 'red',
     textAlign: 'center',
     fontSize: 14,
+  },
+  titleText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    paddingVertical: 5,
   },
 });

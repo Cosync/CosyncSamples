@@ -24,8 +24,8 @@
 //
 
 exports.Realm = {
-    appId: 'cosyncstorage-hblvk',
-    publicPartition: 'public', 
-    cosyncAsset:'CosyncAsset', 
-    cosyncAssetUpload : 'CosyncAssetUpload'
+    appId: 'application-0-ooqmc',
+    publicPartition: 'COSYNC_PUBLIC', 
+    FieldDef:'FieldDef', 
+    UserSchema : 'UserSchema'
 }

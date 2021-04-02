@@ -98,7 +98,7 @@ export const openRealm = () => {
     }
 
     let configPublic = {
-      schema:  [Schema.CosyncAsset],
+      schema:  [Schema.FieldDef, Schema.UserSchema],
       sync: {
         user: global.user,
         partitionValue: Configure.Realm.publicPartition
@@ -106,7 +106,7 @@ export const openRealm = () => {
     }; 
 
     let configPrivate = {
-      schema:  [Schema.CosyncAsset, Schema.CosyncAssetUpload],
+      schema:   [Schema.FieldDef, Schema.UserSchema],
       sync: {
         user: global.user,
         partitionValue: global.privatePartition,
@@ -117,12 +117,12 @@ export const openRealm = () => {
 
       Realm.open(configPublic).then(realm => {
         global.realm = realm; 
-
-        Realm.open(configPrivate).then(priRealm => {
-          global.realmPrivate = priRealm;
-          resolve({realm: realm, realmPrivate: priRealm}); 
+        resolve({realm: realm, realmPrivate: null}); 
+        // Realm.open(configPrivate).then(priRealm => {
+        //   global.realmPrivate = priRealm;
+        //   resolve({realm: realm, realmPrivate: priRealm}); 
   
-        })
+        // })
 
       }).catch(err => {
         reject(err);
@@ -150,7 +150,7 @@ export const openRealmPartition = (partitionValue, reopen) => {
     } 
 
     let configPartition = {
-      schema:  [Schema.CosyncAsset, Schema.CosyncAssetUpload],
+      schema:  [Schema.FieldDef, Schema.UserSchema],
       sync: {
         user: global.user,
         partitionValue: partitionValue
