@@ -28,28 +28,25 @@ import React, { useState, useRef , useEffect} from 'react';
 import {
   StyleSheet,
   TextInput,
-  View,
+  View, 
   Text,
-  ScrollView,
-  Image,
-  Keyboard,
+  ScrollView, 
   TouchableOpacity,
   KeyboardAvoidingView,
-} from 'react-native';
+} from 'react-native'; 
 import AsyncStorage from '@react-native-community/async-storage';
+import RNPickerSelect from "react-native-picker-select";
+ 
 import Loader from '../components/Loader'; 
 import Configure from '../config/Config'; 
-import * as RealmLib from '../managers/RealmManager'; 
-import { ObjectId } from 'bson';  
+import * as RealmLib from '../managers/RealmManager';  
 
 const ProfileScreen = props => {
-  let [formFeilds, setFormField] = useState([]);
-  let [userEmail, setUserEmail] = useState('');
-  let [userPassword, setUserPassword] = useState('');
+  let [formFeilds, setFormField] = useState([]); 
   let [loading, setLoading] = useState(false);
   let [errortext, setErrortext] = useState('');
   const ref_input_pwd = useRef();
-  
+  const [choosenLabel, setChoosenLabel] = useState('Native');
 
   global.appId = Configure.Realm.appId; 
   AsyncStorage.setItem('appId', global.appId);  
@@ -70,25 +67,23 @@ const ProfileScreen = props => {
         element.userProfile.forEach(field => { 
 
             if(field.fieldType == 'object' || field.fieldType == 'array' ){
-                
 
-              let form =  <View style={styles.SectionStyle}>
+              let form =  <View style={styles.SectionStyle} key={field._id}>
                             <Text style={styles.titleText}>
                                {field.display}:
                             </Text>
                           </View>;
+
               setFormField(prevItems => { 
                 return [...prevItems, form];
               });
 
-              
-              
-              getFieldDefChildren(field); 
+              getFieldDefChildren(field);
 
-              
             }
             else{
-              let form = <View style={styles.SectionStyle}>
+
+              let form = <View style={styles.SectionStyle} key={field._id}>
                           <TextInput
                             style={styles.inputStyle} 
                             placeholder={field.display}
@@ -97,9 +92,35 @@ const ProfileScreen = props => {
                             blurOnSubmit={false} 
                           />
                         </View>;
+
+            if(field.fieldType == "enum"){  
+
+              let options = [];
+              field.enumValues.map(value => (
+                  options.push( { label: value, value: value})
+                )) 
+              
+
+              form = <View style={styles.SectionStyle} key={field._id}> 
+
+                      <Text>{field.display}: </Text>
+                                  
+                      <RNPickerSelect
+                        placeholder={{ label: "Select your "+ field.display, value: null }}
+                        onValueChange={(value) => console.log(value)}
+                        items={options}
+                    />
+
+                  </View>;
+
+            
+
+            }
+
               setFormField(prevItems => { 
                 return [...prevItems, form];
               });
+
             };
 
             
@@ -116,9 +137,9 @@ const ProfileScreen = props => {
 
     fieldDef.properties.forEach(child => {
       console.log('getFieldDefChildren ', child.fieldName);
-
+      console.log('child.fieldType ', child.fieldType);
       if(child.fieldType == 'object' || child.fieldType == 'array' ){
-        let line = <View
+        let line = <View  key={ Math.random().toString(36).substr(2, 9) }
           style={styles.lineStyle}
         />;
 
@@ -134,14 +155,9 @@ const ProfileScreen = props => {
 
         setFormField(prevItems => { 
           return [...prevItems, form];
-        }); 
+        });
         
-        
-        getFieldDefChildren(child);
-
-       
-
-        
+        getFieldDefChildren(child); 
       } 
       else {
         let form =  <View style={styles.SectionChildStyle}>
@@ -154,9 +170,33 @@ const ProfileScreen = props => {
                 />
               </View>;
 
-        setFormField(prevItems => { 
+        if(child.fieldType == "enum"){  
+
+          let options = [];
+            child.enumValues.map(value => (
+              options.push( { label: value, value: value})
+            )) 
+          
+
+          form = <View style={styles.SectionStyle} key={child._id}> 
+
+                  <Text>{child.display}: </Text>
+                              
+                  <RNPickerSelect
+                    placeholder={{ label: "Select your "+ child.display, value: null }}
+                    onValueChange={(value) => console.log(value)}
+                    items={options}
+                />
+
+              </View>;
+
+         
+
+        }
+        setFormField(prevItems => {
           return [...prevItems, form];
         });
+        
       }
     });
 
