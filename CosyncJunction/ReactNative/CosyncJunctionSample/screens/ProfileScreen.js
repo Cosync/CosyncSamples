@@ -45,8 +45,7 @@ const ProfileScreen = props => {
   let [formFeilds, setFormField] = useState([]); 
   let [loading, setLoading] = useState(false);
   let [errortext, setErrortext] = useState('');
-  const ref_input_pwd = useRef();
-  const [choosenLabel, setChoosenLabel] = useState('Native');
+   
 
   global.appId = Configure.Realm.appId; 
   AsyncStorage.setItem('appId', global.appId);  
@@ -61,15 +60,15 @@ const ProfileScreen = props => {
     async function openRealm(){ 
       await RealmLib.openRealm();   
       let results = await global.realm.objects("UserSchema"); 
-
+      
       results.forEach(element => { 
 
         element.userProfile.forEach(field => { 
 
             if(field.fieldType == 'object' || field.fieldType == 'array' ){
 
-              let form =  <View style={styles.SectionStyle} key={field._id}>
-                            <Text style={styles.titleText}>
+              let form =  <View style={styles.SectionStyle} key={field._id.toString()}>
+                            <Text style={styles.titleText} key={ Math.random().toString(36).substr(2, 9) }>
                                {field.display}:
                             </Text>
                           </View>;
@@ -78,13 +77,51 @@ const ProfileScreen = props => {
                 return [...prevItems, form];
               });
 
-              getFieldDefChildren(field);
+              if( field.fieldType == 'array'){
+
+                if(field.arrayFieldType == 'object') getFieldDefChildren(field); 
+                else{
+                  let form = <View style={styles.SectionStyle} key={field._id.toString()}>
+                  <TextInput key={ Math.random().toString(36).substr(2, 9) }
+                    style={styles.inputStyle} 
+                    placeholder={field.display}
+                    autoCapitalize="none" 
+                    returnKeyType="next"  
+                    blurOnSubmit={false} 
+                  />
+                </View>;
+
+                if(field.fieldType == "enum"){  
+
+                  let options = [];
+                  field.enumValues.map(value => (
+                    options.push( { label: value, value: value})
+                  )) 
+                  form = <View style={styles.SectionStyle} key={field._id.toString()}> 
+
+                          <Text>{field.display}: </Text>
+                                      
+                          <RNPickerSelect
+                            placeholder={{ label: "Select your "+ field.display, value: null }}
+                            onValueChange={(value) => console.log(value)}
+                            items={options}
+                        />
+
+                      </View>;
+                }
+
+                setFormField(prevItems => { 
+                  return [...prevItems, form];
+                });
+              }
+            }
+            else getFieldDefChildren(field); 
 
             }
             else{
 
-              let form = <View style={styles.SectionStyle} key={field._id}>
-                          <TextInput
+              let form = <View style={styles.SectionStyle} key={field._id.toString()}>
+                          <TextInput key={ Math.random().toString(36).substr(2, 9) }
                             style={styles.inputStyle} 
                             placeholder={field.display}
                             autoCapitalize="none" 
@@ -93,29 +130,26 @@ const ProfileScreen = props => {
                           />
                         </View>;
 
-            if(field.fieldType == "enum"){  
+              if(field.fieldType == "enum"){  
 
-              let options = [];
-              field.enumValues.map(value => (
+                let options = [];
+                field.enumValues.map(value => (
                   options.push( { label: value, value: value})
-                )) 
-              
+                ))
+                
 
-              form = <View style={styles.SectionStyle} key={field._id}> 
+                form = <View style={styles.SectionStyle} key={field._id.toString()}> 
 
-                      <Text>{field.display}: </Text>
-                                  
-                      <RNPickerSelect
-                        placeholder={{ label: "Select your "+ field.display, value: null }}
-                        onValueChange={(value) => console.log(value)}
-                        items={options}
-                    />
+                        <Text>{field.display}: </Text>
+                                    
+                        <RNPickerSelect
+                          placeholder={{ label: "Select your "+ field.display, value: null }}
+                          onValueChange={(value) => console.log(value)}
+                          items={options}
+                      />
 
-                  </View>;
-
-            
-
-            }
+                    </View>;
+              }
 
               setFormField(prevItems => { 
                 return [...prevItems, form];
@@ -135,10 +169,12 @@ const ProfileScreen = props => {
  
   async function getFieldDefChildren(fieldDef){
 
+
     fieldDef.properties.forEach(child => {
-      console.log('getFieldDefChildren ', child.fieldName);
-      console.log('child.fieldType ', child.fieldType);
+
+    
       if(child.fieldType == 'object' || child.fieldType == 'array' ){
+        let form;
         let line = <View  key={ Math.random().toString(36).substr(2, 9) }
           style={styles.lineStyle}
         />;
@@ -147,21 +183,73 @@ const ProfileScreen = props => {
           return [...prevItems, line];
         });
 
-        let form =  <View style={styles.SectionChildStyle}>
-                      <Text style={styles.titleText}>
+        
+        if(child.fieldType == 'array' && child.arrayFieldType != 'object'){
+        
+
+          form =  <View style={styles.SectionChildStyle} key={ Math.random().toString(36).substr(2, 9) } >
+                    <TouchableOpacity onPress={() => handleAddMoreField(child)}  activeOpacity={0.5}>
+                      <Text style={styles.titleText} key={ Math.random().toString(36).substr(2, 9) } >
+                        {child.display}: (+Add)
+                      </Text>
+                    </TouchableOpacity>
+                  </View>;
+
+          setFormField(prevItems => { 
+            return [...prevItems, form];
+          }); 
+
+          form =  <View style={styles.SectionChildStyle} key={child._id.toString()}>
+                <TextInput key={ Math.random().toString(36).substr(2, 9) }
+                  style={styles.inputChildStyle} 
+                  placeholder={child.display}
+                  autoCapitalize="none" 
+                  returnKeyType="next"  
+                  blurOnSubmit={false} 
+                />
+              </View>;
+
+          if(child.fieldType == "enum"){
+
+            let options = [];
+            child.enumValues.map(value => (
+              options.push( { label: value, value: value})
+            ))
+
+            form = <View style={styles.SectionChildStyle} key={child._id.toString()}>  
+
+                    <RNPickerSelect style={pickerSelectStyles} 
+                      placeholder={{ label: "Select your "+ child.display, value: null }}
+                      onValueChange={(value) => console.log(value)}
+                      items={options}
+                    />
+
+                </View>;
+
+          } 
+
+          setFormField(prevItems => {
+            return [...prevItems, form];
+          });
+
+        } 
+        else{
+          form =  <View style={styles.SectionChildStyle} key={ Math.random().toString(36).substr(2, 9) } >
+                      <Text style={styles.titleText} key={ Math.random().toString(36).substr(2, 9) }>
                       {child.display}:
                       </Text>
                     </View>;
 
-        setFormField(prevItems => { 
-          return [...prevItems, form];
-        });
-        
-        getFieldDefChildren(child); 
+          setFormField(prevItems => { 
+            return [...prevItems, form];
+          });
+          getFieldDefChildren(child); 
+
+        }
       } 
       else {
-        let form =  <View style={styles.SectionChildStyle}>
-                <TextInput
+        let form =  <View style={styles.SectionChildStyle} key={child._id.toString()}>
+                <TextInput key={ Math.random().toString(36).substr(2, 9) }
                   style={styles.inputChildStyle} 
                   placeholder={child.display}
                   autoCapitalize="none" 
@@ -178,21 +266,18 @@ const ProfileScreen = props => {
             )) 
           
 
-          form = <View style={styles.SectionStyle} key={child._id}> 
+          form = <View style={styles.SectionChildStyle} key={child._id.toString()}>  
 
-                  <Text>{child.display}: </Text>
-                              
-                  <RNPickerSelect
+                  <RNPickerSelect style={pickerSelectStyles} 
                     placeholder={{ label: "Select your "+ child.display, value: null }}
                     onValueChange={(value) => console.log(value)}
                     items={options}
-                />
+                  />
 
-              </View>;
+              </View>; 
 
-         
+        } 
 
-        }
         setFormField(prevItems => {
           return [...prevItems, form];
         });
@@ -204,14 +289,25 @@ const ProfileScreen = props => {
 
   }
 
-  function addedDefEventListener(items, changes) { 
-    // Update UI in response to inserted objects
-    changes.insertions.forEach((index) => {
-      let item = items[index]; 
-      console.log(' addedDefEventListener ', item);
-       
+
+  const handleAddMoreField = (field) => { 
+    
+    let  form =  <View style={styles.SectionChildStyle} key={ Math.random().toString(36).substr(2, 9) }>
+                  <TextInput key={ Math.random().toString(36).substr(2, 9) }
+                    style={styles.inputChildStyle} 
+                    placeholder={field.display}
+                    autoCapitalize="none" 
+                    returnKeyType="next"  
+                    blurOnSubmit={false} 
+                  />
+                </View>;
+                
+     setFormField(prevItems => {
+      return [...prevItems, form];
     });
-     
+
+   
+
   }
 
 
@@ -296,6 +392,30 @@ const ProfileScreen = props => {
 };
 export default ProfileScreen;
 
+const pickerSelectStyles = StyleSheet.create({
+  inputIOS: {  
+    fontSize: 14,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    borderWidth: 1,
+    borderColor: '#2196f3',  
+    borderRadius: 30,
+    color: '#2196f3',
+    paddingRight: 30, // to ensure the text is never behind the icon
+
+  },
+  inputAndroid: {
+    fontSize: 16,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderWidth: 0.5,
+    borderColor: 'purple',
+    borderRadius: 8,
+    color: 'black',
+    paddingRight: 30, // to ensure the text is never behind the icon
+  },
+});
+
 const styles = StyleSheet.create({
   mainBody: {
     flex: 1,
@@ -378,4 +498,5 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     paddingVertical: 5,
   },
+   
 });
