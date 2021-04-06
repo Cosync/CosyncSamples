@@ -36,7 +36,7 @@ import {
 } from 'react-native'; 
 import AsyncStorage from '@react-native-community/async-storage';
 import RNPickerSelect from "react-native-picker-select";
- 
+import Ionicons from "react-native-vector-icons/FontAwesome";
 import Loader from '../components/Loader'; 
 import Configure from '../config/Config'; 
 import * as RealmLib from '../managers/RealmManager';  
@@ -54,10 +54,12 @@ const ProfileScreen = props => {
      
     setFormField(prevItems => { 
       return [];
-    }); 
+    });
+
     openRealm();
 
     async function openRealm(){ 
+      
       await RealmLib.openRealm();   
       let results = await global.realm.objects("UserSchema"); 
       
@@ -81,41 +83,46 @@ const ProfileScreen = props => {
 
                 if(field.arrayFieldType == 'object') getFieldDefChildren(field); 
                 else{
+
                   let form = <View style={styles.SectionStyle} key={field._id.toString()}>
-                  <TextInput key={ Math.random().toString(36).substr(2, 9) }
-                    style={styles.inputStyle} 
-                    placeholder={field.display}
-                    autoCapitalize="none" 
-                    returnKeyType="next"  
-                    blurOnSubmit={false} 
-                  />
-                </View>;
+                      <TextInput key={ Math.random().toString(36).substr(2, 9) }
+                        style={styles.inputStyle} 
+                        placeholder={field.display}
+                        autoCapitalize="none" 
+                        returnKeyType="next"  
+                        blurOnSubmit={false} 
+                      />
+                    </View>;
 
-                if(field.fieldType == "enum"){  
+                  if(field.fieldType == "enum"){
 
-                  let options = [];
-                  field.enumValues.map(value => (
-                    options.push( { label: value, value: value})
-                  )) 
-                  form = <View style={styles.SectionStyle} key={field._id.toString()}> 
+                    let options = [];
+                    field.enumValues.map(value => (
+                      options.push( { label: value, value: value})
+                    ))
 
-                          <Text>{field.display}: </Text>
-                                      
-                          <RNPickerSelect
-                            placeholder={{ label: "Select your "+ field.display, value: null }}
-                            onValueChange={(value) => console.log(value)}
-                            items={options}
-                        />
+                    form = <View style={styles.SectionStyle} key={field._id.toString()}> 
 
-                      </View>;
+                            <Text>{field.display}: </Text>
+                                        
+                            <RNPickerSelect
+                              placeholder={{ label: "Select your "+ field.display, value: null }}
+                              onValueChange={(value) => console.log(value)}
+                              items={options}
+                              Icon={() => {
+                                return <Ionicons   name={"unsorted"} color='#2196f3'  size={20} />;
+                              }}
+                          />
+
+                        </View>;
+                    }
+
+                    setFormField(prevItems => { 
+                      return [...prevItems, form];
+                    });
                 }
-
-                setFormField(prevItems => { 
-                  return [...prevItems, form];
-                });
               }
-            }
-            else getFieldDefChildren(field); 
+              else getFieldDefChildren(field); 
 
             }
             else{
@@ -146,6 +153,9 @@ const ProfileScreen = props => {
                           placeholder={{ label: "Select your "+ field.display, value: null }}
                           onValueChange={(value) => console.log(value)}
                           items={options}
+                          Icon={() => {
+                            return <Ionicons  name={"unsorted"} color='#2196f3'  size={20} />;
+                          }}
                       />
 
                     </View>;
@@ -222,6 +232,9 @@ const ProfileScreen = props => {
                       placeholder={{ label: "Select your "+ child.display, value: null }}
                       onValueChange={(value) => console.log(value)}
                       items={options}
+                      Icon={() => {
+                        return <Ionicons name={"unsorted"} color='#2196f3' size={20} />;
+                      }}
                     />
 
                 </View>;
@@ -272,6 +285,9 @@ const ProfileScreen = props => {
                     placeholder={{ label: "Select your "+ child.display, value: null }}
                     onValueChange={(value) => console.log(value)}
                     items={options}
+                    Icon={() => {
+                      return <Ionicons  name={"unsorted"} color='#2196f3'  size={20} />;
+                    }}
                   />
 
               </View>; 
@@ -394,6 +410,8 @@ export default ProfileScreen;
 
 const pickerSelectStyles = StyleSheet.create({
   inputIOS: {  
+    
+    
     fontSize: 14,
     paddingVertical: 10,
     paddingHorizontal: 12,

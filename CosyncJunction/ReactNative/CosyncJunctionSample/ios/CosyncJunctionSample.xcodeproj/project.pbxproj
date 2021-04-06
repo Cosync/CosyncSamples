@@ -13,6 +13,7 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		4411DC0CD05764D8E2AE370D /* libPods-CosyncJunctionSample.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A52778A0552F3D7889EF060B /* libPods-CosyncJunctionSample.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		DB279C67261C449F0009DC05 /* fonts in Resources */ = {isa = PBXBuildFile; fileRef = DB279C66261C449F0009DC05 /* fonts */; };
 		ED774EAD712884A8D59A58CC /* libPods-CosyncJunctionSample-CosyncJunctionSampleTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C688A00338A33ABDE75CDDE3 /* libPods-CosyncJunctionSample-CosyncJunctionSampleTests.a */; };
 /* End PBXBuildFile section */
 
@@ -42,6 +43,7 @@
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = CosyncJunctionSample/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A52778A0552F3D7889EF060B /* libPods-CosyncJunctionSample.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CosyncJunctionSample.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C688A00338A33ABDE75CDDE3 /* libPods-CosyncJunctionSample-CosyncJunctionSampleTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CosyncJunctionSample-CosyncJunctionSampleTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DB279C66261C449F0009DC05 /* fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = fonts; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		FAD4AEF554B1DD5FBFEB5D80 /* Pods-CosyncJunctionSample.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CosyncJunctionSample.release.xcconfig"; path = "Target Support Files/Pods-CosyncJunctionSample/Pods-CosyncJunctionSample.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -116,12 +118,14 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				DB279C66261C449F0009DC05 /* fonts */,
 				13B07FAE1A68108700A75B9A /* CosyncJunctionSample */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* CosyncJunctionSampleTests */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				C3999BC3116F35192AAC3661 /* Pods */,
+				FFAC479E81CD428193CE97E3 /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -145,8 +149,14 @@
 				42EC92E0F54CBF341C2352A3 /* Pods-CosyncJunctionSample-CosyncJunctionSampleTests.debug.xcconfig */,
 				0017B05EA6FD9892A3E558B0 /* Pods-CosyncJunctionSample-CosyncJunctionSampleTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		FFAC479E81CD428193CE97E3 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -243,6 +253,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DB279C67261C449F0009DC05 /* fonts in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 			);
