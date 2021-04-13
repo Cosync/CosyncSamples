@@ -92,12 +92,14 @@ const ProfileScreen = props => {
         element.userProfile.forEach(field => {  
 
             if(field.fieldType == 'object' || field.fieldType == 'array' ){ 
-            
+              console.log( ' userProfile field.arrayFieldType = ', field.arrayFieldType);
               if(field.fieldType == 'array'){
 
                 let fieldId = field._id.toString();
                 formObject[fieldId] = [field]; 
-                console.log( ' userProfile formObject = ', formObject);
+                console.log( ' userProfile field.fieldType = ', field.fieldType);
+                console.log( ' userProfile field.display = ', field.display);
+
 
                 let line = <View  key={ Math.random().toString(36).substr(2, 9) }
                   style={styles.lineStyle}
@@ -159,16 +161,8 @@ const ProfileScreen = props => {
 
                   setFormField(prevItems => { 
                     return [...prevItems, form];
-                  });
-
-
-                    
-                            
-                }
-
-               
-
-
+                  });       
+                } 
               }
               else{
                 form =  <View style={styles.headerSectionStyle} key={ Math.random().toString(36).substr(2, 9) } >
@@ -252,26 +246,39 @@ const ProfileScreen = props => {
  
 
   
-  async function getFieldDefChildren(fieldDef){
+  async function getFieldDefChildren(fieldDef, isChild){
 
     
     fieldDef.properties.forEach(child => {
 
     
       if(child.fieldType == 'object' || child.fieldType == 'array' ){
+
         let form;
         let line = <View  key={ Math.random().toString(36).substr(2, 9) }
           style={styles.lineStyle}
         />;
 
-        setFormField(prevItems => { 
-          return [...prevItems, line];
-        });
+        if(isChild){
+          setChildFormField(prevItems => { 
+            return [...prevItems, line];
+          });
+        }
+        else{
+          setFormField(prevItems => { 
+            return [...prevItems, line];
+          });
+        }
+        
 
         
         if(child.fieldType == 'array' && child.arrayFieldType != 'object'){
         
 
+          let fieldId = child._id.toString();
+          formObject[fieldId] = [child]; 
+          //console.log( ' getFieldDefChildren formObject = ', formObject);
+          
           form =  <View style={styles.SectionChildStyle} key={ Math.random().toString(36).substr(2, 9) } >
                     <TouchableOpacity onPress={() => handleAddMoreField(child)}  activeOpacity={0.5}>
                       <Text style={styles.titleText} key={ Math.random().toString(36).substr(2, 9) } >
@@ -280,9 +287,16 @@ const ProfileScreen = props => {
                     </TouchableOpacity>
                   </View>;
 
-          setFormField(prevItems => { 
-            return [...prevItems, form];
-          });  
+          if(isChild){
+            setChildFormField(prevItems => { 
+              return [...prevItems, form];
+            });
+          }
+          else{
+            setFormField(prevItems => { 
+              return [...prevItems, form];
+            });
+          }
 
           if(child.fieldType == "enum"){
 
@@ -318,9 +332,16 @@ const ProfileScreen = props => {
               </View>;
           }
 
-          setFormField(prevItems => {
-            return [...prevItems, form];
-          });
+          if(isChild){
+            setChildFormField(prevItems => { 
+              return [...prevItems, form];
+            });
+          }
+          else{
+            setFormField(prevItems => { 
+              return [...prevItems, form];
+            });
+          }
 
 
 
@@ -332,11 +353,18 @@ const ProfileScreen = props => {
                     </Text>
                   </View>;
 
-          setFormField(prevItems => { 
-            return [...prevItems, form];
-          });
+          if(isChild){
+            setChildFormField(prevItems => { 
+              return [...prevItems, form];
+            });
+          }
+          else{
+            setFormField(prevItems => { 
+              return [...prevItems, form];
+            });
+          }
 
-          getFieldDefChildren(child); 
+          getFieldDefChildren(child, isChild); 
 
         }
       } 
@@ -374,9 +402,16 @@ const ProfileScreen = props => {
 
         } 
 
-        setFormField(prevItems => {
-          return [...prevItems, form];
-        });
+        if(isChild){
+          setChildFormField(prevItems => { 
+            return [...prevItems, form];
+          });
+        }
+        else{
+          setFormField(prevItems => { 
+            return [...prevItems, form];
+          });
+        }
         
       }
     });
@@ -394,7 +429,7 @@ const ProfileScreen = props => {
     if(formObject[fieldId]) formObject[fieldId].push(field); 
     else formObject[fieldId] = [field];  
 
-    console.log("handleAddMoreChildField  formObject ",  formObject);
+    //console.log("handleAddMoreChildField  formObject ",  formObject);
 
     let form = <View style={styles.SectionStyle} key={ Math.random().toString(36).substr(2, 11) }>
       <TextInput key={ Math.random().toString(36).substr(2, 9) }
@@ -406,7 +441,7 @@ const ProfileScreen = props => {
       />
     </View>;
 
-    if(field.fieldType == "enum"){  
+    if(field.fieldType == "enum"){ 
 
       let options = [];
       field.enumValues.map(value => (
@@ -427,11 +462,95 @@ const ProfileScreen = props => {
 
           </View>; 
 
+        setChildFormField(prevItems => {
+          return [...prevItems, form];
+        });
+    }
+    else if(field.fieldType == "object"){  
+      form =  <View style={styles.headerSectionStyle} key={ Math.random().toString(36).substr(2, 9) } >
+            <Text style={styles.titleText} key={ Math.random().toString(36).substr(2, 9) }>
+              {field.display}:
+            </Text>
+          </View>;
+
+      setChildFormField(prevItems => { 
+        return [...prevItems, form];
+
+      });
+
+      getFieldDefChildren(field, true); 
+    }
+    else if(field.fieldType == "array"){  
+      let form = <View style={styles.SectionStyle} key={ Math.random().toString(36).substr(2, 11) }>
+      <TextInput key={ Math.random().toString(36).substr(2, 9) }
+        style={styles.inputStyle} 
+        placeholder={field.display}
+        autoCapitalize="none" 
+        returnKeyType="next"  
+        blurOnSubmit={false} 
+      />
+    </View>;
+
+      if(field.arrayFieldType == "enum"){
+
+          let options = [];
+          field.enumValues.map(value => (
+            options.push( { label: value, value: value})
+          )) 
+          
+
+          form = <View style={styles.SectionChildStyle} key={ Math.random().toString(36).substr(2, 9) }>  
+
+                  <RNPickerSelect style={pickerSelectStyles} 
+                    placeholder={{ label: "Select your "+ field.display, value: null }}
+                    onValueChange={(value) => console.log(value)}
+                    items={options}
+                    Icon={() => {
+                      return <Ionicons  name={"unsorted"} color='#2196f3'  size={20} />;
+                    }}
+                  /> 
+              </View>; 
+
+          setChildFormField(prevItems => {
+            return [...prevItems, form];
+          });
+
+          
+      }
+      else if(field.arrayFieldType == "object"){  
+
+
+        form =  <View style={styles.headerSectionStyle} key={ Math.random().toString(36).substr(2, 9) } >
+              <Text style={styles.titleText} key={ Math.random().toString(36).substr(2, 9) }>
+                {field.display}:
+              </Text>
+            </View>;
+
+        setChildFormField(prevItems => { 
+          return [...prevItems, form]; 
+        }); 
+
+        getFieldDefChildren(field, true); 
+
+        let line = <View  key={ Math.random().toString(36).substr(2, 9) }style={styles.lineStyle} />;
+        setChildFormField(prevItems => { 
+          return [...prevItems, line];
+        });
+
+      }
+      else{
+        setChildFormField(prevItems => {
+          return [...prevItems, form];
+        });
+      }
+    }
+    else{
+      setChildFormField(prevItems => {
+        return [...prevItems, form];
+      });
     }
 
-    setChildFormField(prevItems => {
-      return [...prevItems, form];
-    });
+   
 
   }
  
@@ -460,10 +579,13 @@ const ProfileScreen = props => {
       return [...prevItems, title];
     });
 
-    console.log("handleAddMoreField  fieldId ",  fieldId);
-    console.log(" handleAddMoreField  forms[fieldId] ",  formObject[fieldId].length);
+    console.log("handleAddMoreField  field ",  field);
+    //console.log(" handleAddMoreField  forms[fieldId] ",  formObject[fieldId].length);
 
     formObject[fieldId].forEach(element => { 
+
+      console.log("handleAddMoreField  element ",  element);
+
           let form = <View style={styles.SectionStyle} key={ Math.random().toString(36).substr(2, 11) }>
                       <TextInput key={ Math.random().toString(36).substr(2, 9) }
                         style={styles.inputStyle} 
@@ -474,9 +596,120 @@ const ProfileScreen = props => {
                       />
                     </View>;
 
-            setChildFormField(prevItems => {
-              return [...prevItems, form];
-            });
+            if(element.fieldType == "enum"){
+
+              let options = [];
+              element.enumValues.map(value => (
+                options.push( { label: value, value: value})
+              )) 
+              
+
+              form = <View style={styles.SectionChildStyle} key={ Math.random().toString(36).substr(2, 9) }>  
+
+                      <RNPickerSelect style={pickerSelectStyles} 
+                        placeholder={{ label: "Select your "+ element.display, value: null }}
+                        onValueChange={(value) => console.log(value)}
+                        items={options}
+                        Icon={() => {
+                          return <Ionicons  name={"unsorted"} color='#2196f3'  size={20} />;
+                        }}
+                      />
+
+                  </View>; 
+              setChildFormField(prevItems => {
+                return [...prevItems, form];
+              });
+            }
+            else if(element.fieldType == "object"){  
+
+              form =  <View style={styles.headerSectionStyle} key={ Math.random().toString(36).substr(2, 9) } >
+                    <Text style={styles.titleText} key={ Math.random().toString(36).substr(2, 9) }>
+                      {field.display}:
+                    </Text>
+                  </View>;
+
+             
+              setChildFormField(prevItems => { 
+                return [...prevItems, form];
+        
+              });
+        
+              getFieldDefChildren(field, true); 
+
+            }
+            else if(element.fieldType == "array"){  
+              
+              let form = <View style={styles.SectionStyle} key={ Math.random().toString(36).substr(2, 11) }>
+                <TextInput key={ Math.random().toString(36).substr(2, 9) }
+                  style={styles.inputStyle} 
+                  placeholder={element.display}
+                  autoCapitalize="none" 
+                  returnKeyType="next"  
+                  blurOnSubmit={false} 
+                />
+              </View>;
+
+              if(element.arrayFieldType == "enum"){
+
+                  let options = [];
+                  element.enumValues.map(value => (
+                    options.push( { label: value, value: value})
+                  )) 
+                  
+
+                  form = <View style={styles.SectionChildStyle} key={ Math.random().toString(36).substr(2, 9) }>  
+
+                          <RNPickerSelect style={pickerSelectStyles} 
+                            placeholder={{ label: "Select your "+ element.display, value: null }}
+                            onValueChange={(value) => console.log(value)}
+                            items={options}
+                            Icon={() => {
+                              return <Ionicons  name={"unsorted"} color='#2196f3'  size={20} />;
+                            }}
+                          /> 
+                      </View>; 
+
+                  setChildFormField(prevItems => {
+                    return [...prevItems, form];
+                  });
+        
+                  
+              }
+              else if(element.arrayFieldType == "object"){  
+
+
+                form =  <View style={styles.headerSectionStyle} key={ Math.random().toString(36).substr(2, 9) } >
+                      <Text style={styles.titleText} key={ Math.random().toString(36).substr(2, 9) }>
+                        {field.display}:
+                      </Text>
+                    </View>;
+
+                setChildFormField(prevItems => { 
+                  return [...prevItems, form]; 
+                }); 
+          
+                getFieldDefChildren(element, true); 
+
+                let line = <View  key={ Math.random().toString(36).substr(2, 9) }style={styles.lineStyle} />;
+                setChildFormField(prevItems => { 
+                  return [...prevItems, line];
+                });
+
+              }
+              else{
+                setChildFormField(prevItems => {
+                  return [...prevItems, form];
+                });
+              }
+
+            }
+            else{
+              setChildFormField(prevItems => {
+                return [...prevItems, form];
+              });
+            }
+
+            
          
        
     });
