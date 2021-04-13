@@ -33,6 +33,9 @@ import {
   ScrollView, 
   TouchableOpacity,
   KeyboardAvoidingView,
+  FlatList,
+  Modal,
+  Pressable
 } from 'react-native'; 
 import AsyncStorage from '@react-native-community/async-storage';
 import RNPickerSelect from "react-native-picker-select";
@@ -40,51 +43,88 @@ import Ionicons from "react-native-vector-icons/FontAwesome";
 import Loader from '../components/Loader'; 
 import Configure from '../config/Config'; 
 import * as RealmLib from '../managers/RealmManager';  
+import { Button, ThemeProvider, Input } from 'react-native-elements';
+ 
 
 const ProfileScreen = props => {
-  let [formFeilds, setFormField] = useState([]); 
-  let [loading, setLoading] = useState(false);
-  let [errortext, setErrortext] = useState('');
-   
+  const [formFields, setFormField] = useState([]);
+  const [childFormField, setChildFormField] = useState([]); 
+  const [loading, setLoading] = useState(false);
+  const [errortext, setErrortext] = useState('');
+  const [page, setPage] = useState('main'); 
+  const [breadcrumb, setBreadcrumb] = useState([]); 
+  const [formArrayDic, setFormArrayDic] = useState({}); 
+  const _foo = useRef({});
+  let formObject = {};
 
   global.appId = Configure.Realm.appId; 
   AsyncStorage.setItem('appId', global.appId);  
 
-  useEffect(() => { 
-     
+  useEffect(() => {
+
+   
+    setBreadcrumb(prevItems => { 
+      return [];
+    });
+
+    
+
     setFormField(prevItems => { 
       return [];
     });
 
+    setChildFormField(prevItems => { 
+      return [];
+    });
+
+    setLoading(true);
     openRealm();
 
     async function openRealm(){ 
       
       await RealmLib.openRealm();   
       let results = await global.realm.objects("UserSchema"); 
-      
+      let form ;
+      setLoading(false);
+
       results.forEach(element => { 
 
-        element.userProfile.forEach(field => { 
+        element.userProfile.forEach(field => {  
 
-            if(field.fieldType == 'object' || field.fieldType == 'array' ){
+            if(field.fieldType == 'object' || field.fieldType == 'array' ){ 
+            
+              if(field.fieldType == 'array'){
 
-              let form =  <View style={styles.SectionStyle} key={field._id.toString()}>
-                            <Text style={styles.titleText} key={ Math.random().toString(36).substr(2, 9) }>
-                               {field.display}:
+                let fieldId = field._id.toString();
+                formObject[fieldId] = [field]; 
+                console.log( ' userProfile formObject = ', formObject);
+
+                let line = <View  key={ Math.random().toString(36).substr(2, 9) }
+                  style={styles.lineStyle}
+                />;
+
+                setFormField(prevItems => { 
+                  return [...prevItems, line];
+                });
+
+                
+                form =  <View style={styles.SectionStyle} key={field._id.toString()} >
+                          <TouchableOpacity onPress={() => handleAddMoreField(field)}  activeOpacity={0.5}>
+                            <Text style={styles.titleText} key={ Math.random().toString(36).substr(2, 9) } >
+                              {field.display}: (+Add)
                             </Text>
-                          </View>;
+                          </TouchableOpacity>
+                        </View>;
 
-              setFormField(prevItems => { 
-                return [...prevItems, form];
-              });
+                setFormField(prevItems => { 
+                  return [...prevItems, form];
+                }); 
 
-              if( field.fieldType == 'array'){
-
+               
                 if(field.arrayFieldType == 'object') getFieldDefChildren(field); 
-                else{
+                else{ 
 
-                  let form = <View style={styles.SectionStyle} key={field._id.toString()}>
+                  let form = <View style={styles.SectionStyle} key={ Math.random().toString(36).substr(2, 9) }>
                       <TextInput key={ Math.random().toString(36).substr(2, 9) }
                         style={styles.inputStyle} 
                         placeholder={field.display}
@@ -99,9 +139,9 @@ const ProfileScreen = props => {
                     let options = [];
                     field.enumValues.map(value => (
                       options.push( { label: value, value: value})
-                    ))
+                    ));
 
-                    form = <View style={styles.SectionStyle} key={field._id.toString()}> 
+                    form = <View style={styles.SectionStyle} key={ Math.random().toString(36).substr(2, 9) }> 
 
                             <Text>{field.display}: </Text>
                                         
@@ -110,23 +150,56 @@ const ProfileScreen = props => {
                               onValueChange={(value) => console.log(value)}
                               items={options}
                               Icon={() => {
-                                return <Ionicons   name={"unsorted"} color='#2196f3'  size={20} />;
+                                return <Ionicons name={"unsorted"} color='#2196f3'  size={20} />;
                               }}
                           />
 
                         </View>;
-                    }
+                  }
 
-                    setFormField(prevItems => { 
-                      return [...prevItems, form];
-                    });
+                  setFormField(prevItems => { 
+                    return [...prevItems, form];
+                  });
+
+
+                    
+                            
                 }
+
+               
+
+
               }
-              else getFieldDefChildren(field); 
+              else{
+                form =  <View style={styles.headerSectionStyle} key={ Math.random().toString(36).substr(2, 9) } >
+                      <Text style={styles.titleText} key={ Math.random().toString(36).substr(2, 9) }>
+                        {field.display}:
+                      </Text>
+                    </View>;
+
+                setFormField(prevItems => { 
+                  return [...prevItems, form];
+
+                });
+
+                getFieldDefChildren(field); 
+
+              } 
 
             }
             else{
 
+              form =  <View style={styles.headerSectionStyle} key={ Math.random().toString(36).substr(2, 9) } >
+                  <Text style={styles.titleText} key={ Math.random().toString(36).substr(2, 9) }>
+                    {field.display}:
+                  </Text>
+                </View>;
+
+              setFormField(prevItems => { 
+                return [...prevItems, form];
+
+              });
+            
               let form = <View style={styles.SectionStyle} key={field._id.toString()}>
                           <TextInput key={ Math.random().toString(36).substr(2, 9) }
                             style={styles.inputStyle} 
@@ -137,12 +210,12 @@ const ProfileScreen = props => {
                           />
                         </View>;
 
-              if(field.fieldType == "enum"){  
+              if(field.fieldType == "enum"){
 
                 let options = [];
                 field.enumValues.map(value => (
                   options.push( { label: value, value: value})
-                ))
+                ));
                 
 
                 form = <View style={styles.SectionStyle} key={field._id.toString()}> 
@@ -161,11 +234,11 @@ const ProfileScreen = props => {
                     </View>;
               }
 
-              setFormField(prevItems => { 
+              setFormField(prevItems => {
                 return [...prevItems, form];
               });
 
-            };
+            }
 
             
         });
@@ -174,12 +247,14 @@ const ProfileScreen = props => {
 
 
     }
-  }, [])
 
+    
  
+
+  
   async function getFieldDefChildren(fieldDef){
 
-
+    
     fieldDef.properties.forEach(child => {
 
     
@@ -207,17 +282,7 @@ const ProfileScreen = props => {
 
           setFormField(prevItems => { 
             return [...prevItems, form];
-          }); 
-
-          form =  <View style={styles.SectionChildStyle} key={child._id.toString()}>
-                <TextInput key={ Math.random().toString(36).substr(2, 9) }
-                  style={styles.inputChildStyle} 
-                  placeholder={child.display}
-                  autoCapitalize="none" 
-                  returnKeyType="next"  
-                  blurOnSubmit={false} 
-                />
-              </View>;
+          });  
 
           if(child.fieldType == "enum"){
 
@@ -226,7 +291,7 @@ const ProfileScreen = props => {
               options.push( { label: value, value: value})
             ))
 
-            form = <View style={styles.SectionChildStyle} key={child._id.toString()}>  
+            form = <View style={styles.SectionChildStyle} key={ Math.random().toString(36).substr(2, 9) }>  
 
                     <RNPickerSelect style={pickerSelectStyles} 
                       placeholder={{ label: "Select your "+ child.display, value: null }}
@@ -240,28 +305,43 @@ const ProfileScreen = props => {
                 </View>;
 
           } 
+          else {
+            
+            form =  <View style={styles.SectionChildStyle} key={ Math.random().toString(36).substr(2, 9) }> 
+                <TextInput key={ Math.random().toString(36).substr(2, 9) }
+                  style={styles.inputChildStyle} 
+                  placeholder={child.display}
+                  autoCapitalize="none" 
+                  returnKeyType="next"  
+                  blurOnSubmit={false} 
+                />
+              </View>;
+          }
 
           setFormField(prevItems => {
             return [...prevItems, form];
           });
 
+
+
         } 
         else{
           form =  <View style={styles.SectionChildStyle} key={ Math.random().toString(36).substr(2, 9) } >
-                      <Text style={styles.titleText} key={ Math.random().toString(36).substr(2, 9) }>
-                      {child.display}:
-                      </Text>
-                    </View>;
+                    <Text style={styles.titleText} key={ Math.random().toString(36).substr(2, 9) }>
+                    {child.display}:
+                    </Text>
+                  </View>;
 
           setFormField(prevItems => { 
             return [...prevItems, form];
           });
+
           getFieldDefChildren(child); 
 
         }
       } 
       else {
-        let form =  <View style={styles.SectionChildStyle} key={child._id.toString()}>
+        let form =  <View style={styles.SectionChildStyle} key={ Math.random().toString(36).substr(2, 9) }>
                 <TextInput key={ Math.random().toString(36).substr(2, 9) }
                   style={styles.inputChildStyle} 
                   placeholder={child.display}
@@ -279,7 +359,7 @@ const ProfileScreen = props => {
             )) 
           
 
-          form = <View style={styles.SectionChildStyle} key={child._id.toString()}>  
+          form = <View style={styles.SectionChildStyle} key={ Math.random().toString(36).substr(2, 9) }>  
 
                   <RNPickerSelect style={pickerSelectStyles} 
                     placeholder={{ label: "Select your "+ child.display, value: null }}
@@ -305,76 +385,126 @@ const ProfileScreen = props => {
 
   }
 
+  const handleAddMoreChildField = (field) => { 
 
-  const handleAddMoreField = (field) => { 
-    
-    let  form =  <View style={styles.SectionChildStyle} key={ Math.random().toString(36).substr(2, 9) }>
-                  <TextInput key={ Math.random().toString(36).substr(2, 9) }
-                    style={styles.inputChildStyle} 
-                    placeholder={field.display}
-                    autoCapitalize="none" 
-                    returnKeyType="next"  
-                    blurOnSubmit={false} 
-                  />
-                </View>;
-                
-     setFormField(prevItems => {
+    let fieldId = field._id.toString();  
+
+    console.log( ' handleAddMoreChildField fieldId = ', fieldId);  
+
+    if(formObject[fieldId]) formObject[fieldId].push(field); 
+    else formObject[fieldId] = [field];  
+
+    console.log("handleAddMoreChildField  formObject ",  formObject);
+
+    let form = <View style={styles.SectionStyle} key={ Math.random().toString(36).substr(2, 11) }>
+      <TextInput key={ Math.random().toString(36).substr(2, 9) }
+        style={styles.inputStyle} 
+        placeholder={field.display}
+        autoCapitalize="none" 
+        returnKeyType="next"  
+        blurOnSubmit={false} 
+      />
+    </View>;
+
+    if(field.fieldType == "enum"){  
+
+      let options = [];
+      field.enumValues.map(value => (
+        options.push( { label: value, value: value})
+      )) 
+      
+
+      form = <View style={styles.SectionChildStyle} key={ Math.random().toString(36).substr(2, 9) }>  
+
+              <RNPickerSelect style={pickerSelectStyles} 
+                placeholder={{ label: "Select your "+ field.display, value: null }}
+                onValueChange={(value) => console.log(value)}
+                items={options}
+                Icon={() => {
+                  return <Ionicons  name={"unsorted"} color='#2196f3'  size={20} />;
+                }}
+              />
+
+          </View>; 
+
+    }
+
+    setChildFormField(prevItems => {
       return [...prevItems, form];
     });
 
-   
-
   }
+ 
 
 
-  const validateEmail = (text) => {
-   
-    let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    if (reg.test(text) === false) return false;
-    else return true;
-  }
-
-
-  
-  
-  const handleSubmitPress = () => {
-    setErrortext('');
-    if (!userEmail) {
-      alert('Please fill Email');
-      return;
-    }
-    if (!validateEmail(userEmail)) {
-      alert('Please fill a valid email');
-      return;
-    }
-
-    if (!userPassword) {
-      alert('Please fill Password');
-      return;
-    }
+  const handleAddMoreField = (field) => {  
     
-    AsyncStorage.setItem('user_email', userEmail);  
-    AsyncStorage.setItem('user_password', userPassword); 
+    setBreadcrumb(prevItems => { 
+      return [...prevItems, 'Home'];
+    });  
+   
+    let fieldId = field._id.toString(); 
 
-    setLoading(true);  
+    if(formObject[fieldId]) formObject[fieldId].push(field); 
+    else formObject[fieldId] = [field];  
 
-    RealmLib.login(userEmail, userPassword).then(user => {
+    let title =  <View style={styles.SectionStyle} key={ Math.random().toString(36).substr(2, 9) + fieldId} >
+                <TouchableOpacity onPress={() => handleAddMoreChildField(field)}  activeOpacity={0.5}>
+                  <Text style={styles.titleText} key={ Math.random().toString(36).substr(2, 9) } >
+                    {field.display}: (+Add)
+                  </Text>
+                </TouchableOpacity>
+              </View>;
+
+    setChildFormField(prevItems => {
+      return [...prevItems, title];
+    });
+
+    console.log("handleAddMoreField  fieldId ",  fieldId);
+    console.log(" handleAddMoreField  forms[fieldId] ",  formObject[fieldId].length);
+
+    formObject[fieldId].forEach(element => { 
+          let form = <View style={styles.SectionStyle} key={ Math.random().toString(36).substr(2, 11) }>
+                      <TextInput key={ Math.random().toString(36).substr(2, 9) }
+                        style={styles.inputStyle} 
+                        placeholder={element.display}
+                        autoCapitalize="none" 
+                        returnKeyType="next"  
+                        blurOnSubmit={false} 
+                      />
+                    </View>;
+
+            setChildFormField(prevItems => {
+              return [...prevItems, form];
+            });
+         
+       
+    });
+    
      
-      AsyncStorage.setItem('user_id', user.id);
-      //props.navigation.navigate('AssetScreen'); 
-      props.navigation.navigate('DrawerNavigationRoutes'); 
-      
-    }).catch(err => {
-      setLoading(false);
-      setErrortext(err.message);
-    }) 
      
+    setPage('child');
+    
+  }
+
+  return function cleanup() {
+    console.log('clean up!!!!!!!') 
+
+    setFormField(prevItems => { 
+      return [];
+    });
+ 
+   
+
   };
+
+
+}, [])
 
   return (
     <View style={styles.mainBody}>
-      <Loader loading={loading} />
-      
+      <Loader loading={loading} /> 
+
       <ScrollView keyboardShouldPersistTaps="handled">
 
         <View style={{ marginTop: 100 }}>
@@ -383,19 +513,39 @@ const ProfileScreen = props => {
           <Text style={styles.headerTextStyle}>
             Update your profile
           </Text>
-                     
-        {
-         formFeilds
-        }
-        
+           { 
+            breadcrumb.map(el => (
+              <Text style={styles.breadCrumbTextStyle} key={Math.random().toString(36).substr(2, 9)}> {el} / </Text>
+            )) 
+           }
+          
+          
+          
+            {  
+              page == 'main'  ? formFields : childFormField
+            } 
+       
             {errortext != '' ? (
               <Text style={styles.errorTextStyle}> {errortext} </Text>
             ) : null}
             <TouchableOpacity
               style={styles.buttonStyle}
-              activeOpacity={0.5}
-              onPress={handleSubmitPress}>
-              <Text style={styles.buttonTextStyle}>Submit</Text>
+              onPress={() => {
+
+                setPage('main')
+
+                setBreadcrumb(prevItems => { 
+                  return [];
+                }); 
+
+                setChildFormField(prevItems => { 
+                  return [];
+                });
+              }
+            
+            }
+               >
+              <Text style={styles.buttonTextStyle}>SAVE</Text>
             </TouchableOpacity>
 
             
@@ -440,6 +590,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#fff',
   },
+
+  headerSectionStyle: {
+    flexDirection: 'row', 
+    marginBottom: 20,
+    marginLeft: 20,
+    
+  },
+
 
   SectionChildStyle: {
     flexDirection: 'row',
@@ -498,6 +656,13 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     borderColor: '#2196f3',
   },
+  breadCrumbTextStyle: {
+    color: '#4638ab',
+    
+    fontWeight: 'bold',
+    fontSize: 14,
+    marginBottom: 20,
+  },
   headerTextStyle: {
     color: '#4638ab',
     textAlign: 'center',
@@ -516,5 +681,25 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     paddingVertical: 5,
   },
-   
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5
+  },
 });
