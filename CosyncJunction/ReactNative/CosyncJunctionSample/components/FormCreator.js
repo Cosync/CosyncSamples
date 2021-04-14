@@ -42,7 +42,7 @@ const FormCreator = props => {
 
     const { fieldDef, index, ...attributes } = props; 
     //const [childFormField, setChildFormField] = useState([]); 
-    console.log('FormCreator fieldDef ', fieldDef );
+    console.log('FormCreator indexindexindexindexindex ', index );
 
     const [childForm, setChildFormField] = useState(null);
 
@@ -54,7 +54,7 @@ const FormCreator = props => {
           returnKeyType="next"  
           blurOnSubmit={false} 
         />
-      {index > 0  ? <Ionicons  name={"minus-circle"} color='#bf360c'  size={20} onPress={() => props.deleteField(fieldDef)}/> : null }
+      {index > 0  ? <Ionicons  name={"minus-circle"} color='#bf360c'  size={20} onPress={() => props.deletedItem(fieldDef)}/> : null }
     </View>;
 
     if(fieldDef.fieldType == "enum"){
@@ -75,7 +75,7 @@ const FormCreator = props => {
                 return <Ionicons  name={"unsorted"} color='#2196f3'  size={20} />;
               }}
             />
-              {index > 0  ? <Ionicons  name={"minus-circle"} color='#bf360c'  size={20} onPress={() => props.deleteField(field)}/> : null}
+              {index > 0  ? <Ionicons  name={"minus-circle"} color='#bf360c'  size={20} onPress={() => props.deletedItem(field)}/> : null}
         </View>; 
 
       // setChildFormField(prevItems => {
@@ -88,7 +88,7 @@ const FormCreator = props => {
           <Text style={styles.titleText} key={ Math.random().toString(36).substr(2, 9) }>
             {fieldDef.display}:
           </Text>
-          {index > 0  ? <Ionicons  name={"minus-circle"} color='#bf360c'  size={20} onPress={() => props.deleteField(field)}/> : null}
+          {index > 0  ? <Ionicons  name={"minus-circle"} color='#bf360c'  size={20} onPress={() => props.deletedItem(field)}/> : null}
         </View>;
 
 
@@ -183,8 +183,8 @@ const FormCreator = props => {
 
         {fieldDef.fieldType == 'object' || fieldDef.fieldType == 'array'?  (< ObjectField item = {fieldDef}/>) : null }
         
-
-        <Ionicons  name={"minus-circle"} color='#bf360c'  size={20} onPress={() => props.deletedItem(fieldDef) }/>
+        {index > 0  ? <Ionicons  name={"minus-circle"} color='#bf360c'  size={20} onPress={() => props.deletedItem(fieldDef)}/> : null}
+         
       </View>
     );
     

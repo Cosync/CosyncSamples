@@ -442,128 +442,128 @@ const ProfileScreen = props => {
 
     //console.log("handleAddMoreChildField  formObject ",  formObject);
 
-    let form = <View style={styles.SectionStyle} key={ Math.random().toString(36).substr(2, 11) }>
-      <TextInput key={ Math.random().toString(36).substr(2, 9) }
-        style={styles.inputStyle} 
-        placeholder={field.display}
-        autoCapitalize="none" 
-        returnKeyType="next"  
-        blurOnSubmit={false} 
-      />
-    </View>;
+    // let form = <View style={styles.SectionStyle} key={ Math.random().toString(36).substr(2, 11) }>
+    //   <TextInput key={ Math.random().toString(36).substr(2, 9) }
+    //     style={styles.inputStyle} 
+    //     placeholder={field.display}
+    //     autoCapitalize="none" 
+    //     returnKeyType="next"  
+    //     blurOnSubmit={false} 
+    //   />
+    // </View>;
 
-    if(field.fieldType == "enum"){ 
+    // if(field.fieldType == "enum"){ 
 
-      let options = [];
-      field.enumValues.map(value => (
-        options.push( { label: value, value: value})
-      )) 
+    //   let options = [];
+    //   field.enumValues.map(value => (
+    //     options.push( { label: value, value: value})
+    //   )) 
       
 
-      form = <View style={styles.SectionChildStyle} key={ Math.random().toString(36).substr(2, 9) }>  
+    //   form = <View style={styles.SectionChildStyle} key={ Math.random().toString(36).substr(2, 9) }>  
 
-              <RNPickerSelect style={pickerSelectStyles} 
-                placeholder={{ label: "Select your "+ field.display, value: null }}
-                onValueChange={(value) => console.log(value)}
-                items={options}
-                Icon={() => {
-                  return <Ionicons  name={"unsorted"} color='#2196f3'  size={20} />;
-                }}
-              />
-            <Ionicons  name={"minus-circle"} color='#bf360c'  size={20} onPress={() =>deleteField(field)}/>
-          </View>; 
+    //           <RNPickerSelect style={pickerSelectStyles} 
+    //             placeholder={{ label: "Select your "+ field.display, value: null }}
+    //             onValueChange={(value) => console.log(value)}
+    //             items={options}
+    //             Icon={() => {
+    //               return <Ionicons  name={"unsorted"} color='#2196f3'  size={20} />;
+    //             }}
+    //           />
+    //         <Ionicons  name={"minus-circle"} color='#bf360c'  size={20} onPress={() =>deleteField(field)}/>
+    //       </View>; 
 
-        setChildFormField(prevItems => {
-          return [...prevItems, form];
-        });
-    }
-    else if(field.fieldType == "object"){  
-      form =  <View style={styles.headerSectionStyle} key={ Math.random().toString(36).substr(2, 9) } >
-                <Text style={styles.titleText} key={ Math.random().toString(36).substr(2, 13) }>
-                  {field.display}:
-                </Text>
-                <Ionicons  name={"minus-circle"} color='#bf360c'  size={20} onPress={() =>deleteField(field)}/>
-              </View>;
+    //     setChildFormField(prevItems => {
+    //       return [...prevItems, form];
+    //     });
+    // }
+    // else if(field.fieldType == "object"){  
+    //   form =  <View style={styles.headerSectionStyle} key={ Math.random().toString(36).substr(2, 9) } >
+    //             <Text style={styles.titleText} key={ Math.random().toString(36).substr(2, 13) }>
+    //               {field.display}:
+    //             </Text>
+    //             <Ionicons  name={"minus-circle"} color='#bf360c'  size={20} onPress={() =>deleteField(field)}/>
+    //           </View>;
 
-      setChildFormField(prevItems => { 
-        return [...prevItems, form];
+    //   setChildFormField(prevItems => { 
+    //     return [...prevItems, form];
 
-      });
+    //   });
 
-      getFieldDefChildren(field, true); 
-    }
-    else if(field.fieldType == "array"){  
-      let form = <View style={styles.SectionStyle} key={ Math.random().toString(36).substr(2, 11) }>
-        <TextInput key={ Math.random().toString(36).substr(2, 13) }
-          style={styles.inputStyle} 
-          placeholder={field.display}
-          autoCapitalize="none" 
-          returnKeyType="next"  
-          blurOnSubmit={false} 
-        />
-        <Ionicons  name={"minus-circle"} color='#bf360c'  size={20} onPress={() =>deleteField(field)} />
-      </View>;
+    //   getFieldDefChildren(field, true); 
+    // }
+    // else if(field.fieldType == "array"){  
+    //   let form = <View style={styles.SectionStyle} key={ Math.random().toString(36).substr(2, 11) }>
+    //     <TextInput key={ Math.random().toString(36).substr(2, 13) }
+    //       style={styles.inputStyle} 
+    //       placeholder={field.display}
+    //       autoCapitalize="none" 
+    //       returnKeyType="next"  
+    //       blurOnSubmit={false} 
+    //     />
+    //     <Ionicons  name={"minus-circle"} color='#bf360c'  size={20} onPress={() =>deleteField(field)} />
+    //   </View>;
 
-      if(field.arrayFieldType == "enum"){
+    //   if(field.arrayFieldType == "enum"){
 
-          let options = [];
-          field.enumValues.map(value => (
-            options.push( { label: value, value: value})
-          )) 
+    //       let options = [];
+    //       field.enumValues.map(value => (
+    //         options.push( { label: value, value: value})
+    //       )) 
           
 
-          form = <View style={styles.SectionChildStyle} key={ Math.random().toString(36).substr(2, 9) }>  
+    //       form = <View style={styles.SectionChildStyle} key={ Math.random().toString(36).substr(2, 9) }>  
 
-                  <RNPickerSelect style={pickerSelectStyles} 
-                    placeholder={{ label: "Select your "+ field.display, value: null }}
-                    onValueChange={(value) => console.log(value)}
-                    items={options}
-                    Icon={() => {
-                      return <Ionicons  name={"unsorted"} color='#2196f3'  size={20} />;
-                    }}
-                  /> 
-                  <Ionicons  name={"minus-circle"} color='#bf360c'  size={20} onPress={() =>deleteField(field)}/>
-              </View>; 
+    //               <RNPickerSelect style={pickerSelectStyles} 
+    //                 placeholder={{ label: "Select your "+ field.display, value: null }}
+    //                 onValueChange={(value) => console.log(value)}
+    //                 items={options}
+    //                 Icon={() => {
+    //                   return <Ionicons  name={"unsorted"} color='#2196f3'  size={20} />;
+    //                 }}
+    //               /> 
+    //               <Ionicons  name={"minus-circle"} color='#bf360c'  size={20} onPress={() =>deleteField(field)}/>
+    //           </View>; 
 
-          setChildFormField(prevItems => {
-            return [...prevItems, form];
-          });
+    //       setChildFormField(prevItems => {
+    //         return [...prevItems, form];
+    //       });
 
           
-      }
-      else if(field.arrayFieldType == "object"){  
+    //   }
+    //   else if(field.arrayFieldType == "object"){  
 
 
-        form =  <View style={styles.headerSectionStyle} key={ Math.random().toString(36).substr(2, 9) } >
-              <Text style={styles.titleText} key={ Math.random().toString(36).substr(2, 9) }>
-                {field.display} {formObject[fieldId].length}:
-              </Text>
-              <Ionicons  name={"minus-circle"} color='#bf360c'  size={20} onPress={() =>deleteField(field)}/>
-            </View>;
+    //     form =  <View style={styles.headerSectionStyle} key={ Math.random().toString(36).substr(2, 9) } >
+    //           <Text style={styles.titleText} key={ Math.random().toString(36).substr(2, 9) }>
+    //             {field.display} {formObject[fieldId].length}:
+    //           </Text>
+    //           <Ionicons  name={"minus-circle"} color='#bf360c'  size={20} onPress={() =>deleteField(field)}/>
+    //         </View>;
 
-        setChildFormField(prevItems => { 
-          return [...prevItems, form]; 
-        }); 
+    //     setChildFormField(prevItems => { 
+    //       return [...prevItems, form]; 
+    //     }); 
 
-        getFieldDefChildren(field, true); 
+    //     getFieldDefChildren(field, true); 
 
-        let line = <View  key={ Math.random().toString(36).substr(2, 9) } style={styles.lineStyle} />;
-        setChildFormField(prevItems => { 
-          return [...prevItems, line];
-        });
+    //     let line = <View  key={ Math.random().toString(36).substr(2, 9) } style={styles.lineStyle} />;
+    //     setChildFormField(prevItems => { 
+    //       return [...prevItems, line];
+    //     });
 
-      }
-      else{
-        setChildFormField(prevItems => {
-          return [...prevItems, form];
-        });
-      }
-    }
-    else{
-      setChildFormField(prevItems => {
-        return [...prevItems, form];
-      });
-    }
+    //   }
+    //   else{
+    //     setChildFormField(prevItems => {
+    //       return [...prevItems, form];
+    //     });
+    //   }
+    // }
+    // else{
+    //   setChildFormField(prevItems => {
+    //     return [...prevItems, form];
+    //   });
+    // }
 
    
 
@@ -588,20 +588,19 @@ const ProfileScreen = props => {
   const handleAddMoreField = (field) => {  
     
     setBreadcrumb(prevItems => { 
-      return [...prevItems, 'Home'];
+      return ['Home'];
     });  
    
+
+   
+
     let fieldId = field._id.toString(); 
     
     let newField = cloneFieldObject(field);
 
     if(formObject[fieldId]) formObject[fieldId].push(newField); 
     else formObject[fieldId] = [newField];  
-
-    
-    setChildField(prevItems => { 
-      return [...prevItems, newField];
-    }); 
+     
 
     let title =  <View style={styles.SectionStyle} key={ Math.random().toString(36).substr(2, 9) + fieldId} >
                 <TouchableOpacity onPress={() => handleAddMoreChildField(field)}  activeOpacity={0.5}>
@@ -620,138 +619,141 @@ const ProfileScreen = props => {
     for (let index = 0; index < formObject[fieldId].length; index++) {
       let element = formObject[fieldId][index];
      
-      
-    // formObject[fieldId].forEach(element => { 
+      setChildField(prevItems => { 
+        return [...prevItems, element];
+      }); 
 
-      console.log("handleAddMoreField  element ",  element);
+    // // formObject[fieldId].forEach(element => { 
 
-          let form = <View style={styles.SectionStyle} key={ Math.random().toString(36).substr(2, 11) }>
-                      <TextInput key={ Math.random().toString(36).substr(2, 9) }
-                        style={styles.inputStyle} 
-                        placeholder={element.display}
-                        autoCapitalize="none" 
-                        returnKeyType="next"  
-                        blurOnSubmit={false} 
-                      />
-                    {index > 0  ? <Ionicons  name={"minus-circle"} color='#bf360c'  size={20} onPress={() =>deleteField(field)}/> : null }
-                    </View>;
+    //   console.log("handleAddMoreField  element ",  element);
 
-            if(element.fieldType == "enum"){
+    //       let form = <View style={styles.SectionStyle} key={ Math.random().toString(36).substr(2, 11) }>
+    //                   <TextInput key={ Math.random().toString(36).substr(2, 9) }
+    //                     style={styles.inputStyle} 
+    //                     placeholder={element.display}
+    //                     autoCapitalize="none" 
+    //                     returnKeyType="next"  
+    //                     blurOnSubmit={false} 
+    //                   />
+    //                 {index > 0  ? <Ionicons  name={"minus-circle"} color='#bf360c'  size={20} onPress={() =>deleteField(field)}/> : null }
+    //                 </View>;
 
-              let options = [];
-              element.enumValues.map(value => (
-                options.push( { label: value, value: value})
-              )) 
+    //         if(element.fieldType == "enum"){
+
+    //           let options = [];
+    //           element.enumValues.map(value => (
+    //             options.push( { label: value, value: value})
+    //           )) 
               
 
-              form = <View style={styles.SectionChildStyle} key={ Math.random().toString(36).substr(2, 9) }>  
+    //           form = <View style={styles.SectionChildStyle} key={ Math.random().toString(36).substr(2, 9) }>  
 
-                      <RNPickerSelect style={pickerSelectStyles} 
-                        placeholder={{ label: "Select your "+ element.display, value: null }}
-                        onValueChange={(value) => console.log(value)}
-                        items={options}
-                        Icon={() => {
-                          return <Ionicons  name={"unsorted"} color='#2196f3'  size={20} />;
-                        }}
-                      />
-                       {index > 0  ? <Ionicons  name={"minus-circle"} color='#bf360c'  size={20} onPress={() =>deleteField(field)}/> : null}
-                  </View>; 
-              setChildFormField(prevItems => {
-                return [...prevItems, form];
-              });
-            }
-            else if(element.fieldType == "object"){  
+    //                   <RNPickerSelect style={pickerSelectStyles} 
+    //                     placeholder={{ label: "Select your "+ element.display, value: null }}
+    //                     onValueChange={(value) => console.log(value)}
+    //                     items={options}
+    //                     Icon={() => {
+    //                       return <Ionicons  name={"unsorted"} color='#2196f3'  size={20} />;
+    //                     }}
+    //                   />
+    //                    {index > 0  ? <Ionicons  name={"minus-circle"} color='#bf360c'  size={20} onPress={() =>deleteField(field)}/> : null}
+    //               </View>; 
+    //           setChildFormField(prevItems => {
+    //             return [...prevItems, form];
+    //           });
+    //         }
+    //         else if(element.fieldType == "object"){  
 
-              form =  <View style={styles.headerSectionStyle} key={ Math.random().toString(36).substr(2, 9) } >
-                    <Text style={styles.titleText} key={ Math.random().toString(36).substr(2, 9) }>
-                      {field.display}:
-                    </Text>
-                    {index > 0  ? <Ionicons  name={"minus-circle"} color='#bf360c'  size={20} onPress={() =>deleteField(field)}/> : null}
-                  </View>;
+    //           form =  <View style={styles.headerSectionStyle} key={ Math.random().toString(36).substr(2, 9) } >
+    //                 <Text style={styles.titleText} key={ Math.random().toString(36).substr(2, 9) }>
+    //                   {field.display}:
+    //                 </Text>
+    //                 {index > 0  ? <Ionicons  name={"minus-circle"} color='#bf360c'  size={20} onPress={() =>deleteField(field)}/> : null}
+    //               </View>;
 
              
-              setChildFormField(prevItems => { 
-                return [...prevItems, form];
+    //           setChildFormField(prevItems => { 
+    //             return [...prevItems, form];
         
-              });
+    //           });
         
-              getFieldDefChildren(field, true); 
+    //           getFieldDefChildren(field, true); 
 
-            }
-            else if(element.fieldType == "array"){  
+    //         }
+    //         else if(element.fieldType == "array"){  
               
-              let form = <View style={styles.SectionStyle} key={ Math.random().toString(36).substr(2, 11) }>
-                <TextInput key={ Math.random().toString(36).substr(2, 9) }
-                  style={styles.inputStyle} 
-                  placeholder={element.display}
-                  autoCapitalize="none" 
-                  returnKeyType="next"  
-                  blurOnSubmit={false} 
-                />
-                 {index > 0  ? <Ionicons  name={"minus-circle"} color='#bf360c'  size={20} onPress={() =>deleteField(field)}/>: null}
-              </View>;
+    //           let form = <View style={styles.SectionStyle} key={ Math.random().toString(36).substr(2, 11) }>
+    //             <TextInput key={ Math.random().toString(36).substr(2, 9) }
+    //               style={styles.inputStyle} 
+    //               placeholder={element.display}
+    //               autoCapitalize="none" 
+    //               returnKeyType="next"  
+    //               blurOnSubmit={false} 
+    //             />
+    //              {index > 0  ? <Ionicons  name={"minus-circle"} color='#bf360c'  size={20} onPress={() =>deleteField(field)}/>: null}
+    //           </View>;
 
-              if(element.arrayFieldType == "enum"){
+    //           if(element.arrayFieldType == "enum"){
 
-                  let options = [];
-                  element.enumValues.map(value => (
-                    options.push( { label: value, value: value})
-                  )) 
+    //               let options = [];
+    //               element.enumValues.map(value => (
+    //                 options.push( { label: value, value: value})
+    //               )) 
                   
 
-                  form = <View style={styles.SectionChildStyle} key={ Math.random().toString(36).substr(2, 9) }>  
+    //               form = <View style={styles.SectionChildStyle} key={ Math.random().toString(36).substr(2, 9) }>  
 
-                          <RNPickerSelect style={pickerSelectStyles} 
-                            placeholder={{ label: "Select your "+ element.display, value: null }}
-                            onValueChange={(value) => console.log(value)}
-                            items={options}
-                            Icon={() => {
-                              return <Ionicons  name={"unsorted"} color='#2196f3'  size={20} />;
-                            }}
-                          /> 
-                           {index > 0  ? <Ionicons  name={"minus-circle"} color='#bf360c'  size={20} onPress={() =>deleteField(field)}/> : null}
-                      </View>; 
+    //                       <RNPickerSelect style={pickerSelectStyles} 
+    //                         placeholder={{ label: "Select your "+ element.display, value: null }}
+    //                         onValueChange={(value) => console.log(value)}
+    //                         items={options}
+    //                         Icon={() => {
+    //                           return <Ionicons  name={"unsorted"} color='#2196f3'  size={20} />;
+    //                         }}
+    //                       /> 
+    //                        {index > 0  ? <Ionicons  name={"minus-circle"} color='#bf360c'  size={20} onPress={() =>deleteField(field)}/> : null}
+    //                   </View>; 
 
-                  setChildFormField(prevItems => {
-                    return [...prevItems, form];
-                  });
+    //               setChildFormField(prevItems => {
+    //                 return [...prevItems, form];
+    //               });
         
                   
-              }
-              else if(element.arrayFieldType == "object"){  
+    //           }
+    //           else if(element.arrayFieldType == "object"){  
 
 
-                form =  <View style={styles.headerSectionStyle} key={ Math.random().toString(36).substr(2, 9) } >
-                      <Text style={styles.titleText} key={ Math.random().toString(36).substr(2, 9) }>
-                        {field.display} {index + 1}: 
-                      </Text>
-                      {index > 0  ?  <Ionicons  name={"minus-circle"} color='#bf360c'  size={20} onPress={() =>deleteField(element)}/> : null}
-                    </View>;
+    //             form =  <View style={styles.headerSectionStyle} key={ Math.random().toString(36).substr(2, 9) } >
+    //                   <Text style={styles.titleText} key={ Math.random().toString(36).substr(2, 9) }>
+    //                     {field.display} {index + 1}: 
+    //                   </Text>
+    //                   {index > 0  ?  <Ionicons  name={"minus-circle"} color='#bf360c'  size={20} onPress={() =>deleteField(element)}/> : null}
+    //                 </View>;
 
-                setChildFormField(prevItems => { 
-                  return [...prevItems, form]; 
-                }); 
+    //             setChildFormField(prevItems => { 
+    //               return [...prevItems, form]; 
+    //             }); 
           
-                getFieldDefChildren(element, true); 
+    //             getFieldDefChildren(element, true); 
 
-                let line = <View  key={ Math.random().toString(36).substr(2, 9) }style={styles.lineStyle} />;
-                setChildFormField(prevItems => { 
-                  return [...prevItems, line];
-                });
+    //             let line = <View  key={ Math.random().toString(36).substr(2, 9) }style={styles.lineStyle} />;
+    //             setChildFormField(prevItems => { 
+    //               return [...prevItems, line];
+    //             });
 
-              }
-              else{
-                setChildFormField(prevItems => {
-                  return [...prevItems, form];
-                });
-              }
+    //           }
+    //           else{
+    //             setChildFormField(prevItems => {
+    //               return [...prevItems, form];
+    //             });
+    //           }
 
-            }
-            else{
-              setChildFormField(prevItems => {
-                return [...prevItems, form];
-              });
-            }
+    //         }
+    //         else{
+    //           setChildFormField(prevItems => {
+    //             return [...prevItems, form];
+    //           });
+    //         }
 
             
          
@@ -766,7 +768,7 @@ const ProfileScreen = props => {
 
   return function cleanup() {
     console.log('clean up!!!!!!!') 
-
+    formObject = {};
     setFormField(prevItems => { 
       return [];
     });
@@ -803,7 +805,7 @@ const ProfileScreen = props => {
 
       <ScrollView keyboardShouldPersistTaps="handled">
 
-        <View style={{ marginTop: 100 }}>
+        <View style={{ marginTop: 20 }}>
           <KeyboardAvoidingView enabled>
            
           <Text style={styles.headerTextStyle}>
@@ -840,7 +842,36 @@ const ProfileScreen = props => {
               <Text style={styles.buttonTextStyle}>Submit</Text>
             </TouchableOpacity>
             : 
-            <TouchableOpacity
+            null
+            }
+            
+
+          </KeyboardAvoidingView>
+        </View>
+      </ScrollView>
+
+      {  
+        page == 'child'  ?  
+            
+
+        <FlatList 
+          numColumns = {1}
+          data={childFields}
+          style={styles.containerFlatList}
+          renderItem={({item, index}) => (
+            <FormCreator 
+              index = {index}
+              fieldDef = {item} 
+              deletedItem={deleteFormItem} 
+            />
+          )}  /> 
+
+      
+
+      : null}
+
+      { page == "child" ? 
+        <TouchableOpacity
               style={styles.buttonStyle}
               onPress={() => {
 
@@ -851,27 +882,8 @@ const ProfileScreen = props => {
               }
             
               }>
-              <Text style={styles.buttonTextStyle}>SAVE</Text>
-            </TouchableOpacity>
-            }
-            
-
-          </KeyboardAvoidingView>
-        </View>
-      </ScrollView>
-
-      <FlatList 
-        numColumns = {1}
-        data={childFields}
-        style={styles.containerFlatList}
-        renderItem={({item}) => (
-          <FormCreator 
-            keyExtractor={item => item.id.toString()}
-            fieldDef = {item} 
-            deletedItem={deleteFormItem} 
-          />
-        )} 
-      /> 
+            <Text style={styles.buttonTextStyle}>SAVE</Text>
+        </TouchableOpacity>: null}
       
       
     </View>
