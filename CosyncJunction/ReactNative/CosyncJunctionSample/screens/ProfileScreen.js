@@ -31,20 +31,19 @@ import {
   View, 
   Text,
   ScrollView, 
-  TouchableOpacity,
-  KeyboardAvoidingView,
   FlatList,
-  Modal,
-  Pressable
+  TouchableOpacity,
+  KeyboardAvoidingView 
 } from 'react-native'; 
 import AsyncStorage from '@react-native-community/async-storage';
 import RNPickerSelect from "react-native-picker-select";
 import Ionicons from "react-native-vector-icons/FontAwesome";
 import Loader from '../components/Loader'; 
+import FormCreator from '../components/FormCreator'; 
 import Configure from '../config/Config'; 
-import * as RealmLib from '../managers/RealmManager';  
-import { Button, ThemeProvider, Input } from 'react-native-elements';
- 
+import * as RealmLib from '../managers/RealmManager';   
+import uuid from 'react-native-uuid';
+
 
 const ProfileScreen = props => {
   const [formFields, setFormField] = useState([]);
@@ -52,10 +51,9 @@ const ProfileScreen = props => {
   const [loading, setLoading] = useState(false);
   const [errortext, setErrortext] = useState('');
   const [page, setPage] = useState('main'); 
-  const [breadcrumb, setBreadcrumb] = useState([]); 
-  const [formArrayDic, setFormArrayDic] = useState({}); 
-  const _foo = useRef({});
+  const [breadcrumb, setBreadcrumb] = useState([]);  
   let formObject = {};
+  const [childFields, setChildField] = useState([]);
 
   global.appId = Configure.Realm.appId; 
   AsyncStorage.setItem('appId', global.appId);  
@@ -63,6 +61,11 @@ const ProfileScreen = props => {
   useEffect(() => {
 
    
+    setChildField(prevItems => { 
+      return [];
+    });
+
+
     setBreadcrumb(prevItems => { 
       return [];
     });
@@ -240,10 +243,7 @@ const ProfileScreen = props => {
       });
 
 
-    }
-
-    
- 
+    } 
 
   
   async function getFieldDefChildren(fieldDef, isChild){
@@ -278,6 +278,7 @@ const ProfileScreen = props => {
           let fieldId = child._id.toString();
           formObject[fieldId] = [child]; 
           //console.log( ' getFieldDefChildren formObject = ', formObject);
+          
           
           form =  <View style={styles.SectionChildStyle} key={ Math.random().toString(36).substr(2, 9) } >
                     <TouchableOpacity onPress={() => handleAddMoreField(child)}  activeOpacity={0.5}>
@@ -315,7 +316,7 @@ const ProfileScreen = props => {
                         return <Ionicons name={"unsorted"} color='#2196f3' size={20} />;
                       }}
                     />
-
+                     
                 </View>;
 
           } 
@@ -329,6 +330,7 @@ const ProfileScreen = props => {
                   returnKeyType="next"  
                   blurOnSubmit={false} 
                 />
+                 
               </View>;
           }
 
@@ -422,12 +424,21 @@ const ProfileScreen = props => {
 
   const handleAddMoreChildField = (field) => { 
 
+    console.log( ' handleAddMoreChildField field.id 1 = ', field.id);  
+
+
     let fieldId = field._id.toString();  
+     
+    let newField = cloneFieldObject(field);
+    console.log( ' handleAddMoreChildField field 2 = ', newField);  
 
-    console.log( ' handleAddMoreChildField fieldId = ', fieldId);  
+    
+    setChildField(prevItems => { 
+      return [...prevItems, newField];
+    });
 
-    if(formObject[fieldId]) formObject[fieldId].push(field); 
-    else formObject[fieldId] = [field];  
+    if(formObject[fieldId]) formObject[fieldId].push(newField); 
+    else formObject[fieldId] = [newField];  
 
     //console.log("handleAddMoreChildField  formObject ",  formObject);
 
@@ -459,7 +470,7 @@ const ProfileScreen = props => {
                   return <Ionicons  name={"unsorted"} color='#2196f3'  size={20} />;
                 }}
               />
-
+            <Ionicons  name={"minus-circle"} color='#bf360c'  size={20} onPress={() =>deleteField(field)}/>
           </View>; 
 
         setChildFormField(prevItems => {
@@ -468,10 +479,11 @@ const ProfileScreen = props => {
     }
     else if(field.fieldType == "object"){  
       form =  <View style={styles.headerSectionStyle} key={ Math.random().toString(36).substr(2, 9) } >
-            <Text style={styles.titleText} key={ Math.random().toString(36).substr(2, 9) }>
-              {field.display}:
-            </Text>
-          </View>;
+                <Text style={styles.titleText} key={ Math.random().toString(36).substr(2, 13) }>
+                  {field.display}:
+                </Text>
+                <Ionicons  name={"minus-circle"} color='#bf360c'  size={20} onPress={() =>deleteField(field)}/>
+              </View>;
 
       setChildFormField(prevItems => { 
         return [...prevItems, form];
@@ -482,14 +494,15 @@ const ProfileScreen = props => {
     }
     else if(field.fieldType == "array"){  
       let form = <View style={styles.SectionStyle} key={ Math.random().toString(36).substr(2, 11) }>
-      <TextInput key={ Math.random().toString(36).substr(2, 9) }
-        style={styles.inputStyle} 
-        placeholder={field.display}
-        autoCapitalize="none" 
-        returnKeyType="next"  
-        blurOnSubmit={false} 
-      />
-    </View>;
+        <TextInput key={ Math.random().toString(36).substr(2, 13) }
+          style={styles.inputStyle} 
+          placeholder={field.display}
+          autoCapitalize="none" 
+          returnKeyType="next"  
+          blurOnSubmit={false} 
+        />
+        <Ionicons  name={"minus-circle"} color='#bf360c'  size={20} onPress={() =>deleteField(field)} />
+      </View>;
 
       if(field.arrayFieldType == "enum"){
 
@@ -509,6 +522,7 @@ const ProfileScreen = props => {
                       return <Ionicons  name={"unsorted"} color='#2196f3'  size={20} />;
                     }}
                   /> 
+                  <Ionicons  name={"minus-circle"} color='#bf360c'  size={20} onPress={() =>deleteField(field)}/>
               </View>; 
 
           setChildFormField(prevItems => {
@@ -522,8 +536,9 @@ const ProfileScreen = props => {
 
         form =  <View style={styles.headerSectionStyle} key={ Math.random().toString(36).substr(2, 9) } >
               <Text style={styles.titleText} key={ Math.random().toString(36).substr(2, 9) }>
-                {field.display}:
+                {field.display} {formObject[fieldId].length}:
               </Text>
+              <Ionicons  name={"minus-circle"} color='#bf360c'  size={20} onPress={() =>deleteField(field)}/>
             </View>;
 
         setChildFormField(prevItems => { 
@@ -532,7 +547,7 @@ const ProfileScreen = props => {
 
         getFieldDefChildren(field, true); 
 
-        let line = <View  key={ Math.random().toString(36).substr(2, 9) }style={styles.lineStyle} />;
+        let line = <View  key={ Math.random().toString(36).substr(2, 9) } style={styles.lineStyle} />;
         setChildFormField(prevItems => { 
           return [...prevItems, line];
         });
@@ -553,6 +568,20 @@ const ProfileScreen = props => {
    
 
   }
+
+  const deleteField = (field) => {
+    
+    let fieldId = field._id.toString(); 
+    formObject[fieldId] = formObject[fieldId].filter(item => item.id != field.id);
+
+    setChildField(prevItems => {
+      return prevItems.filter(item => item.id !== field.id);
+    });
+
+    console.log("deleteField ", field);
+
+    console.log("deleteField childField ", childFields);
+  }
  
 
 
@@ -563,9 +592,16 @@ const ProfileScreen = props => {
     });  
    
     let fieldId = field._id.toString(); 
+    
+    let newField = cloneFieldObject(field);
 
-    if(formObject[fieldId]) formObject[fieldId].push(field); 
-    else formObject[fieldId] = [field];  
+    if(formObject[fieldId]) formObject[fieldId].push(newField); 
+    else formObject[fieldId] = [newField];  
+
+    
+    setChildField(prevItems => { 
+      return [...prevItems, newField];
+    }); 
 
     let title =  <View style={styles.SectionStyle} key={ Math.random().toString(36).substr(2, 9) + fieldId} >
                 <TouchableOpacity onPress={() => handleAddMoreChildField(field)}  activeOpacity={0.5}>
@@ -581,8 +617,11 @@ const ProfileScreen = props => {
 
     console.log("handleAddMoreField  field ",  field);
     //console.log(" handleAddMoreField  forms[fieldId] ",  formObject[fieldId].length);
-
-    formObject[fieldId].forEach(element => { 
+    for (let index = 0; index < formObject[fieldId].length; index++) {
+      let element = formObject[fieldId][index];
+     
+      
+    // formObject[fieldId].forEach(element => { 
 
       console.log("handleAddMoreField  element ",  element);
 
@@ -594,6 +633,7 @@ const ProfileScreen = props => {
                         returnKeyType="next"  
                         blurOnSubmit={false} 
                       />
+                    {index > 0  ? <Ionicons  name={"minus-circle"} color='#bf360c'  size={20} onPress={() =>deleteField(field)}/> : null }
                     </View>;
 
             if(element.fieldType == "enum"){
@@ -614,7 +654,7 @@ const ProfileScreen = props => {
                           return <Ionicons  name={"unsorted"} color='#2196f3'  size={20} />;
                         }}
                       />
-
+                       {index > 0  ? <Ionicons  name={"minus-circle"} color='#bf360c'  size={20} onPress={() =>deleteField(field)}/> : null}
                   </View>; 
               setChildFormField(prevItems => {
                 return [...prevItems, form];
@@ -626,6 +666,7 @@ const ProfileScreen = props => {
                     <Text style={styles.titleText} key={ Math.random().toString(36).substr(2, 9) }>
                       {field.display}:
                     </Text>
+                    {index > 0  ? <Ionicons  name={"minus-circle"} color='#bf360c'  size={20} onPress={() =>deleteField(field)}/> : null}
                   </View>;
 
              
@@ -647,6 +688,7 @@ const ProfileScreen = props => {
                   returnKeyType="next"  
                   blurOnSubmit={false} 
                 />
+                 {index > 0  ? <Ionicons  name={"minus-circle"} color='#bf360c'  size={20} onPress={() =>deleteField(field)}/>: null}
               </View>;
 
               if(element.arrayFieldType == "enum"){
@@ -667,6 +709,7 @@ const ProfileScreen = props => {
                               return <Ionicons  name={"unsorted"} color='#2196f3'  size={20} />;
                             }}
                           /> 
+                           {index > 0  ? <Ionicons  name={"minus-circle"} color='#bf360c'  size={20} onPress={() =>deleteField(field)}/> : null}
                       </View>; 
 
                   setChildFormField(prevItems => {
@@ -680,8 +723,9 @@ const ProfileScreen = props => {
 
                 form =  <View style={styles.headerSectionStyle} key={ Math.random().toString(36).substr(2, 9) } >
                       <Text style={styles.titleText} key={ Math.random().toString(36).substr(2, 9) }>
-                        {field.display}:
+                        {field.display} {index + 1}: 
                       </Text>
+                      {index > 0  ?  <Ionicons  name={"minus-circle"} color='#bf360c'  size={20} onPress={() =>deleteField(element)}/> : null}
                     </View>;
 
                 setChildFormField(prevItems => { 
@@ -712,7 +756,7 @@ const ProfileScreen = props => {
             
          
        
-    });
+    }
     
      
      
@@ -733,6 +777,25 @@ const ProfileScreen = props => {
 
 
 }, [])
+ 
+
+  function cloneFieldObject(object){
+    let newField = {};
+    for (const key in object) {
+      newField[key] = object[key];
+    }
+
+    newField.id = uuid.v4();
+    return newField;
+  }
+
+  function deleteFormItem(field){ 
+
+    setChildField(prevItems => {
+      return prevItems.filter(item => item.id !== field.id);
+    }); 
+
+  }
 
   return (
     <View style={styles.mainBody}>
@@ -746,11 +809,11 @@ const ProfileScreen = props => {
           <Text style={styles.headerTextStyle}>
             Update your profile
           </Text>
-           { 
-            breadcrumb.map(el => (
-              <Text style={styles.breadCrumbTextStyle} key={Math.random().toString(36).substr(2, 9)}> {el} / </Text>
-            )) 
-           }
+            { 
+              breadcrumb.map(el => (
+                <Text style={styles.breadCrumbTextStyle} key={Math.random().toString(36).substr(2, 9)}> {el} / </Text>
+              )) 
+            }
           
           
           
@@ -761,31 +824,56 @@ const ProfileScreen = props => {
             {errortext != '' ? (
               <Text style={styles.errorTextStyle}> {errortext} </Text>
             ) : null}
+
+            {  
+              page == 'main'  ?   
+
             <TouchableOpacity
               style={styles.buttonStyle}
-              onPress={() => {
-
-                setPage('main')
-
-                setBreadcrumb(prevItems => { 
-                  return [];
-                }); 
-
+              onPress={() => { 
                 setChildFormField(prevItems => { 
                   return [];
                 });
               }
             
-            }
-               >
+              }>
+              <Text style={styles.buttonTextStyle}>Submit</Text>
+            </TouchableOpacity>
+            : 
+            <TouchableOpacity
+              style={styles.buttonStyle}
+              onPress={() => {
+
+                setPage('main') 
+                setChildFormField(prevItems => { 
+                  return [];
+                });
+              }
+            
+              }>
               <Text style={styles.buttonTextStyle}>SAVE</Text>
             </TouchableOpacity>
-
+            }
             
 
           </KeyboardAvoidingView>
         </View>
       </ScrollView>
+
+      <FlatList 
+        numColumns = {1}
+        data={childFields}
+        style={styles.containerFlatList}
+        renderItem={({item}) => (
+          <FormCreator 
+            keyExtractor={item => item.id.toString()}
+            fieldDef = {item} 
+            deletedItem={deleteFormItem} 
+          />
+        )} 
+      /> 
+      
+      
     </View>
   );
 };
@@ -823,7 +911,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#fff',
   },
-
+  containerFlatList : { 
+    flex: 1, 
+     
+  },
   headerSectionStyle: {
     flexDirection: 'row', 
     marginBottom: 20,
