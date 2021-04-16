@@ -53,6 +53,7 @@ const UploadScreen = props => {
   const [loading, setLoading] = useState(false);  
   const [uploading, setUploading] = useState(false);  
   let cosyncAssetUpload;
+  let assetObject;
   const [assetUpload, setCosyncAssetUpload] = useState({}); 
   const [uploadList, setUploadList] = useState([]); 
   let [expirationHours, setExpiredHour] = useState('24');
@@ -103,18 +104,18 @@ const UploadScreen = props => {
           
           let imageName = source.uri.split('/').pop(); 
           let filePath = source.type.indexOf("image") > -1 ? `images/${imageName}` : `videos/${imageName}`;
-          realmUpload = global.realmPartition[global.privatePartition].create(Configure.Realm.cosyncAssetUpload, 
-            { 
-              _id: new ObjectId(),
-              _partition:  global.privatePartition,
-              filePath: filePath, 
-              uid: global.user.id,
-              contentType: source.type,
-              status: 'pending',  
-              expirationHours: parseFloat(expirationHours),  
-              sessionId: global.user.deviceId,
-              createdAt: new Date().toISOString()
-            }); 
+          assetObject = { 
+            _id: new ObjectId(),
+            _partition:  global.privatePartition,
+            filePath: filePath, 
+            uid: global.user.id,
+            contentType: source.type,
+            status: 'pending',  
+            expirationHours: parseFloat(expirationHours),  
+            sessionId: global.user.deviceId,
+            createdAt: new Date().toISOString()
+          }
+          realmUpload = global.realmPartition[global.privatePartition].create(Configure.Realm.cosyncAssetUpload, assetObject ); 
 
         }); 
 
@@ -206,23 +207,44 @@ const UploadScreen = props => {
       item.size = (parseInt(global.assetSource.fileSize) / 1024) / 1024;
       item.size = item.size.toFixed(2);
 
+      
+      assetObject.contentType = item.contentType;
+      assetObject.size =item.size;
+      assetObject.url = cosyncAssetUpload.url;
      
+      
       setUploadList(prevItems => {
         return [item];
       });
 
-      if(global.assetSource.type.indexOf('image') > -1){ 
+      if(global.assetSource.type.indexOf('image') > -1){
+
         resizeImage(item, 'small', 300, 300);
         resizeImage(item, 'medium',600, 600);
-        resizeImage(item, 'large', 900, 900);
+        resizeImage(item, 'large', 900, 900); 
       } 
 
     }
 
 
     const updateUploadRecord = () => {
+
+      let asset = {}; 
+      for (const key in assetUpload) { 
+        asset[key] = assetUpload[key]; 
+      }
+      
+      asset.status = 'active',
+      asset.createdAt = new Date().toISOString();
+      asset.updatedAt = new Date().toISOString();
+
+      if( asset.contentType.indexOf('video') >= 0) asset.urlVideoPreview = asset.url;  
+      
       global.realmPartition[global.privatePartition].write(() => { 
         global.realmPartition[global.privatePartition].create(Configure.Realm.cosyncAssetUpload, { _id: assetUpload._id, status: "uploaded" }, "modified");
+
+        global.realmPartition[global.privatePartition].create(Configure.Realm.cosyncAsset, asset);
+
       });
     }
 
