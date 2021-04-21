@@ -27,7 +27,7 @@
 import React from 'react';
 
 //Import all required component
-import { View, Image, TouchableOpacity } from 'react-native';
+import { View, Image, TouchableOpacity, Text } from 'react-native';
 
 const NavigationDrawerHeader = props => {
   const toggleDrawer = () => {
@@ -45,6 +45,7 @@ const NavigationDrawerHeader = props => {
           style={{ width: 25, height: 25, marginLeft: 5 }}
         />
       </TouchableOpacity>
+       
     </View>
   );
 };

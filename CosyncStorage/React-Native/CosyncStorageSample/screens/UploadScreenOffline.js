@@ -24,6 +24,7 @@
 //
 // Import React
 import React, {useState, useEffect, useRef} from 'react'; 
+import NetInfo from "@react-native-community/netinfo";
 // Import required components
 import {
   SafeAreaView,
@@ -32,7 +33,7 @@ import {
   TextInput,
   View,
   TouchableOpacity,
-  Image, FlatList
+  Image, FlatList, Platform
 } from 'react-native';
 
 // Import Image Picker
@@ -53,12 +54,18 @@ const UploadScreen = props => {
   const [loading, setLoading] = useState(false);  
   const [uploading, setUploading] = useState(false);  
   let cosyncAssetUpload;
-  let assetObject;
+  
   const [assetUpload, setCosyncAssetUpload] = useState({}); 
   const [uploadList, setUploadList] = useState([]); 
   let [expirationHours, setExpiredHour] = useState('24');
+  let isOnline = true;
 
-  useEffect(() => {
+  NetInfo.addEventListener(state => {
+    isOnline = state.isConnected;
+    console.log("NetInfo Is connected?", state.isConnected);
+  });
+
+  useEffect(() => { 
      
     setUploadList([]); 
     setAssetSource({type: 'image'});
@@ -84,10 +91,7 @@ const UploadScreen = props => {
             let user = await RealmLib.login(userEmail, userPassword);
             AsyncStorage.setItem('user_id', user.id);  
           
-        }   
-  
-        
-        
+        }  
 
         await RealmLib.openRealmPartition(Configure.Realm.publicPartition);   
         await RealmLib.openRealmPartition(global.privatePartition);
@@ -104,7 +108,8 @@ const UploadScreen = props => {
           
           let imageName = source.uri.split('/').pop(); 
           let filePath = source.type.indexOf("image") > -1 ? `images/${imageName}` : `videos/${imageName}`;
-          assetObject = { 
+
+          let assetObject = { 
             _id: new ObjectId(),
             _partition:  global.privatePartition,
             filePath: filePath, 
@@ -113,17 +118,34 @@ const UploadScreen = props => {
             status: 'pending',  
             expirationHours: parseFloat(expirationHours),  
             sessionId: global.user.deviceId,
-            createdAt: new Date().toISOString()
-          }
+            createdAt: new Date().toISOString() 
+          };
+
+          assetObject.size = (parseInt(source.fileSize) / 1024) / 1024;
+          assetObject.size = assetObject.size.toFixed(2); 
+
           realmUpload = global.realmPartition[global.privatePartition].create(Configure.Realm.cosyncAssetUpload, assetObject ); 
 
         }); 
 
+        createAssetRecord(assetObject);
+
+        if(!isOnline) {
+          setLoading(false);
+          alert('Your don\'n have internet connection'); 
+        }
         realmUpload.addListener(eventObjectListener);
         
     }
 
     const chooseFile = () => {
+
+
+      NetInfo.fetch().then(state => {
+        
+        console.log(" chooseFileIs connected?", state);
+      });
+
 
       if(uploading){
         alert('Please wait your asset is being upload.')
@@ -147,7 +169,7 @@ const UploadScreen = props => {
 
           response.type = response.type ? response.type : 'video/quicktime'; 
            
-          // console.log('showImagePicker ', response); 
+          console.log('showImagePicker ', response); 
 
           global.assetSource = response;
 
@@ -179,9 +201,7 @@ const UploadScreen = props => {
 
             setCosyncAssetUpload(obj);
             cosyncAssetUpload = obj;
-            setLoading(false); 
-             
-
+            setLoading(false);
             createUploadImages(); 
 
         }
@@ -205,13 +225,7 @@ const UploadScreen = props => {
       item.writeUrl = cosyncAssetUpload.writeUrl;
       item.path = global.assetSource.uri;
       item.size = (parseInt(global.assetSource.fileSize) / 1024) / 1024;
-      item.size = item.size.toFixed(2);
-
-      
-      assetObject.contentType = item.contentType;
-      assetObject.size =item.size;
-      assetObject.url = cosyncAssetUpload.url;
-     
+      item.size = item.size.toFixed(2); 
       
       setUploadList(prevItems => {
         return [item];
@@ -227,23 +241,27 @@ const UploadScreen = props => {
     }
 
 
-    const updateUploadRecord = () => {
+    const createAssetRecord = (assetObject) => {
 
       let asset = {}; 
-      for (const key in assetUpload) { 
-        asset[key] = assetUpload[key]; 
+      for (const key in assetObject) { 
+        asset[key] = assetObject[key]; 
       }
       
-      asset.status = 'active',
+      asset.status =  'local',
       asset.createdAt = new Date().toISOString();
-      asset.updatedAt = new Date().toISOString();
+      asset.updatedAt = new Date().toISOString(); 
+      
+      global.realmPartition[global.privatePartition].write(() => {  
+        global.realmPartition[global.privatePartition].create(Configure.Realm.cosyncAsset, asset); 
+      });
+    }
 
-      if( asset.contentType.indexOf('video') >= 0) asset.urlVideoPreview = asset.url;  
+
+    const updateUploadRecord = () => { 
       
       global.realmPartition[global.privatePartition].write(() => { 
-        global.realmPartition[global.privatePartition].create(Configure.Realm.cosyncAssetUpload, { _id: assetUpload._id, status: "uploaded" }, "modified");
-
-        global.realmPartition[global.privatePartition].create(Configure.Realm.cosyncAsset, asset);
+        global.realmPartition[global.privatePartition].create(Configure.Realm.cosyncAssetUpload, { _id: assetUpload._id, status: "uploaded" }, "modified"); 
 
       });
     }
@@ -253,9 +271,7 @@ const UploadScreen = props => {
       if(!assetUpload || !assetUpload.status) {
         alert('Please choose an image!')
         return;
-      } 
-
-     
+      }  
 
       setUploading(true); 
 

@@ -27,8 +27,7 @@
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack'; 
 import SplashScreen from './screens/SplashScreen';
-import LoginScreen from './screens/LoginScreen';
-import UploadScreen from './screens/UploadScreen';
+import LoginScreen from './screens/LoginScreen'; 
 import AssetScreen from './screens/AssetScreen';
 import RegisterScreen from './screens/RegisterScreen'; 
 import DrawerNavigationRoutes from './components/DrawerNavigationRoutes';
@@ -60,12 +59,7 @@ const App = createSwitchNavigator({
       headerShown: false,
     },
   },
-  UploadScreen: { 
-    screen: UploadScreen,
-    navigationOptions: { 
-      headerShown: false,
-    },
-  }, 
+   
   AssetScreen: { 
     screen: AssetScreen,
     navigationOptions: { 

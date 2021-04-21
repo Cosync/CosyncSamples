@@ -25,7 +25,7 @@
 
 //Import React and Hook we needed
 import React, {useRef, useEffect, useState} from 'react';
-
+import Request from './Request'; 
 //Import all required component
 import { StyleSheet, View, Text, Image, ActivityIndicator,TouchableOpacity } from 'react-native'; 
 import VideoPlayer from './VideoPlayer'; 
@@ -38,16 +38,48 @@ const ProgressiveAsset = props => {
     let [error, setLoadingError] = useState(false); 
     let [asset, setAssetObject] = useState(item); 
 
-    Sound.setCategory('Playback');
+    Sound.setCategory('Playback'); 
     
    
+
+    if(item.upload == true && !item.uploaded){ 
+
+        console.log(' ProgressiveAsset asset.id ', item.id);
+        console.log(' ProgressiveAsset asset.upload ', item.upload);
+        console.log(' ProgressiveAsset asset.uploaded ', item.uploaded);
+        console.log('\n');
+
+
+        if(item.status != "acitve") item.url = item.extra;
+        item.uploaded = true;
+
+        setAssetObject(item);
+
+        setLoading(true);
+
+        Request(item.writeUrl, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': item.contentType
+            },
+            body: { uri: item.extra },
+        }, (progressEvent) => { 
+            const progress = progressEvent.loaded / progressEvent.total; 
+            
+        }).then((res) => { 
+            item.status = 'active';
+            setAssetObject(item);
+            props.itemUploaded(item); 
+            setLoading(false);
+        }, (err) => console.log(err)) 
+    }
 
     const refreshAsset = () => {
         
         setLoading(true);
         setLoadingError(false); 
 
-        let id = asset._id.toString();
+        let id = item._id.toString();
         
         global.user.functions.CosyncRefreshAsset(id).then(newAsset => { 
 
@@ -59,7 +91,7 @@ const ProgressiveAsset = props => {
     }
 
     const handleErrorLoadImage = (e) => { 
-         
+        console.log('handleErrorLoadImage e', e);
         setLoading(false);
         setLoadingError(true); 
     }
@@ -103,21 +135,21 @@ const ProgressiveAsset = props => {
     return ( 
         <View style={styles.container}> 
         
-            {asset.contentType.indexOf("image") >= 0 ? 
+            {item.contentType.indexOf("image") >= 0 ? 
        
                 <Image 
                     onLoadStart={(e) => setLoading(true)}
                     onLoadEnd={(e) => setLoading(false)} 
                     onError={handleErrorLoadImage}
-                    source={{ uri: asset.urlMedium || 'undefined'}} 
+                    source={{ uri: item.url || item.url}} 
                     style={[styles.imageThumbStyle]}
                 />  
-            : null } 
+            : null }
 
-            {asset.contentType.indexOf("video") >= 0 ? 
+            {item.contentType.indexOf("video") >= 0 ? 
             <View style={styles.videoStyle}>   
                 <VideoPlayer 
-                    item = {asset}  
+                    item = {item}  
                     onLoadStart={(e) => setLoading(true)}
                     onLoadEnd={(e) => { setLoading(false)} }
                     onLoadError={handleErrorLoadImage}
@@ -125,9 +157,9 @@ const ProgressiveAsset = props => {
             </View > 
             : null } 
 
-            {asset.contentType.indexOf("sound") >= 0 ? 
+            {item.contentType.indexOf("sound") >= 0 ? 
                 <View style={styles.soundStyle}> 
-                    <TouchableOpacity onPress={() => playSound(asset)}  style={styles.buttonStyle}>
+                    <TouchableOpacity onPress={() => playSound(item)}  style={styles.buttonStyle}>
                         <Text style={styles.soundBtnTextStyle}>Play Sound</Text>
                     </TouchableOpacity>
 
@@ -157,7 +189,10 @@ const ProgressiveAsset = props => {
                     />
                 </View>
                 :  null
-            }
+            } 
+            <View style={styles.textStatusStyle}>  
+                <Text style={styles.soundBtnTextStyle}>{asset.status}</Text>
+            </View>
       </View>
 
        
@@ -216,6 +251,7 @@ const styles = StyleSheet.create({
     },
      
     loading: {
+        
         position: 'absolute',
         left: 0,
         right: 0,
@@ -237,6 +273,16 @@ const styles = StyleSheet.create({
     textStyle: {  
         color: '#4638ab', 
         fontSize: 14,
+    }, 
+    textStatusStyle: {  
+        color: '#4638ab', 
+        backgroundColor: 'grey',
+        fontSize: 14,
+        position: 'absolute',
+        left: 0,
+         
+        top: 0,
+        
     }, 
 
     buttonStyle: {

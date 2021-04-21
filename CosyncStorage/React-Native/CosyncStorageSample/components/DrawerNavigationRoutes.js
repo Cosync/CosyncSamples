@@ -31,33 +31,25 @@ import React from 'react';
 import { createStackNavigator } from 'react-navigation-stack';
 import { createDrawerNavigator } from 'react-navigation-drawer';
 
-//Import External Screens
-import UploadScreen from '../screens/UploadScreen';
-import AssetScreen from '../screens/AssetScreen';  
+//Import External Screens 
+import AssetScreen from '../screens/AssetScreenOffline';  
 import CustomSidebarMenu from './CustomSidebarMenu';
-import NavigationDrawerHeader from './NavigationDrawerHeader';
+import NavigationDrawerHeader from './NavigationDrawerHeader'; 
+
+import {
+  
+  Text,
+  
+} from 'react-native';
+ 
 
 const FirstActivity_StackNavigator = createStackNavigator({
-  First: {
-    screen: UploadScreen,
-    navigationOptions: ({ navigation }) => ({
-      title: 'Upload Screen',
-      headerLeft: () => <NavigationDrawerHeader navigationProps={navigation} />,
-      headerStyle: {
-        backgroundColor: '#307ecc',
-      },
-      headerTintColor: '#fff',
-    }),
-  },
-});
-
-
-const SecondActivity_StackNavigator = createStackNavigator({
   First: {
     screen: AssetScreen,
     navigationOptions: ({ navigation }) => ({
       title: 'Asset Screen',
       headerLeft: () => <NavigationDrawerHeader navigationProps={navigation} />,
+      headerRight: () => <Text>Upload</Text>,
       headerStyle: {
         backgroundColor: '#307ecc',
       },
@@ -69,19 +61,12 @@ const SecondActivity_StackNavigator = createStackNavigator({
 
 const DrawerNavigatorRoutes = createDrawerNavigator(
   {
-    UploadScreen: {
-      screen: FirstActivity_StackNavigator,
-      navigationOptions: {
-        drawerLabel: 'Upload Screen',
-      },
-    },
     AssetScreen: {
-      screen: SecondActivity_StackNavigator,
+      screen: FirstActivity_StackNavigator,
       navigationOptions: {
         drawerLabel: 'Asset Screen',
       },
-    },
-    
+    } 
   },
   {
     contentComponent: CustomSidebarMenu,
