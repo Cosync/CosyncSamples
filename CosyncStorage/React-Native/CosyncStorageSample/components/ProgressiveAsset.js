@@ -31,17 +31,22 @@ import Request from './Request';
 import { StyleSheet, View, Text, Image, ActivityIndicator,TouchableOpacity } from 'react-native'; 
 import VideoPlayer from './VideoPlayer'; 
 import Sound from 'react-native-sound';
+import * as Progress from 'react-native-progress';
 
 const ProgressiveAsset = props => {
 
     const { item, ...attributes } = props; 
-    let [loading, setLoading] = useState(false);
-    let [error, setLoadingError] = useState(false); 
     let [asset, setAssetObject] = useState(item); 
+    let [loading, setLoading] = useState(false);
+    let [uploading, setUploading] = useState(false);
+    let [uploadProgress, setUploadProgress] = useState(0);
+    let [error, setLoadingError] = useState(false); 
+    
 
     Sound.setCategory('Playback'); 
-    
+    //console.log(' ProgressiveAsset asset.status ', asset.status);
    
+    
 
     if(item.upload == true && !item.uploaded){ 
 
@@ -49,14 +54,15 @@ const ProgressiveAsset = props => {
         console.log(' ProgressiveAsset asset.upload ', item.upload);
         console.log(' ProgressiveAsset asset.uploaded ', item.uploaded);
         console.log('\n');
-
-
+       
+        setLoadingError(false);
         if(item.status != "acitve") item.url = item.extra;
         item.uploaded = true;
 
         setAssetObject(item);
 
-        setLoading(true);
+        setUploading(true);
+         
 
         if(item.contentType.indexOf('image') > -1){ 
 
@@ -74,18 +80,27 @@ const ProgressiveAsset = props => {
             body: { uri: item.extra },
         }, (progressEvent) => { 
             const progress = progressEvent.loaded / progressEvent.total; 
-            
+            let num = Math.ceil(progress * 100);
+            console.log('progress ', progress);
+            setUploadProgress(progress);
         }).then((res) => { 
+            console.log(' uploaded orginal size', item.id);
+
             item.status = 'active';
             setAssetObject(item);
-            props.itemUploaded(item); 
-            setLoading(false);
+            props.itemUploaded(item);  
+            setUploading(false);
+            setUploadProgress(0);
+            setLoadingError(false);
         }, (err) => console.log(err)) 
     }
+    // else if(item.status == 'uploading' ){ 
+    //     setLoading(true);
+    // }
 
     function upload(item){
 
-        console.log('uploading... ', item.sizeType);
+       // console.log('uploading... ', item.sizeType);
 
         Request(item.writeUrl, {
             method: 'PUT',
@@ -97,7 +112,7 @@ const ProgressiveAsset = props => {
             
             
         }).then((res) => { 
-            console.log(`uploaded ${item.sizeType}`);
+            console.log(`uploaded ${item.id} - ${item.sizeType}`);
             return item;
         }, (err) => console.log(err)) 
     }
@@ -107,7 +122,7 @@ const ProgressiveAsset = props => {
       
         ImageResizer.createResizedImage(source.extra, maxWidth, maxHeight, 'JPEG', 100)
         .then(response => {
-            console.log('resizeImage ', sizeType);
+            //console.log('resizeImage ', sizeType);
             let item = response; 
             item.sizeType = sizeType; 
             item.contentType = source.contentType;
@@ -145,7 +160,8 @@ const ProgressiveAsset = props => {
     }
 
     const handleErrorLoadImage = (e) => { 
-         
+        console.log('handleErrorLoadImage e', e.message);
+
         setLoading(false);
         setLoadingError(true); 
     }
@@ -240,17 +256,11 @@ const ProgressiveAsset = props => {
                 </View> : null
             }
 
+            {loading ?  <Progress.CircleSnail color={['red', 'green', 'blue']} /> : null}
+
             {
-                loading ?
-            
-                <View style={styles.loading}>
-                    <ActivityIndicator size='large' 
-                    animating={loading}
-                    hidesWhenStopped = {true}
-                    />
-                </View>
-                :  null
-            } 
+                uploading ?  <Progress.Bar progress={uploadProgress} width={200} /> : null
+            }
             <View style={styles.textStatusStyle}>  
                 <Text style={styles.soundBtnTextStyle}>{asset.status}</Text>
             </View>

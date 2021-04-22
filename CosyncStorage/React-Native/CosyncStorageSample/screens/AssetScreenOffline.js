@@ -38,7 +38,7 @@ import {
  
 import ProgressiveAsset from '../components/ProgressiveAsset';   
 import ImagePicker from 'react-native-image-picker';
-import ImageResizer from 'react-native-image-resizer';
+import DeviceInfo from 'react-native-device-info';
 import Configure from '../config/Config'; 
 import * as RealmLib from '../managers/RealmManager'; 
 import AsyncStorage from '@react-native-community/async-storage';
@@ -67,6 +67,9 @@ const AssetScreenOffline = props => {
        
     })
  
+    global.sessionId = DeviceInfo.getUniqueId();
+
+    console.log(' global.sessionId ',  global.sessionId);
 
     async function openRealm(){
         setLoading(true);  
@@ -197,13 +200,15 @@ const AssetScreenOffline = props => {
         return [];
       }); 
 
-      const assetsPublic = global.realmPartition[Configure.Realm.publicPartition].objects(Configure.Realm.cosyncAsset).filtered(`uid = '${global.user.id}' && status == 'active'`);  
+      const assetsPublic = global.realmPartition[Configure.Realm.publicPartition].objects(Configure.Realm.cosyncAsset); 
       
       
       let sortedAssetsPublic = assetsPublic.sorted("createdAt", false);
       assetsPublic.removeListener(assetsEventListener); 
       assetsPublic.addListener(assetsEventListener); 
       sortedAssetsPublic.forEach(element => { 
+        if(element.status == 'active' || (element.status == 'local' && element.sessionId == global.sessionId) ) { 
+       
           let item = {};
           for (const key in element) {
             item[key] = element[key];
@@ -212,7 +217,7 @@ const AssetScreenOffline = props => {
           setAssetList(prevItems => { 
             return [item, ...prevItems];
           });
-        
+        }
         
       }); 
 
@@ -222,7 +227,8 @@ const AssetScreenOffline = props => {
       assetsPrivate.addListener(assetsEventListener); 
 
       sortedResult.forEach(element => {
-        if(element.status == "active"){ 
+        
+        if(element.status == 'active' || (element.status == 'local' && element.sessionId == global.sessionId) ) { 
           let item = {};
           for (const key in element) {
             item[key] = element[key];
@@ -273,7 +279,7 @@ const AssetScreenOffline = props => {
 
 const chooseFile = () => { 
 
-  if(uploading) return;
+  //if(uploading) return;
 
   let options = {
     title: 'Choose Image or Video', 
@@ -321,9 +327,7 @@ const itemUploaded = (item) => {
   // setAssetList(currentList => { 
   //   return currentList.filter(el => {  
   //     if(el.id == item._id.toString()){  
-  //       el.status = 'active';
-  //       el.uploaded = true;
-  //       //el.url = item.url; 
+  //       el.status = 'active'; 
   //       return el;
   //     }
   //     else return el;
@@ -350,7 +354,7 @@ const uploadRequest = (source) => {
     extra : source.uri,
     size: source.fileSize,
     expirationHours: parseFloat(expirationHours),
-    sessionId: global.user.deviceId,
+    sessionId: global.sessionId,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
   };
