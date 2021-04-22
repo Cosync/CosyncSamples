@@ -24,7 +24,8 @@
 //
 
 //Import React and Hook we needed
-import React, {useRef, useEffect, useState} from 'react';
+import React, { useState} from 'react';
+import ImageResizer from 'react-native-image-resizer';
 import Request from './Request'; 
 //Import all required component
 import { StyleSheet, View, Text, Image, ActivityIndicator,TouchableOpacity } from 'react-native'; 
@@ -57,6 +58,14 @@ const ProgressiveAsset = props => {
 
         setLoading(true);
 
+        if(item.contentType.indexOf('image') > -1){ 
+
+            resizeImage(item, 'small', 300, 300);
+            resizeImage(item, 'medium', 600, 600);
+            resizeImage(item, 'large', 900, 900);
+        } 
+ 
+
         Request(item.writeUrl, {
             method: 'PUT',
             headers: {
@@ -72,6 +81,51 @@ const ProgressiveAsset = props => {
             props.itemUploaded(item); 
             setLoading(false);
         }, (err) => console.log(err)) 
+    }
+
+    function upload(item){
+
+        console.log('uploading... ', item.sizeType);
+
+        Request(item.writeUrl, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': item.contentType
+            },
+            body: { uri: item.uri },
+        }, (progressEvent) => { 
+            
+            
+        }).then((res) => { 
+            console.log(`uploaded ${item.sizeType}`);
+            return item;
+        }, (err) => console.log(err)) 
+    }
+
+
+    function resizeImage(source, sizeType, maxWidth, maxHeight) {
+      
+        ImageResizer.createResizedImage(source.extra, maxWidth, maxHeight, 'JPEG', 100)
+        .then(response => {
+            console.log('resizeImage ', sizeType);
+            let item = response; 
+            item.sizeType = sizeType; 
+            item.contentType = source.contentType;
+            item.size = (parseInt(item.size) / 1024) / 1024; 
+            item.size = item.size.toFixed(2);
+
+            if(sizeType == 'small') item.writeUrl = source.writeUrlSmall;
+            if(sizeType == 'medium') item.writeUrl = source.writeUrlMedium;
+            if(sizeType == 'large') item.writeUrl = source.writeUrlLarge; 
+
+
+            upload(item); 
+        })
+        .catch(err => {
+            // Oops, something went wrong. Check that the filename is correct and
+            // inspect err to get more details.
+            console.error(err)
+        });
     }
 
     const refreshAsset = () => {
@@ -91,9 +145,14 @@ const ProgressiveAsset = props => {
     }
 
     const handleErrorLoadImage = (e) => { 
-        console.log('handleErrorLoadImage e', e);
+         
         setLoading(false);
         setLoadingError(true); 
+    }
+
+    const getUrl = (item) => { 
+         
+        return item.status == 'active' ? item.urlMedium : item.url;
     }
 
 
@@ -104,6 +163,8 @@ const ProgressiveAsset = props => {
             console.log('Stop');
         });
     }
+
+
 
     const playSound = (item) => { 
         setLoading(true);
@@ -141,7 +202,7 @@ const ProgressiveAsset = props => {
                     onLoadStart={(e) => setLoading(true)}
                     onLoadEnd={(e) => setLoading(false)} 
                     onError={handleErrorLoadImage}
-                    source={{ uri: item.url || item.url}} 
+                    source={ item.status == 'active' ? {uri:item.urlMedium} : { uri: item.url } } 
                     style={[styles.imageThumbStyle]}
                 />  
             : null }

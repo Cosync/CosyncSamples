@@ -24,7 +24,7 @@
 //
 
 exports.Realm = {
-    appId: 'application-0-otdus',
+    appId: 'application-0-lzkmq',
     publicPartition: 'public', 
     cosyncAsset:'CosyncAsset', 
     cosyncAssetUpload : 'CosyncAssetUpload'

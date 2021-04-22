@@ -32,6 +32,7 @@ exports.CosyncAsset = {
         "_id":{ "type": "objectId", "indexed": true }, 
         "_partition": { "type": "string", "indexed": true },
         "uid":{ "type": "string", "indexed": true }, 
+        "sessionId":{ "type": "string", "optional": true , "indexed": true},   
         "path":{ "type": "string", "default": ""},
         "expirationHours": { "type": "double", "default": 24},
         "expiration":{ "type": "date", "indexed": true, "optional": true },

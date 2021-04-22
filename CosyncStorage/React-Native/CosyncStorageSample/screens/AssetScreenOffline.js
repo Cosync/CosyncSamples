@@ -88,9 +88,9 @@ const AssetScreenOffline = props => {
         }  
 
         await RealmLib.openRealmPartition(Configure.Realm.publicPartition);   
-        await RealmLib.openRealmPartition(`user_id=${global.user.id}`);  
+        await RealmLib.openRealmPartition(global.privatePartition);  
 
-       // loadAllAssets(); 
+        loadAllAssets(); 
 
         getCosyncUploadAsset();
 
@@ -106,21 +106,28 @@ const AssetScreenOffline = props => {
   }, []);
 
 
-    function getCosyncUploadAsset(){
+    async function getCosyncUploadAsset(){
       
-      const cosyncAssetUpload = global.realmPartition[`user_id=${global.user.id}`].objects(Configure.Realm.cosyncAssetUpload).filtered(`uid = '${global.user.id}'`);  
+      const cosyncAssetUpload = await global.realmPartition[global.privatePartition].objects(Configure.Realm.cosyncAssetUpload);  
      
       cosyncAssetUpload.removeListener(assetsUploadEventListener); 
       cosyncAssetUpload.addListener(assetsUploadEventListener); 
-      cosyncAssetUpload.forEach(element => { 
-        if(element.status == 'initialized'){ 
-          let item = element; 
-          item.id = element._id.toString(); 
-          setUploadList(prevItems => { 
-            return [...prevItems, item];
-          });
-        }
-      }); 
+      console.log('getCosyncUploadAsset cosyncAssetUpload ', cosyncAssetUpload.length);
+
+      // global.realmPartition[`user_id=${global.user.id}`].write(() => {   
+      //   global.realmPartition[`user_id=${global.user.id}`].delete(cosyncAssetUpload); 
+      // });
+
+      // cosyncAssetUpload.forEach(element => { 
+      //   global.realmPartition[`user_id=${global.user.id}`].delete(element);
+      //   if(element.status == 'initialized'){ 
+      //     let item = element; 
+      //     item.id = element._id.toString(); 
+      //     setUploadList(prevItems => { 
+      //       return [...prevItems, item];
+      //     });
+      //   }
+      // }); 
 
     }
 
@@ -191,13 +198,17 @@ const AssetScreenOffline = props => {
       }); 
 
       const assetsPublic = global.realmPartition[Configure.Realm.publicPartition].objects(Configure.Realm.cosyncAsset).filtered(`uid = '${global.user.id}' && status == 'active'`);  
+      
+      
       let sortedAssetsPublic = assetsPublic.sorted("createdAt", false);
       assetsPublic.removeListener(assetsEventListener); 
       assetsPublic.addListener(assetsEventListener); 
       sortedAssetsPublic.forEach(element => { 
-        
-          let item = element; 
-          item.id = element._id.toString();
+          let item = {};
+          for (const key in element) {
+            item[key] = element[key];
+          } 
+          item.id = item._id.toString();
           setAssetList(prevItems => { 
             return [item, ...prevItems];
           });
@@ -205,15 +216,18 @@ const AssetScreenOffline = props => {
         
       }); 
 
-      const assetsPrivate = global.realmPartition[`user_id=${global.user.id}`].objects(Configure.Realm.cosyncAsset);  
+      const assetsPrivate = global.realmPartition[global.privatePartition].objects(Configure.Realm.cosyncAsset);  
       let sortedResult = assetsPrivate.sorted("createdAt", false);
       assetsPrivate.removeListener(assetsEventListener); 
       assetsPrivate.addListener(assetsEventListener); 
 
       sortedResult.forEach(element => {
-        if(element.status = "active"){ 
-          let item = element;
-          item.id = element._id.toString();  
+        if(element.status == "active"){ 
+          let item = {};
+          for (const key in element) {
+            item[key] = element[key];
+          } 
+          item.id = item._id.toString();
           
           setAssetList(prevItems => { 
             return [item, ...prevItems];
@@ -254,58 +268,7 @@ const AssetScreenOffline = props => {
     }
 
 
-
-  const createAssetRecord = (assetObject) => {
-
-    let asset = {}; 
-    for (const key in assetObject) { 
-      asset[key] = assetObject[key]; 
-    }
-    
-    asset.status =  'local',
-    asset.createdAt = new Date().toISOString();
-    asset.updatedAt = new Date().toISOString(); 
-    
-    global.realmPartition[global.privatePartition].write(() => {  
-      global.realmPartition[global.privatePartition].create(Configure.Realm.cosyncAsset, asset); 
-    });
-  }
-
-
-
-  const resizeImage = async (source, sizeType, maxWidth, maxHeight) => {
-      
-    ImageResizer.createResizedImage(source.uri, maxWidth, maxHeight, 'JPEG', 100)
-    .then(response => { 
-
-        let item = response;
-        item.id = `${maxWidth}-${maxHeight}`;
-        item.sizeType = sizeType;
-        item.type = source.type;
-        item.upload = false;
-        item.uploaded = false; 
-        item.size = (parseInt(item.size) / 1024) / 1024; 
-        item.size = item.size.toFixed(2);
-
-        if(sizeType == 'small') item.writeUrl = cosyncAssetUpload.writeUrlSmall;
-        if(sizeType == 'medium') item.writeUrl = cosyncAssetUpload.writeUrlMedium;
-        if(sizeType == 'large') item.writeUrl = cosyncAssetUpload.writeUrlLarge;
-
-        setUploadList(prevItems => {
-            return [...prevItems, item];
-        }); 
-
-        
-    })
-    .catch(err => {
-        // Oops, something went wrong. Check that the filename is correct and
-        // inspect err to get more details.
-        console.error(err)
-    });
-}
-
-
-       
+ 
 
 
 const chooseFile = () => { 
@@ -398,16 +361,18 @@ const uploadRequest = (source) => {
     assetObject.status =  'local';
     global.realmPartition[global.privatePartition].create(Configure.Realm.cosyncAsset, assetObject);
 
+    assetObject.id = assetObject._id.toString();  
+    console.log('uploadRequest assetObject.id ', assetObject.id);
+    setUploading(true);
+
+    setAssetList(prevItems => { 
+      return [assetObject, ...prevItems];
+    });
+    
   }); 
 
    
-  assetObject.id = assetObject._id.toString();  
-  console.log('uploadRequest assetObject.id ', assetObject.id);
-  setUploading(true);
-
-  setAssetList(prevItems => { 
-    return [assetObject, ...prevItems];
-  });
+  
  
   
   
