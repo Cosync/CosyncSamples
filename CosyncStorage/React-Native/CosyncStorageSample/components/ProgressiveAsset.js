@@ -24,7 +24,7 @@
 //
 
 //Import React and Hook we needed
-import React, { useState} from 'react';
+import React, { useState, useEffect} from 'react';
 import ImageResizer from 'react-native-image-resizer';
 import Request from './Request'; 
 //Import all required component
@@ -45,13 +45,23 @@ const ProgressiveAsset = props => {
 
     Sound.setCategory('Playback'); 
     //console.log(' ProgressiveAsset asset.status ', asset.status);
-    
+    useEffect(() => {
+        return () => { 
+            setUploadProgress(0);
+            setUploading(false); 
+            setLoadingError(false);
+        };
+    }, []);
 
-    
+    if(item.status == 'acitve'){
+        setUploading(false); 
+        setUploadProgress(0);
+    } 
+
     //console.log(' ProgressiveAsset asset.status ', asset.status);
     if(item.upload == true && !item.uploaded){ 
 
-        // console.log(' ProgressiveAsset asset.id ', item.id);
+        // console.log(' ProgressiveAsset asset.key ', item.key);
         // console.log(' ProgressiveAsset asset.upload ', item.upload);
        
         // console.log('\n');
@@ -83,19 +93,19 @@ const ProgressiveAsset = props => {
         }, (progressEvent) => { 
             const progress = progressEvent.loaded / progressEvent.total; 
            
-            //console.log(`progress id  ${item.id} -  ${progress}`);
+            //console.log(`progress id  ${item.key} -  ${progress}`);
 
             setUploadProgress(progress);
 
         }).then((res) => { 
-            console.log(' uploaded orginal size', item.id);
+            console.log(' uploaded orginal size', item.key);
+            
 
             item.status = 'active';
-            setAssetObject(item);
+            //setAssetObject(item);
+
             props.itemUploaded(item);  
-            setUploading(false);
-            setUploadProgress(0);
-            setLoadingError(false);
+            setUploading(false); 
         }, (err) => console.log(err)) 
     }
     // else if(item.status == 'uploading' ){ 
@@ -116,7 +126,7 @@ const ProgressiveAsset = props => {
             
             
         }).then((res) => { 
-            console.log(`uploaded ${item.id} - ${item.sizeType}`);
+            console.log(`uploaded ${item.key} - ${item.sizeType}`);
             return item;
         }, (err) => console.log(err)) 
     }
@@ -132,7 +142,7 @@ const ProgressiveAsset = props => {
             item.contentType = source.contentType;
             item.size = (parseInt(item.size) / 1024) / 1024; 
             item.size = item.size.toFixed(2);
-            item.id = source.id;
+            item.key = source.key;
 
             if(sizeType == 'small') item.writeUrl = source.writeUrlSmall;
             if(sizeType == 'medium') item.writeUrl = source.writeUrlMedium;

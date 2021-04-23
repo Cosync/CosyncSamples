@@ -41,6 +41,7 @@ import {
   Text,
   
 } from 'react-native';
+import NavigationDrawerHeaderRight from './NavigationDrawerHeaderRight';
  
 
 const FirstActivity_StackNavigator = createStackNavigator({
@@ -49,7 +50,7 @@ const FirstActivity_StackNavigator = createStackNavigator({
     navigationOptions: ({ navigation }) => ({
       title: 'Asset Screen',
       headerLeft: () => <NavigationDrawerHeader navigationProps={navigation} />,
-      headerRight: () => <Text>Upload</Text>,
+      headerRight: () => <NavigationDrawerHeaderRight navigationProps={navigation} />,
       headerStyle: {
         backgroundColor: '#307ecc',
       },

@@ -1,5 +1,5 @@
 //
-//  NavigationDrawerHeader.js
+//  NavigationDrawerHeaderRight.js
 //  CosyncStorageSample
 //
 //  Licensed to the Apache Software Foundation (ASF) under one
@@ -28,22 +28,19 @@ import React from 'react';
 
 //Import all required component
 import { View, Image, TouchableOpacity, Text } from 'react-native';
+import Ionicons from "react-native-vector-icons/FontAwesome";
 
-const NavigationDrawerHeader = props => {
-  const toggleDrawer = () => {
-    props.navigationProps.toggleDrawer();
+const NavigationDrawerHeaderRight = props => {
+
+  const uploadAsset = () => {
+    //props.navigationProps.uploadAsset();
+    alert('upload!');
   };
 
   return (
-    <View style={{ flexDirection: 'row' }}>
-      <TouchableOpacity onPress={toggleDrawer}>
-        <Image
-          source={require('../assets/drawerWhite.png')} 
-          style={{ width: 25, height: 25, marginLeft: 5 }}
-        />
-      </TouchableOpacity>
-       
+    <View style={{ flexDirection: 'row', paddingRight: 10 }}>
+      <Ionicons  name={"upload"} color='#4638ab'  size={20} onPress={props.navigationProps.getParam('upload')}/> 
     </View>
   );
 };
-export default NavigationDrawerHeader;
+export default NavigationDrawerHeaderRight;

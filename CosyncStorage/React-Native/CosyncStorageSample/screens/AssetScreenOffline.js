@@ -29,10 +29,8 @@ import {
   SafeAreaView,
   StyleSheet,
   Text,
-  View,
-  FlatList,
-  TouchableOpacity
-   
+  View, 
+  FlatList  
 } from 'react-native';
 
  
@@ -42,10 +40,9 @@ import DeviceInfo from 'react-native-device-info';
 import Configure from '../config/Config'; 
 import * as RealmLib from '../managers/RealmManager'; 
 import AsyncStorage from '@react-native-community/async-storage';
-import Loader from '../components/Loader';  
-import UploadFile from '../components/UploadFile'; 
+import Loader from '../components/Loader';   
 import { ObjectId } from 'bson';  
-
+import Ionicons from "react-native-vector-icons/FontAwesome";
 
 
 const AssetScreenOffline = props => {
@@ -57,11 +54,13 @@ const AssetScreenOffline = props => {
   const [uploadList, setUploadList] = useState([]);  
   const [uploading, setUploading] = useState(false); 
   let assetFlatList = useRef(null);  
-
+   
   useEffect(() => { 
 
     isMountedRef.current = true;
     openRealm();
+
+    props.navigation.setParams({ upload: chooseFile });
 
     props.navigation.addListener('didBlur', (e) =>{
       setAssetList(prevItems => { 
@@ -132,7 +131,7 @@ const AssetScreenOffline = props => {
       //   global.realmPartition[`user_id=${global.user.id}`].delete(element);
       //   if(element.status == 'initialized'){ 
       //     let item = element; 
-      //     item.id = element._id.toString(); 
+      //     item.key = element._id.toString(); 
       //     setUploadList(prevItems => { 
       //       return [...prevItems, item];
       //     });
@@ -149,14 +148,14 @@ const AssetScreenOffline = props => {
 
       //   if(item.status == 'initialized'){
 
-      //     item.id = item._id.toString(); 
+      //     item.key = item._id.toString(); 
 
       //     // setUploadList(prevItems => { 
       //     //   return [item, ...prevItems];
       //     // }); 
 
       //     // let newList = assetList.map(el => (
-      //     //   el.id === item.id ?  {...el, upload: true} : el 
+      //     //   el.key === item.key ?  {...el, upload: true} : el 
       //     // ));
 
       //     // if(newList.length){
@@ -171,16 +170,16 @@ const AssetScreenOffline = props => {
       changes.modifications.forEach((index) => {
         let modifiedItem = assets[index];  
         
-        console.log('assetsUploadEventListener modifications _id = ', modifiedItem._id);
-        console.log('assetsUploadEventListener modifications = ', modifiedItem.status);
+        // console.log('assetsUploadEventListener modifications _id = ', modifiedItem._id);
+        // console.log('assetsUploadEventListener modifications = ', modifiedItem.status);
         if(modifiedItem.status == 'initialized'){
 
-          modifiedItem.id = modifiedItem._id.toString(); 
+          modifiedItem.key = modifiedItem._id.toString(); 
 
           setAssetList(currentList => { 
             return currentList.filter(el => {  
-              if(el.id == modifiedItem.id){ 
-                //console.log('modifiedItem.id ', modifiedItem.id);
+              if(el.key == modifiedItem.key && el.status == 'local'){ 
+                //console.log('modifiedItem.key ', modifiedItem.key);
 
                 for (const key in modifiedItem) { 
                   el[key] = modifiedItem[key]; 
@@ -220,8 +219,8 @@ const AssetScreenOffline = props => {
           for (const key in element) {
             item[key] = element[key];
           } 
-          item.id = item._id.toString();
-          console.log("sortedAssetsPublic item.id  = ", item.id );
+          item.key = item._id.toString();
+          console.log("sortedAssetsPublic item.key  = ", item.key );
           setAssetList(prevItems => { 
             return [...prevItems, item];
           });
@@ -247,8 +246,8 @@ const AssetScreenOffline = props => {
           for (const key in element) {
             item[key] = element[key];
           } 
-          item.id = item._id.toString();
-          console.log("assetsPrivate item.id  = ", item.id );
+          item.key = item._id.toString();
+          console.log("assetsPrivate item.key  = ", item.key );
           setAssetList(prevItems => { 
             return [...prevItems, item];
           });  
@@ -265,7 +264,7 @@ const AssetScreenOffline = props => {
         let item = assets[index]; 
         
         if(item.status == 'active'){ 
-          item.id = item._id.toString(); 
+          item.key = item._id.toString(); 
           setAssetList(prevItems => { 
             return [...prevItems, item];
           }); 
@@ -275,11 +274,11 @@ const AssetScreenOffline = props => {
 
       // changes.modifications.forEach((index) => {
       //   let item = assets[index]; 
-      //   item.id = item._id.toString(); 
+      //   item.key = item._id.toString(); 
 
       //   if(item.status == 'active'){   
       //     let newList = assetList.map(el => (
-      //       el.id === item.id ?  {...el, item} : el
+      //       el.key === item.key ?  {...el, item} : el
       //     ));
 
       //     setAssetList(prevItems => { 
@@ -323,10 +322,10 @@ const chooseFile = () => {
 
 const itemUploaded = (item) => {
 
-  console.log('itemUploaded ', item.id)
+  console.log('itemUploaded ', item.key)
   
   let newList = assetList.map(el => (
-    el.id == item.id ? {...el, status: 'active'} : el
+    el.key == item.key ? {...el, status: 'active'} : el
   ));
 
   // tell flat list item to upload
@@ -343,7 +342,7 @@ const itemUploaded = (item) => {
 
   // setAssetList(currentList => { 
   //   return currentList.filter(el => {  
-  //     if(el.id == item._id.toString()){  
+  //     if(el.key == item._id.toString()){  
   //       el.status = 'active'; 
   //       return el;
   //     }
@@ -382,8 +381,8 @@ const uploadRequest = (source) => {
     assetObject.status =  'local';
     global.realmPartition[global.privatePartition].create(Configure.Realm.cosyncAsset, assetObject);
 
-    assetObject.id = assetObject._id.toString();  
-    console.log('uploadRequest assetObject.id ', assetObject.id);
+    assetObject.key = assetObject._id.toString();  
+    console.log('uploadRequest assetObject.key ', assetObject.key);
     setUploading(true);
 
     setAssetList(prevItems => { 
@@ -404,25 +403,14 @@ const uploadRequest = (source) => {
       return (
         <SafeAreaView style={styles.container}>
           <Loader loading={loading} />  
-           
-          <TouchableOpacity
-                  activeOpacity={0.5}
-                  style={styles.buttonStyle} 
-                  onPress={chooseFile}> 
-              <Text style={styles.textButtonStyle}>
-                Upload
-              </Text>
-          </TouchableOpacity> 
-
           {assetList.length ?
 
           <FlatList 
-            //inverted
+            
             //ref= {assetFlatList}
             numColumns = {1}
-            data={assetList}
-            //refreshing = {loading} 
-            keyExtractor={(item, index) => index.toString()}
+            data={assetList} 
+            // keyExtractor={(item, index) => index.toString()}
             style={styles.containerFlatList}  
             renderItem={({item}) => (
               <ProgressiveAsset item = {item}  itemUploaded={itemUploaded} />
