@@ -28,7 +28,7 @@ import React, { useState} from 'react';
 import ImageResizer from 'react-native-image-resizer';
 import Request from './Request'; 
 //Import all required component
-import { StyleSheet, View, Text, Image, ActivityIndicator,TouchableOpacity } from 'react-native'; 
+import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native'; 
 import VideoPlayer from './VideoPlayer'; 
 import Sound from 'react-native-sound';
 import * as Progress from 'react-native-progress';
@@ -45,17 +45,19 @@ const ProgressiveAsset = props => {
 
     Sound.setCategory('Playback'); 
     //console.log(' ProgressiveAsset asset.status ', asset.status);
-   
     
 
+    
+    //console.log(' ProgressiveAsset asset.status ', asset.status);
     if(item.upload == true && !item.uploaded){ 
 
-        console.log(' ProgressiveAsset asset.id ', item.id);
-        console.log(' ProgressiveAsset asset.upload ', item.upload);
-        console.log(' ProgressiveAsset asset.uploaded ', item.uploaded);
-        console.log('\n');
+        // console.log(' ProgressiveAsset asset.id ', item.id);
+        // console.log(' ProgressiveAsset asset.upload ', item.upload);
+       
+        // console.log('\n');
        
         setLoadingError(false);
+        
         if(item.status != "acitve") item.url = item.extra;
         item.uploaded = true;
 
@@ -80,9 +82,11 @@ const ProgressiveAsset = props => {
             body: { uri: item.extra },
         }, (progressEvent) => { 
             const progress = progressEvent.loaded / progressEvent.total; 
-            let num = Math.ceil(progress * 100);
-            console.log('progress ', progress);
+           
+            //console.log(`progress id  ${item.id} -  ${progress}`);
+
             setUploadProgress(progress);
+
         }).then((res) => { 
             console.log(' uploaded orginal size', item.id);
 
@@ -128,6 +132,7 @@ const ProgressiveAsset = props => {
             item.contentType = source.contentType;
             item.size = (parseInt(item.size) / 1024) / 1024; 
             item.size = item.size.toFixed(2);
+            item.id = source.id;
 
             if(sizeType == 'small') item.writeUrl = source.writeUrlSmall;
             if(sizeType == 'medium') item.writeUrl = source.writeUrlMedium;
@@ -160,7 +165,7 @@ const ProgressiveAsset = props => {
     }
 
     const handleErrorLoadImage = (e) => { 
-        console.log('handleErrorLoadImage e', e.message);
+        //console.log('handleErrorLoadImage e', e.message);
 
         setLoading(false);
         setLoadingError(true); 
@@ -218,7 +223,7 @@ const ProgressiveAsset = props => {
                     onLoadStart={(e) => setLoading(true)}
                     onLoadEnd={(e) => setLoading(false)} 
                     onError={handleErrorLoadImage}
-                    source={ item.status == 'active' ? {uri:item.urlMedium} : { uri: item.url } } 
+                    source={ item.status == 'active' ? {uri:item.urlMedium} : { uri: item.extra } } 
                     style={[styles.imageThumbStyle]}
                 />  
             : null }
