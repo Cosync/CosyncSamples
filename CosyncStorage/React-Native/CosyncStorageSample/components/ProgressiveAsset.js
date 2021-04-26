@@ -167,15 +167,26 @@ const ProgressiveAsset = props => {
         
         global.user.functions.CosyncRefreshAsset(id).then(newAsset => { 
 
-            //if(!newAsset || !newAsset._id) setLoadingError(true);  
-            setLoading(false);
-            if(newAsset && newAsset.contentType) setAssetObject(newAsset);
+            if(!newAsset || !newAsset._id) setLoadingError(true);  
+
+            else if(newAsset && newAsset.contentType){ 
+                
+                setAssetObject(prevState => ({
+                    ...prevState,
+                    urlMedium: newAsset.urlMedium,
+                    urlLarge: newAsset.urlLarge,
+                    urlSmall: newAsset.urlSmall,
+                    url : newAsset.url
+                 })); 
+                 
+            }
+             
         });
 
     }
 
     const handleErrorLoadImage = (e) => { 
-        //console.log('handleErrorLoadImage e', e.message);
+        
 
         setLoading(false);
         setLoadingError(true); 
@@ -233,7 +244,7 @@ const ProgressiveAsset = props => {
                     onLoadStart={(e) => setLoading(true)}
                     onLoadEnd={(e) => setLoading(false)} 
                     onError={handleErrorLoadImage}
-                    source={ item.status == 'active' ? {uri:item.urlMedium} : { uri: item.extra } } 
+                    source={ asset.status == 'active' ? {uri:asset.urlMedium} : { uri: asset.extra } } 
                     style={[styles.imageThumbStyle]}
                 />  
             : null }
@@ -241,7 +252,7 @@ const ProgressiveAsset = props => {
             {item.contentType.indexOf("video") >= 0 ? 
             <View style={styles.videoStyle}>   
                 <VideoPlayer 
-                    item = {item}  
+                    item = {asset}  
                     onLoadStart={(e) => setLoading(true)}
                     onLoadEnd={(e) => { setLoading(false)} }
                     onLoadError={handleErrorLoadImage}
@@ -251,7 +262,7 @@ const ProgressiveAsset = props => {
 
             {item.contentType.indexOf("sound") >= 0 ? 
                 <View style={styles.soundStyle}> 
-                    <TouchableOpacity onPress={() => playSound(item)}  style={styles.buttonStyle}>
+                    <TouchableOpacity onPress={() => playSound(asset)}  style={styles.buttonStyle}>
                         <Text style={styles.soundBtnTextStyle}>Play Sound</Text>
                     </TouchableOpacity>
 

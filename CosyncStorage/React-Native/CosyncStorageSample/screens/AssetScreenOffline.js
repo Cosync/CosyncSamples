@@ -41,6 +41,7 @@ import Configure from '../config/Config';
 import * as RealmLib from '../managers/RealmManager'; 
 import AsyncStorage from '@react-native-community/async-storage';
 import Loader from '../components/Loader';   
+import InputModal from '../components/InputModal'; 
 import { ObjectId } from 'bson';  
 import Ionicons from "react-native-vector-icons/FontAwesome";
 
@@ -48,19 +49,20 @@ import Ionicons from "react-native-vector-icons/FontAwesome";
 const AssetScreenOffline = props => {
   
   const isMountedRef = useRef(null);
-  const [loading, setLoading] = useState(false);  
-  const [assetList, setAssetList] = useState([]); 
-  let [expirationHours, setExpiredHour] = useState('24');
-  const [uploadList, setUploadList] = useState([]);  
+  const [loading, setLoading] = useState(false); 
+  const [showExpiredTime, setShowExpiredTime] = useState(false); 
+  
+  //const [expirationHours, setExpirationHours] = useState(24); 
+  const [assetList, setAssetList] = useState([]);  
   const [uploading, setUploading] = useState(false); 
   let assetFlatList = useRef(null);  
-   
+  let expirationHours = 24;
   useEffect(() => { 
 
     isMountedRef.current = true;
     openRealm();
 
-    props.navigation.setParams({ upload: chooseFile });
+    props.navigation.setParams({ upload: showExpiredTimeModal });
 
     props.navigation.addListener('didBlur', (e) =>{
       setAssetList(prevItems => { 
@@ -247,7 +249,7 @@ const AssetScreenOffline = props => {
             item[key] = element[key];
           } 
           item.key = item._id.toString();
-          console.log("assetsPrivate item.key  = ", item.key );
+          //console.log("assetsPrivate item.key  = ", item.key );
           setAssetList(prevItems => { 
             return [...prevItems, item];
           });  
@@ -290,12 +292,33 @@ const AssetScreenOffline = props => {
     }
 
 
- 
+const showExpiredTimeModal = () => {
+  setShowExpiredTime(true);
+}
 
 
-const chooseFile = () => { 
+const handleModalInput = (result) => {
+  
+  let hour = parseFloat(result);
 
-  //if(uploading) return;
+  if(isNaN(hour)){
+    
+  }
+  else{
+    expirationHours = hour;
+    setShowExpiredTime(false);  
+    setTimeout(function(){
+      chooseFile();
+    }, 500)
+    
+  } 
+
+   
+
+}
+
+
+const chooseFile = () => {  
 
   let options = {
     title: 'Choose Image or Video', 
@@ -314,10 +337,13 @@ const chooseFile = () => {
 
       response.type = response.type ? response.type : 'video/quicktime';  
       global.assetSource = response;  
+
+     
       uploadRequest(response);
     }
   });
 };
+ 
 
 
 const itemUploaded = (item) => {
@@ -369,12 +395,14 @@ const uploadRequest = (source) => {
     url: source.uri,
     extra : source.uri,
     size: source.fileSize,
-    expirationHours: parseFloat(expirationHours),
+    expirationHours: expirationHours,
     sessionId: global.sessionId,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
   };
   
+    
+
   global.realmPartition[global.privatePartition].write(() => {
 
     global.realmPartition[global.privatePartition].create(Configure.Realm.cosyncAssetUpload, assetObject );
@@ -387,22 +415,16 @@ const uploadRequest = (source) => {
 
     setAssetList(prevItems => { 
       return [...prevItems, assetObject];
-    });
+    }); 
+  });  
 
-    //assetFlatList.current.scrollToEnd();
-    
-  }); 
-
-   
- 
- 
-  
-  
 }
+
 
       return (
         <SafeAreaView style={styles.container}>
           <Loader loading={loading} />  
+          <InputModal visible={showExpiredTime} handleInput={handleModalInput} />  
           {assetList.length ?
 
           <FlatList 
