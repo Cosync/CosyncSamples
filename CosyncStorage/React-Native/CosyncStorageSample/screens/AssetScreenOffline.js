@@ -50,11 +50,8 @@ const AssetScreenOffline = props => {
   
   const isMountedRef = useRef(null);
   const [loading, setLoading] = useState(false); 
-  const [showExpiredTime, setShowExpiredTime] = useState(false); 
-  
-  //const [expirationHours, setExpirationHours] = useState(24); 
-  const [assetList, setAssetList] = useState([]);  
-  const [uploading, setUploading] = useState(false); 
+  const [showExpiredTime, setShowExpiredTime] = useState(false);  
+  const [assetList, setAssetList] = useState([]);   
   let assetFlatList = useRef(null);  
   let expirationHours = 24;
   useEffect(() => { 
@@ -120,7 +117,7 @@ const AssetScreenOffline = props => {
 
     async function getCosyncUploadAsset(){
       
-      const cosyncAssetUpload = await global.realmPartition[global.privatePartition].objects(Configure.Realm.cosyncAssetUpload);  
+      const cosyncAssetUpload = await global.realmPartition[global.privatePartition].objects(Configure.Realm.cosyncAssetUpload).filtered(`sessionId == "${global.sessionId}" `);  
      
       cosyncAssetUpload.removeListener(assetsUploadEventListener); 
       cosyncAssetUpload.addListener(assetsUploadEventListener); 
@@ -179,7 +176,8 @@ const AssetScreenOffline = props => {
           modifiedItem.key = modifiedItem._id.toString(); 
 
           setAssetList(currentList => { 
-            return currentList.filter(el => {  
+            return currentList.filter((el) => {  
+            
               if(el.key == modifiedItem.key && el.status == 'local'){ 
                 //console.log('modifiedItem.key ', modifiedItem.key);
 
@@ -358,9 +356,7 @@ const itemUploaded = (item) => {
   setAssetList(prevItems => {
     return newList;
   });
-
-  setUploading(false);
-
+ 
 
   global.realmPartition[global.privatePartition].write(() => { 
     global.realmPartition[global.privatePartition].create(Configure.Realm.cosyncAssetUpload, { _id: item._id, status: "uploaded" }, "modified"); 
@@ -402,6 +398,7 @@ const uploadRequest = (source) => {
   };
   
     
+  expirationHours = 24;
 
   global.realmPartition[global.privatePartition].write(() => {
 
@@ -409,9 +406,7 @@ const uploadRequest = (source) => {
     assetObject.status =  'local';
     global.realmPartition[global.privatePartition].create(Configure.Realm.cosyncAsset, assetObject);
 
-    assetObject.key = assetObject._id.toString();  
-    console.log('uploadRequest assetObject.key ', assetObject.key);
-    setUploading(true);
+    assetObject.key = assetObject._id.toString();   
 
     setAssetList(prevItems => { 
       return [...prevItems, assetObject];
