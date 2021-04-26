@@ -249,14 +249,14 @@ const AssetScreenOffline = props => {
           item.key = item._id.toString();
           //console.log("assetsPrivate item.key  = ", item.key );
           setAssetList(prevItems => { 
-            return [...prevItems, item];
+            return [item, ...prevItems];
           });  
         }
       });  
 
-      setTimeout(function(){
-        assetFlatList.current.scrollToEnd({animating: true});
-      }, 1000);
+      // setTimeout(function(){
+      //   assetFlatList.current.scrollToEnd({animating: true});
+      // }, 1000);
       
 
     }
@@ -269,7 +269,7 @@ const AssetScreenOffline = props => {
         if(item.status == 'active'){ 
           item.key = item._id.toString(); 
           setAssetList(prevItems => { 
-            return [...prevItems, item];
+            return [item, ...prevItems];
           }); 
         }
       });
@@ -412,12 +412,12 @@ const uploadRequest = (source) => {
     assetObject.key = assetObject._id.toString();   
 
     setAssetList(prevItems => { 
-      return [...prevItems, assetObject];
+      return [assetObject, ...prevItems];
     }); 
 
-    setTimeout(function(){
-      assetFlatList.current.scrollToEnd({animating: true});
-    }, 1000);
+    // setTimeout(function(){
+    //   assetFlatList.current.scrollToEnd({animating: true});
+    // }, 1000);
 
   });  
 
