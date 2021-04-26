@@ -254,7 +254,10 @@ const AssetScreenOffline = props => {
         }
       });  
 
-      //assetFlatList.current.scrollToEnd();
+      setTimeout(function(){
+        assetFlatList.current.scrollToEnd({animating: true});
+      }, 1000);
+      
 
     }
 
@@ -411,6 +414,11 @@ const uploadRequest = (source) => {
     setAssetList(prevItems => { 
       return [...prevItems, assetObject];
     }); 
+
+    setTimeout(function(){
+      assetFlatList.current.scrollToEnd({animating: true});
+    }, 1000);
+
   });  
 
 }
@@ -424,7 +432,7 @@ const uploadRequest = (source) => {
 
           <FlatList 
             
-            //ref= {assetFlatList}
+            ref= {assetFlatList}
             numColumns = {1}
             data={assetList} 
             // keyExtractor={(item, index) => index.toString()}
