@@ -32,15 +32,10 @@ import { createStackNavigator } from 'react-navigation-stack';
 import { createDrawerNavigator } from 'react-navigation-drawer';
 
 //Import External Screens 
-import AssetScreen from '../screens/AssetScreenOffline';  
+import AssetScreen from '../screens/AssetScreen';  
 import CustomSidebarMenu from './CustomSidebarMenu';
 import NavigationDrawerHeader from './NavigationDrawerHeader'; 
-
-import {
-  
-  Text,
-  
-} from 'react-native';
+ 
 import NavigationDrawerHeaderRight from './NavigationDrawerHeaderRight';
  
 

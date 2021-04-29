@@ -31,12 +31,7 @@ import { View, Image, TouchableOpacity, Text } from 'react-native';
 import Ionicons from "react-native-vector-icons/FontAwesome";
 
 const NavigationDrawerHeaderRight = props => {
-
-  const uploadAsset = () => {
-    //props.navigationProps.uploadAsset();
-    alert('upload!');
-  };
-
+ 
   return (
     <View style={{ flexDirection: 'row', paddingRight: 10 }}>
       <Ionicons  name={"upload"} color='#4638ab'  size={20} onPress={props.navigationProps.getParam('upload')}/> 
