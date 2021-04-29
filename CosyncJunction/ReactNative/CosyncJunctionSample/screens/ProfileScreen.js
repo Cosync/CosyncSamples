@@ -544,6 +544,18 @@ const ProfileScreen = props => {
 
   }
 
+  function breadcrumbEven(path){
+    setPage('main') 
+    setChildFormField(prevItems => { 
+      return [];
+    });
+
+
+    setBreadcrumb(prevItems => { 
+      return [];
+    });
+  }
+
   return (
     <SafeAreaView style={styles.container}>
        
@@ -554,7 +566,7 @@ const ProfileScreen = props => {
         </Text>
         { 
           breadcrumb.map(el => (
-            <Text style={styles.breadCrumbTextStyle} key={uuid.v4()}> {el} / </Text>
+            <Text style={styles.breadCrumbTextStyle} key={uuid.v4()} onPress={() => breadcrumbEven(el)} > {el} / </Text>
           )) 
         }
           
