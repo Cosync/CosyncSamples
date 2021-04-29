@@ -24,27 +24,30 @@
 //
 
 //Import React and Hook we needed
-import React, { useState} from 'react'; 
-
+import React from 'react'; 
+import uuid from 'react-native-uuid';
 //Import all required component
 import {  View,  StyleSheet,  TextInput } from 'react-native';
-  
+import Ionicons from "react-native-vector-icons/FontAwesome";
 
 const InputText = props => {
 
-    const { item, ...attributes } = props; 
-    console.log('InputText item ', item);
+    const { item, index, ...attributes } = props;
 
     return(
-        
-        <TextInput key={ Math.random().toString(36).substr(2, 9) }
-            style={styles.inputStyle} 
-            placeholder={item.display}
-            autoCapitalize="none" 
-            returnKeyType="next"  
-            blurOnSubmit={false} 
-        />
-            
+        <View style={styles.sectionStyle}  key = {uuid.v4() }>
+
+            <TextInput key = { uuid.v4() }
+                style={styles.inputStyle} 
+                placeholder={item.display}
+                autoCapitalize="none" 
+                returnKeyType="next"  
+                blurOnSubmit={false} 
+            />
+            {index > 0 ? 
+                <Ionicons  name={"minus-circle"} color='#bf360c'  size={20} onPress={() => props.deletedItem(item)} style={styles.deletedStyle}/> 
+            : null}
+        </View>
          
     )
 }
@@ -59,7 +62,18 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 30,
         borderColor: '#4638ab',
-      },
+    },
+    sectionStyle: {
+        flexDirection: 'row',
+        height: 40, 
+        marginBottom: 20,
+        marginLeft: 35,
+        marginRight: 35 
+    },
+    deletedStyle : {
+        marginTop: 8,
+        marginLeft: 3,
+    }
 });
 
 

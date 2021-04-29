@@ -1,6 +1,6 @@
 import React, { useState} from 'react'; 
 import {  View,  StyleSheet,  TextInput } from 'react-native';
-
+import uuid from 'react-native-uuid';
 import RNPickerSelect from "react-native-picker-select";
 import Ionicons from "react-native-vector-icons/FontAwesome";
 
@@ -16,14 +16,14 @@ const EnumList = props => {
     return( 
         
 
-        <View style={styles.SectionChildStyle} key={ Math.random().toString(36).substr(2, 9) }>  
+        <View style={styles.sectionChildStyle} key={ uuid.v4() }>  
 
                 <RNPickerSelect style={pickerSelectStyles} 
                   placeholder={{ label: "Select your "+ item.display, value: null }}
                   onValueChange={(value) => console.log(value)}
                   items={options}
                   Icon={() => {
-                    return <Ionicons  name={"unsorted"} color='#2196f3'  size={20} />;
+                    return <Ionicons  name={"unsorted"} color='#2196f3'  size={20} style={styles.sortedStyle} />;
                   }}
                 /> 
                   
@@ -35,8 +35,6 @@ const EnumList = props => {
 
 const pickerSelectStyles = StyleSheet.create({
     inputIOS: {  
-      
-      
       fontSize: 14,
       paddingVertical: 10,
       paddingHorizontal: 12,
@@ -57,6 +55,10 @@ const pickerSelectStyles = StyleSheet.create({
       color: 'black',
       paddingRight: 30, // to ensure the text is never behind the icon
     },
+    sortedStyle : {
+      marginTop: 8,
+      marginLeft: 3,
+    }
   });
 
   
@@ -71,7 +73,17 @@ const styles = StyleSheet.create({
         borderRadius: 30,
         borderColor: '#4638ab',
       },
+
+  sectionChildStyle: {
+    flexDirection: 'row',
+    height: 40, 
+    marginBottom: 20,
+    marginLeft: 45,
+    marginRight: 45 
+  },
+
 });
+
 
 
 export default EnumList;

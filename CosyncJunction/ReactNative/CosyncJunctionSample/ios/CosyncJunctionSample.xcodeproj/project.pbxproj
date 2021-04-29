@@ -170,7 +170,6 @@
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
-				0C164C4566A0C8770DD01802 /* [CP] Embed Pods Frameworks */,
 				251F062C4185899E0BDDE702 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
@@ -193,7 +192,6 @@
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				12641FFEE61100498E40E1BB /* [CP] Embed Pods Frameworks */,
 				DBA0ABC0C7151875F293E4FD /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
@@ -275,40 +273,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "set -e\n\nexport NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
-		};
-		0C164C4566A0C8770DD01802 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-CosyncJunctionSample-CosyncJunctionSampleTests/Pods-CosyncJunctionSample-CosyncJunctionSampleTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-CosyncJunctionSample-CosyncJunctionSampleTests/Pods-CosyncJunctionSample-CosyncJunctionSampleTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CosyncJunctionSample-CosyncJunctionSampleTests/Pods-CosyncJunctionSample-CosyncJunctionSampleTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		12641FFEE61100498E40E1BB /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-CosyncJunctionSample/Pods-CosyncJunctionSample-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-CosyncJunctionSample/Pods-CosyncJunctionSample-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CosyncJunctionSample/Pods-CosyncJunctionSample-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
 		};
 		251F062C4185899E0BDDE702 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;

@@ -24,41 +24,56 @@
 //
 
 //Import React and Hook we needed
-import React, { useState} from 'react'; 
-
+import React from 'react'; 
+import uuid from 'react-native-uuid';
 //Import all required component
-import {  View,  StyleSheet,  TextInput } from 'react-native';
-  
+import {  View,  StyleSheet,  KeyboardAvoidingView, Text } from 'react-native';
+import Ionicons from "react-native-vector-icons/FontAwesome";
+import InputText from "./InputText";
+import EnumList from "./EnumList"; 
 
 const ObjectField = props => {
 
-    const { item, index, ...attributes } = props; 
+    const { fieldDef, index, ...attributes } = props;  
+    
+    let form = [];
 
-    return(
+     
+    fieldDef.properties.map((field, index) => {
+      
+      if(field.fieldType != 'enum' && field.fieldType != 'object' && field.fieldType != 'array') form.push( < InputText item = {field}/> );
+      else if(field.fieldType == 'enum') form.push( < EnumList item = {field}/>);
+      else if (field.arrayFieldType == 'enum' && field.fieldType == 'array') form.push( < EnumList item = {field}/>);
+      else if (field.arrayFieldType != 'enum' && field.arrayFieldType != 'object' && field.fieldType == 'array') form.push(< InputText item = {field}/>);
+      else if(field.fieldType == 'object' || field.arrayFieldType == 'object') form.push( < ObjectField fieldDef = {field} index = {index} />);
+
+    }) 
+
+    return (
+      <View style={styles.mainBody} key = {uuid.v4() } >  
+        <KeyboardAvoidingView enabled> 
         
-        <TextInput key={ Math.random().toString(36).substr(2, 9) }
-            style={styles.inputStyle} 
-            placeholder={item.display}
-            autoCapitalize="none" 
-            returnKeyType="next"  
-            blurOnSubmit={false} 
-        />
-            
-         
+          <Text key = {uuid.v4() } >{fieldDef.display}: {index}  {index > 0  ? <Ionicons  name={"minus-circle"} color='#bf360c'  size={20} onPress={() => props.deletedItem(fieldDef)}/> : null}</Text>
+            <View style = {styles.container}  key = {uuid.v4() } >
+              {form}
+            </View>
+        </KeyboardAvoidingView>
+      </View>
+
     )
+ 
 }
 
 
 const styles = StyleSheet.create({
-    inputStyle: {
-        flex: 1,
-        color: '#4638ab',
-        paddingLeft: 15,
-        paddingRight: 15,
-        borderWidth: 1,
-        borderRadius: 30,
-        borderColor: '#4638ab',
-      },
+   
+    mainBody: {
+      flex: 1, 
+      padding: 10,
+    },
+    container: { 
+      paddingTop: 10,
+    }
 });
 
 
