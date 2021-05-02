@@ -27,27 +27,27 @@
 import React , {useState} from 'react';
 import Dialog from "react-native-dialog";
 //Import all required component
-import { StyleSheet, View} from 'react-native'; 
+import { StyleSheet, View } from 'react-native';  
 
-const InputModal = props => {
+const AssetMenu = props => {
   const { visible, ...attributes } = props; 
   const [hour, setHour] = useState('24');
   return (
     
     <View style={styles.container} >
       <Dialog.Container visible={visible}>
-        <Dialog.Title>Set Asset Expired Hour</Dialog.Title>
+        <Dialog.Title>Asset Menu</Dialog.Title>
         <Dialog.Description>
-          Asset expiration in hour, set to 0 for public asset. (Number only)
-        </Dialog.Description>
-        <Dialog.Input placeholder="24" defaultValue ='24' keyboardType='numeric' onChangeText={value => setHour(value)}/>
-        <Dialog.Button label="Cancel" onPress={() =>  props.handleInput(false)} />
-        <Dialog.Button label="OK" onPress={() =>  props.handleInput(hour)}  />
+          Manage your asset with those buttons:
+        </Dialog.Description> 
+        <Dialog.Button label="Refresh" onPress={() =>  props.handleInput('refresh')} />
+        <Dialog.Button label="Remove" onPress={() =>  props.handleInput('remove')}  />
+        <Dialog.Button label="Close" onPress={() =>  props.handleInput(false)}  />
       </Dialog.Container>
     </View>
   );
 };
-export default InputModal;
+export default AssetMenu;
 
 const styles = StyleSheet.create({
   container: { 

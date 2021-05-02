@@ -43,7 +43,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import Loader from '../components/Loader';   
 import InputModal from '../components/InputModal'; 
 import { ObjectId } from 'bson';  
-import Ionicons from "react-native-vector-icons/FontAwesome";
+
 
 
 const AssetScreen = props => {
@@ -298,6 +298,7 @@ const showExpiredTimeModal = () => {
 }
 
 
+
 const handleModalInput = (result) => {
   
   let hour = parseFloat(result);
@@ -345,7 +346,20 @@ const chooseFile = () => {
   });
 };
  
+const showMoreMenu = (item) => {
+  console.log('showMoreMenu ', item.key)
+}
 
+
+
+const removedAsset = (item) => {
+   
+
+  // tell flat list item to upload
+  setAssetList(currentList => {
+    return currentList.filter(el => el.key != item.key);
+  });
+}
 
 const itemUploaded = (item) => {
 
@@ -430,17 +444,18 @@ const uploadRequest = (source) => {
           <InputModal visible={showExpiredTime} handleInput={handleModalInput} />  
           {assetList.length ?
 
-          <FlatList 
-            
-            ref= {assetFlatList}
-            numColumns = {1}
-            data={assetList} 
-            // keyExtractor={(item, index) => index.toString()}
-            style={styles.containerFlatList}  
-            renderItem={({item}) => (
-              <ProgressiveAsset item = {item}  itemUploaded={itemUploaded} />
-            )}  
-          /> 
+            <FlatList 
+              
+              ref= {assetFlatList}
+              numColumns = {1}
+              data={assetList} 
+              // keyExtractor={(item, index) => index.toString()}
+              style={styles.containerFlatList}  
+              renderItem={({item}) => (
+                <ProgressiveAsset item = {item}  itemUploaded={itemUploaded} removeAsset = {removedAsset} showMoreMenu = {showMoreMenu}/>
+              )}  
+            /> 
+
           : 
           <View style={styles.container}> 
             <Text style={styles.titleText}>

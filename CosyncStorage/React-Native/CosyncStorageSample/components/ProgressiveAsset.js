@@ -28,10 +28,12 @@ import React, { useState, useEffect} from 'react';
 import ImageResizer from 'react-native-image-resizer';
 import Request from './Request'; 
 //Import all required component
-import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native'; 
+import { StyleSheet, View, Text, Image, TouchableOpacity, Alert } from 'react-native'; 
 import VideoPlayer from './VideoPlayer'; 
 import Sound from 'react-native-sound';
 import * as Progress from 'react-native-progress';
+import Ionicons from "react-native-vector-icons/FontAwesome";
+import AssetMenu from '../components/AssetMenu'; 
 
 const ProgressiveAsset = props => {
 
@@ -40,8 +42,8 @@ const ProgressiveAsset = props => {
     let [loading, setLoading] = useState(false);
     let [uploading, setUploading] = useState(false);
     let [uploadProgress, setUploadProgress] = useState(0);
-    let [error, setLoadingError] = useState(false); 
-    
+    let [error, setLoadingError] = useState(false);  
+    const [assetMenu, setAssetMenu] = useState(false);
 
     Sound.setCategory('Playback'); 
     //console.log(' ProgressiveAsset asset.status ', asset.status);
@@ -158,6 +160,22 @@ const ProgressiveAsset = props => {
         });
     }
 
+
+    const removeAsset = () => {
+        let id = item._id.toString();
+        
+        global.user.functions.CosyncRemoveAsset(id).then(result => {  
+
+            if(!result) alert('Invalid Permission.')
+            else{
+                alert('Removed Success.');
+                props.removeAsset(item);
+            } 
+
+             
+        });
+    }
+
     const refreshAsset = () => {
         
         setLoading(true);
@@ -235,9 +253,46 @@ const ProgressiveAsset = props => {
  
     }
 
+
+    const handleModalInput = (result) => { 
+       
+        if(result == 'refresh'){
+            refreshAsset();
+            setAssetMenu(false);
+        } 
+        else if(result == 'remove'){
+            Alert.alert(
+                'Remove Asset',
+                'Are you sure? You want to remove this asset?',
+                [
+                  {
+                    text: 'Cancel',
+                    onPress: () => {
+                         
+                    },
+                    style: 'cancel',  
+                  },
+                  {
+                    text: 'Confirm',
+                    onPress: () => {
+                        setAssetMenu(false);
+                        removeAsset();
+                    },
+
+                  },
+                ],
+                { cancelable: false }
+            );
+
+            
+        }
+        else setAssetMenu(false);
+    }
+
     return ( 
         <View style={styles.container}> 
-        
+            <AssetMenu visible={assetMenu} handleInput={handleModalInput} />  
+
             {item.contentType.indexOf("image") >= 0 ? 
        
                 <Image 
@@ -290,6 +345,10 @@ const ProgressiveAsset = props => {
             <View style={styles.textStatusStyle}>  
                 <Text style={styles.soundBtnTextStyle}>{asset.status}</Text>
             </View>
+
+            <TouchableOpacity style={styles.moreIcon} onPress={() => setAssetMenu(true)} > 
+                <Ionicons  name={"ellipsis-v"} color='white'  size={20} /> 
+            </TouchableOpacity>
       </View>
 
        
@@ -376,10 +435,19 @@ const styles = StyleSheet.create({
         backgroundColor: 'grey',
         fontSize: 14,
         position: 'absolute',
-        left: 0,
-         
+        left: 0, 
         top: 0,
         
+    }, 
+
+    moreIcon: {  
+        width: 30,
+        color: '#4638ab', 
+        backgroundColor: 'grey', 
+        position: 'absolute', 
+        top: 0, 
+        right: 0,
+        alignItems: 'center',
     }, 
 
     buttonStyle: {
