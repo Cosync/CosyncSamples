@@ -8,9 +8,11 @@
 
 import SwiftUI
 
-
 struct LoggedInView: View {
     @EnvironmentObject var appState: AppState
+    @State var phoneNumber = ""
+    @State var phoneCode = ""
+    @State var verifyCode = false
     var body: some View {
         NavigationView {
             
@@ -20,6 +22,42 @@ struct LoggedInView: View {
                 Text(UserManager.shared.handle)
                 Text(UserManager.shared.firstName)
                 Text(UserManager.shared.lastName)
+                
+                if let twofactorVerification = RESTManager.shared.twoFactorVerification,
+                   twofactorVerification == "phone" {
+                    Divider()
+                    HStack() {
+                        TextField("phone E.164 format", text: $phoneNumber)
+                        Button(action: {
+                            RESTManager.shared.setPhone(self.phoneNumber, onCompletion: { (err) in
+                                    
+                                self.verifyCode = true
+
+                            })
+                        }) {
+                            Text("Set Phone")
+                        }.accentColor(.blue)
+                    }
+                    
+                    if self.verifyCode {
+                        Divider()
+                        
+                        HStack() {
+                            TextField("code", text: $phoneCode)
+                            Button(action: {
+                                RESTManager.shared.verifyPhone(self.phoneCode, onCompletion: { (err) in
+                                        
+                                    self.verifyCode = false
+
+                                })
+                            }) {
+                                Text("Verify Code")
+                            }.accentColor(.blue)
+                        }
+                    }
+                }
+
+
                 Divider()
                 
                 NavigationLink(destination: InviteView()) {

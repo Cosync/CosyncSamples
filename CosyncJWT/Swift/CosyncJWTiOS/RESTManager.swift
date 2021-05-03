@@ -40,11 +40,12 @@ class RESTManager {
     static let signupPath = "api/appuser/signup"
     static let completeSignupPath = "api/appuser/completeSignup"
     static let getUserPath = "api/appuser/getUser"
+    static let setPhonePath = "api/appuser/setPhone"
+    static let verifyPhonePath = "api/appuser/verifyPhone"
     static let forgotPasswordPath = "api/appuser/forgotPassword"
     static let resetPasswordPath = "api/appuser/resetPassword"
     static let changePasswordPath = "api/appuser/changePassword"
     static let getApplicationPath = "api/appuser/getApplication"
-    static let setAppDataPath = "api/appuser/setAppData"
     static let invitePath = "api/appuser/invite"
     static let registerPath = "api/appuser/register"
 
@@ -53,61 +54,67 @@ class RESTManager {
     // Login into CosyncJWT
     func login(_ handle: String, password: String, onCompletion completion: @escaping (Error?) -> Void) {
         
-        let restPath = Constants.COSYNC_REST_ADDRESS
-        let appToken = Constants.APP_TOKEN
-        
-        let config = URLSessionConfiguration.default
-
-        let session = URLSession(configuration: config)
-        
-        let url = URL(string: "\(restPath)/\(RESTManager.loginPath)")!
-        var urlRequest = URLRequest(url: url)
-        urlRequest.httpMethod = "POST"
-        urlRequest.allHTTPHeaderFields = ["app-token": appToken]
-
-        // your post request data
-        var requestBodyComponents = URLComponents()
-        requestBodyComponents.queryItems = [URLQueryItem(name: "handle", value: handle),
-                                            URLQueryItem(name: "password", value: password.md5())]
-        
-        urlRequest.httpBody = requestBodyComponents.query?.data(using: .utf8)
-
-        let task = session.dataTask(with: urlRequest) { data, response, error in
-        
-            // ensure there is no error for this HTTP response
-            let errorResponse = RESTError.checkResponse(data: data, response: response, error: error)
-            guard errorResponse == nil  else {
-                completion(errorResponse)
-                return
-            }
-
-            // ensure there is data returned from this HTTP response
-            guard let content = data else {
-                completion(RESTError.internalServerError)
-                return
-            }
+        RESTManager.shared.getApplication(onCompletion: { (err) in
             
-            // serialise the data / NSData object into Dictionary [String : Any]
-            guard let json = (try? JSONSerialization.jsonObject(with: content, options: JSONSerialization.ReadingOptions.mutableContainers)) as? [String: Any] else {
-                completion(RESTError.internalServerError)
-                return
-            }
-            
-            if let jwt = json["jwt"] as? String,
-               let accessToken = json["access-token"] as? String {
-                
-                self.jwt = jwt
-                self.accessToken = accessToken
-
-                completion(nil)
+            if let error = err {
+                completion(error)
             } else {
-                completion(RESTError.internalServerError)
-            }
-        }
-        
-        // execute the HTTP request
-        task.resume()
+                let restPath = Constants.COSYNC_REST_ADDRESS
+                let appToken = Constants.APP_TOKEN
+                
+                let config = URLSessionConfiguration.default
 
+                let session = URLSession(configuration: config)
+                
+                let url = URL(string: "\(restPath)/\(RESTManager.loginPath)")!
+                var urlRequest = URLRequest(url: url)
+                urlRequest.httpMethod = "POST"
+                urlRequest.allHTTPHeaderFields = ["app-token": appToken]
+
+                // your post request data
+                var requestBodyComponents = URLComponents()
+                requestBodyComponents.queryItems = [URLQueryItem(name: "handle", value: handle),
+                                                    URLQueryItem(name: "password", value: password.md5())]
+                
+                urlRequest.httpBody = requestBodyComponents.query?.data(using: .utf8)
+
+                let task = session.dataTask(with: urlRequest) { data, response, error in
+                
+                    // ensure there is no error for this HTTP response
+                    let errorResponse = RESTError.checkResponse(data: data, response: response, error: error)
+                    guard errorResponse == nil  else {
+                        completion(errorResponse)
+                        return
+                    }
+
+                    // ensure there is data returned from this HTTP response
+                    guard let content = data else {
+                        completion(RESTError.internalServerError)
+                        return
+                    }
+                    
+                    // serialise the data / NSData object into Dictionary [String : Any]
+                    guard let json = (try? JSONSerialization.jsonObject(with: content, options: JSONSerialization.ReadingOptions.mutableContainers)) as? [String: Any] else {
+                        completion(RESTError.internalServerError)
+                        return
+                    }
+                    
+                    if let jwt = json["jwt"] as? String,
+                       let accessToken = json["access-token"] as? String {
+                        
+                        self.jwt = jwt
+                        self.accessToken = accessToken
+
+                        completion(nil)
+                    } else {
+                        completion(RESTError.internalServerError)
+                    }
+                }
+                
+                // execute the HTTP request
+                task.resume()
+            }
+        })
     }
     
     // Singup into CosyncJWT
@@ -371,6 +378,128 @@ class RESTManager {
                     if let date = date {
                         self.lastLogin = date
                     }
+                }
+                
+                completion(nil)
+
+            }
+            
+            // execute the HTTP request
+            task.resume()
+            
+        } else {
+            completion(RESTError.internalServerError)
+        }
+    }
+    
+    // Set the phone number for the current user from CosyncJWT
+    func setPhone(_ phoneNumber: String, onCompletion completion: @escaping (Error?) -> Void) {
+        
+        let restPath = Constants.COSYNC_REST_ADDRESS
+        if let accessToken = self.accessToken {
+            
+            let config = URLSessionConfiguration.default
+            config.httpAdditionalHeaders = ["access-token": accessToken]
+            NSLog("access token '\(accessToken)'")
+
+            let session = URLSession(configuration: config)
+            
+            let url = URL(string: "\(restPath)/\(RESTManager.setPhonePath)")!
+            var urlRequest = URLRequest(url: url)
+            
+            urlRequest.httpMethod = "POST"
+            urlRequest.allHTTPHeaderFields = ["access-token": accessToken]
+
+            // your post request data
+            var requestBodyComponents = URLComponents()
+            
+            requestBodyComponents.queryItems = [URLQueryItem(name: "phone", value: phoneNumber)]
+
+            urlRequest.httpBody = requestBodyComponents.query?.data(using: .utf8)
+
+            
+            let task = session.dataTask(with: urlRequest) { data, response, error in
+            
+                // ensure there is no error for this HTTP response
+                let errorResponse = RESTError.checkResponse(data: data, response: response, error: error)
+                guard errorResponse == nil  else {
+                    completion(errorResponse)
+                    return
+                }
+
+                // ensure there is data returned from this HTTP response
+                guard let content = data else {
+                    completion(RESTError.internalServerError)
+                    return
+                }
+                
+                let str = String(decoding: content, as: UTF8.self)
+                
+                if str == "true" {
+                    completion(nil)
+                } else {
+                    completion(RESTError.internalServerError)
+                }
+                
+                completion(nil)
+
+            }
+            
+            // execute the HTTP request
+            task.resume()
+            
+        } else {
+            completion(RESTError.internalServerError)
+        }
+    }
+    
+    // Set the phone number for the current user from CosyncJWT
+    func verifyPhone(_ code: String, onCompletion completion: @escaping (Error?) -> Void) {
+        
+        let restPath = Constants.COSYNC_REST_ADDRESS
+        if let accessToken = self.accessToken {
+            
+            let config = URLSessionConfiguration.default
+            config.httpAdditionalHeaders = ["access-token": accessToken]
+            NSLog("access token '\(accessToken)'")
+
+            let session = URLSession(configuration: config)
+            
+            let url = URL(string: "\(restPath)/\(RESTManager.verifyPhonePath)")!
+            var urlRequest = URLRequest(url: url)
+            
+            urlRequest.httpMethod = "POST"
+            urlRequest.allHTTPHeaderFields = ["access-token": accessToken]
+
+            // your post request data
+            var requestBodyComponents = URLComponents()
+            
+            requestBodyComponents.queryItems = [URLQueryItem(name: "code", value: code)]
+
+            urlRequest.httpBody = requestBodyComponents.query?.data(using: .utf8)
+
+            
+            let task = session.dataTask(with: urlRequest) { data, response, error in
+            
+                // ensure there is no error for this HTTP response
+                let errorResponse = RESTError.checkResponse(data: data, response: response, error: error)
+                guard errorResponse == nil  else {
+                    completion(errorResponse)
+                    return
+                }
+
+                // ensure there is data returned from this HTTP response
+                guard let content = data else {
+                    completion(RESTError.internalServerError)
+                    return
+                }
+                
+                let str = String(decoding: content, as: UTF8.self)
+                
+                if str == "true" {
+                    completion(nil)
+                } else {
+                    completion(RESTError.internalServerError)
                 }
                 
                 completion(nil)
