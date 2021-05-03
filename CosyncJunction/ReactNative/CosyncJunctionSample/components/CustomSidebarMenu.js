@@ -31,15 +31,7 @@ import { View, StyleSheet, Text, Alert } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 
 const CustomSidebarMenu = props => {
-  let items = [
-    {
-      navOptionName: 'Upload Screen',
-      screenToNavigate: 'UploadScreen',
-    },
-    {
-      navOptionName: 'Asset Screen',
-      screenToNavigate: 'AssetScreen',
-    }, 
+  let items = [ 
     {
       navOptionName: 'Logout',
       screenToNavigate: 'logout',

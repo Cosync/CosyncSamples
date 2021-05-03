@@ -37,23 +37,25 @@ import uuid from 'react-native-uuid';
 const FormCreator = props => {
 
     const { fieldDef, index, ...attributes } = props;  
-
+    let form = [];
     
     const deleteFormItem = (f) => {
       props.deletedItem(f);
     }
 
-    return (
+    const goToChildField = (f) => {
+      props.goToChildField(f);
+    }
       
+    if(fieldDef.fieldType != 'enum' && fieldDef.fieldType != 'object' && fieldDef.fieldType != 'array') form.push( < InputText item = {fieldDef} index = {index} deletedItem={deleteFormItem}/>  );
+    else if(fieldDef.fieldType == 'enum') form.push( < EnumList item = {fieldDef} index = {index} deletedItem={deleteFormItem}/> );
+    else if (fieldDef.arrayFieldType == 'enum' && fieldDef.fieldType == 'array') form.push( < EnumList item = {fieldDef} index = {index} deletedItem={deleteFormItem} /> );
+    else if (fieldDef.arrayFieldType != 'enum' && fieldDef.arrayFieldType != 'object' && fieldDef.fieldType == 'array') form.push( < InputText item = {fieldDef} index = {index} deletedItem={deleteFormItem}/> );
+    else if(fieldDef.fieldType == 'object' || fieldDef.arrayFieldType == 'object') form.push( < ObjectField fieldDef = {fieldDef} index = {index} deletedItem={deleteFormItem} goToChildField={goToChildField}/> );
+
+    return (
       <View key = {uuid.v4() }>
-         
-          {fieldDef.fieldType != 'enum' && fieldDef.fieldType != 'object' && fieldDef.fieldType != 'array' ?  (< InputText item = {fieldDef} index = {index} deletedItem={deleteFormItem}/> ) : null }
-          {fieldDef.fieldType == 'enum' ?  (< EnumList item = {fieldDef}/>) : null }
-          {fieldDef.arrayFieldType == 'enum' && fieldDef.fieldType == 'array'?  (< EnumList item = {fieldDef}/>) : null }
-          {fieldDef.arrayFieldType != 'enum' && fieldDef.arrayFieldType != 'object' && fieldDef.fieldType == 'array' ?  (< InputText item = {fieldDef} index = {index} deletedItem={deleteFormItem}/>) : null }
-          {fieldDef.fieldType == 'object' || fieldDef.arrayFieldType == 'object'?  (< ObjectField fieldDef = {fieldDef} index = {index} deletedItem={deleteFormItem} />) : null }
-          
-         
+         {form} 
       </View>
     );
     

@@ -32,10 +32,10 @@ import Ionicons from "react-native-vector-icons/FontAwesome";
 
 const InputText = props => {
 
-    const { item, index, ...attributes } = props;
+    const { item, index, hideIcon, ...attributes } = props;
 
     return(
-        <View style={styles.sectionStyle}  key = {uuid.v4() }>
+        <View style={styles.sectionStyle}  key = {uuid.v4() + Math.random() }>
 
             <TextInput key = { uuid.v4() }
                 style={styles.inputStyle} 
@@ -44,8 +44,8 @@ const InputText = props => {
                 returnKeyType="next"  
                 blurOnSubmit={false} 
             />
-            {index > 0 ? 
-                <Ionicons  name={"minus-circle"} color='#bf360c'  size={20} onPress={() => props.deletedItem(item)} style={styles.deletedStyle}/> 
+            {index > 0 && !hideIcon ? 
+                <Ionicons  name={"minus-circle"} color='#bf360c'  size={20} onPress={() => props.deletedItem(item)} style={styles.deletedStyle} key = { uuid.v4() + Math.random() } /> 
             : null}
         </View>
          

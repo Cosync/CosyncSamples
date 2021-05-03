@@ -33,6 +33,7 @@ import { createDrawerNavigator } from 'react-navigation-drawer';
 
 //Import External Screens
 import ProfileScreen from '../screens/ProfileScreen'; 
+import FormScreen from '../screens/FormScreen'; 
 import CustomSidebarMenu from './CustomSidebarMenu';
 import NavigationDrawerHeader from './NavigationDrawerHeader';
 
@@ -41,6 +42,20 @@ const FirstActivity_StackNavigator = createStackNavigator({
     screen: ProfileScreen,
     navigationOptions: ({ navigation }) => ({
       title: 'Profile Screen',
+      headerLeft: () => <NavigationDrawerHeader navigationProps={navigation} />,
+      headerStyle: {
+        backgroundColor: '#307ecc',
+      },
+      headerTintColor: '#fff',
+    }),
+  },
+});
+
+const FormActivity_StackNavigator = createStackNavigator({
+  First: {
+    screen: FormScreen,
+    navigationOptions: ({ navigation }) => ({
+      title: 'Child Form',
       headerLeft: () => <NavigationDrawerHeader navigationProps={navigation} />,
       headerStyle: {
         backgroundColor: '#307ecc',
@@ -58,7 +73,13 @@ const DrawerNavigatorRoutes = createDrawerNavigator(
       navigationOptions: {
         drawerLabel: 'Prifile Screen',
       },
-    } 
+    },
+    FormScreen: {
+      screen: FormActivity_StackNavigator,
+      navigationOptions: {
+        drawerLabel: 'Form',
+      },
+    }
   },
   {
     contentComponent: CustomSidebarMenu,

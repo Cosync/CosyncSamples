@@ -28,7 +28,6 @@ import React, { useState, useRef , useEffect} from 'react';
 import {
   StyleSheet,
   SafeAreaView,
-  TextInput,
   View, 
   Text,
   ScrollView, 
@@ -37,13 +36,14 @@ import {
   KeyboardAvoidingView 
 } from 'react-native'; 
 import AsyncStorage from '@react-native-community/async-storage';
-import RNPickerSelect from "react-native-picker-select";
 import Ionicons from "react-native-vector-icons/FontAwesome";
 import Loader from '../components/Loader'; 
 import FormCreator from '../components/FormCreator'; 
 import Configure from '../config/Config'; 
 import * as RealmLib from '../managers/RealmManager';   
 import uuid from 'react-native-uuid';
+import InputText from '../components/InputText';
+import EnumList from '../components/EnumList';
 
 
 const ProfileScreen = props => {
@@ -97,14 +97,12 @@ const ProfileScreen = props => {
         element.userProfile.forEach(field => {  
 
             if(field.fieldType == 'object' || field.fieldType == 'array' ){ 
-              console.log( ' userProfile field.arrayFieldType = ', field.arrayFieldType);
+             
               if(field.fieldType == 'array'){
 
                 let fieldId = field._id.toString();
                 formObject[fieldId] = [field]; 
-                console.log( ' userProfile field.fieldType = ', field.fieldType);
-                console.log( ' userProfile field.display = ', field.display);
-
+               
 
                 let line = <View  key={ uuid.v4() }
                   style={styles.lineStyle}
@@ -131,38 +129,9 @@ const ProfileScreen = props => {
                 if(field.arrayFieldType == 'object') getFieldDefChildren(field); 
                 else{ 
 
-                  let form = <View style={styles.sectionStyle} key={ uuid.v4() }>
-                      <TextInput key={ uuid.v4() }
-                        style={styles.inputStyle} 
-                        placeholder={field.display}
-                        autoCapitalize="none" 
-                        returnKeyType="next"  
-                        blurOnSubmit={false} 
-                      />
-                    </View>;
-
-                  if(field.fieldType == "enum"){
-
-                    let options = [];
-                    field.enumValues.map(value => (
-                      options.push( { label: value, value: value})
-                    ));
-
-                    form = <View style={styles.sectionStyle} key={ uuid.v4() }> 
-
-                            <Text>{field.display}: </Text>
-                                        
-                            <RNPickerSelect
-                              placeholder={{ label: "Select your "+ field.display, value: null }}
-                              onValueChange={(value) => console.log(value)}
-                              items={options}
-                              Icon={() => {
-                                return <Ionicons name={"unsorted"} color='#2196f3'  size={20} style={styles.sortedStyle} />;
-                              }}
-                          />
-
-                        </View>;
-                  }
+                  let form = <InputText item={field} hideIcon={true}/>
+                
+                  if(field.fieldType == "enum") form = <EnumList item={field} hideIcon={true}/>
 
                   setFormField(prevItems => { 
                     return [...prevItems, form];
@@ -199,39 +168,8 @@ const ProfileScreen = props => {
 
               });
             
-              let form = <View style={styles.sectionStyle} key={field._id.toString()}>
-                          <TextInput key={ uuid.v4() }
-                            style={styles.inputStyle} 
-                            placeholder={field.display}
-                            autoCapitalize="none" 
-                            returnKeyType="next"  
-                            blurOnSubmit={false} 
-                          />
-                        </View>;
-
-              if(field.fieldType == "enum"){
-
-                let options = [];
-                field.enumValues.map(value => (
-                  options.push( { label: value, value: value})
-                ));
-                
-
-                form = <View style={styles.sectionStyle} key={field._id.toString()}> 
-
-                        <Text>{field.display}: </Text>
-                                    
-                        <RNPickerSelect
-                          placeholder={{ label: "Select your "+ field.display, value: null }}
-                          onValueChange={(value) => console.log(value)}
-                          items={options}
-                          Icon={() => {
-                            return <Ionicons  name={"unsorted"} color='#2196f3'  size={20} style={styles.sortedStyle} />;
-                          }}
-                      />
-
-                    </View>;
-              }
+              let form = <InputText item={field} hideIcon={true}/> 
+              if(field.fieldType == "enum") form = <EnumList item={field} hideIcon={true}/>
 
               setFormField(prevItems => {
                 return [...prevItems, form];
@@ -256,26 +194,9 @@ const ProfileScreen = props => {
     
       if(child.fieldType == 'object' || child.fieldType == 'array' ){
 
-        let form;
-        let line = <View  key={ uuid.v4() }
-          style={styles.lineStyle}
-        />;
+        let form; 
 
-        if(isChild){
-          setChildFormField(prevItems => { 
-            return [...prevItems, line];
-          });
-        }
-        else{
-          setFormField(prevItems => { 
-            return [...prevItems, line];
-          });
-        }
-        
-
-        
-        if(child.fieldType == 'array' && child.arrayFieldType != 'object'){
-        
+        if(child.fieldType == 'array' && child.arrayFieldType != 'object'){ 
 
           let fieldId = child._id.toString();
           formObject[fieldId] = [child]; 
@@ -301,40 +222,8 @@ const ProfileScreen = props => {
             });
           }
 
-          if(child.fieldType == "enum"){
-
-            let options = [];
-            child.enumValues.map(value => (
-              options.push( { label: value, value: value})
-            ))
-
-            form = <View style={styles.SectionChildStyle} key={ uuid.v4() }>  
-
-                    <RNPickerSelect style={pickerSelectStyles} 
-                      placeholder={{ label: "Select your "+ child.display, value: null }}
-                      onValueChange={(value) => console.log(value)}
-                      items={options}
-                      Icon={() => {
-                        return <Ionicons name={"unsorted"} color='#2196f3' size={20} style={styles.sortedStyle}/>;
-                      }}
-                    />
-                     
-                </View>;
-
-          } 
-          else {
-            
-            form =  <View style={styles.SectionChildStyle} key={ uuid.v4() }> 
-                <TextInput key={ uuid.v4() }
-                  style={styles.inputChildStyle} 
-                  placeholder={child.display}
-                  autoCapitalize="none" 
-                  returnKeyType="next"  
-                  blurOnSubmit={false} 
-                />
-                 
-              </View>;
-          }
+          if(child.fieldType == "enum") form = <EnumList item={child} hideIcon={true}/>
+          else form =  <InputText item={child} hideIcon={true}/>
 
           if(isChild){
             setChildFormField(prevItems => { 
@@ -373,38 +262,9 @@ const ProfileScreen = props => {
         }
       } 
       else {
-        let form =  <View style={styles.SectionChildStyle} key={ uuid.v4() }>
-                <TextInput key={ uuid.v4() }
-                  style={styles.inputChildStyle} 
-                  placeholder={child.display}
-                  autoCapitalize="none" 
-                  returnKeyType="next"  
-                  blurOnSubmit={false} 
-                />
-              </View>;
-
-        if(child.fieldType == "enum"){  
-
-          let options = [];
-            child.enumValues.map(value => (
-              options.push( { label: value, value: value})
-            )) 
-          
-
-          form = <View style={styles.SectionChildStyle} key={ uuid.v4() }>  
-
-                  <RNPickerSelect style={pickerSelectStyles} 
-                    placeholder={{ label: "Select your "+ child.display, value: null }}
-                    onValueChange={(value) => console.log(value)}
-                    items={options}
-                    Icon={() => {
-                      return <Ionicons  name={"unsorted"} color='#2196f3'  size={20} style={styles.sortedStyle}/>;
-                    }}
-                  />
-
-              </View>; 
-
-        } 
+        let form;
+        if(child.fieldType == "enum") form = <EnumList item={child} hideIcon={true}/>
+        else form =  <InputText item={child} hideIcon={true}/>
 
         if(isChild){
           setChildFormField(prevItems => { 
@@ -424,16 +284,11 @@ const ProfileScreen = props => {
 
   }
 
-  const handleAddMoreChildField = (field) => { 
-
-    console.log( ' handleAddMoreChildField field.id 1 = ', field.id);  
-
+  const handleAddMoreChildField = (field) => {
 
     let fieldId = field._id.toString();  
      
-    let newField = cloneFieldObject(field);
-    console.log( ' handleAddMoreChildField field 2 = ', newField);  
-
+    let newField = cloneFieldObject(field); 
     
     setChildField(prevItems => { 
       return [...prevItems, newField];
@@ -446,20 +301,6 @@ const ProfileScreen = props => {
       childFormList.current.scrollToEnd({animating: true});
     }, 200);
 
-  }
-
-  const deleteField = (field) => {
-    
-    let fieldId = field._id.toString(); 
-    formObject[fieldId] = formObject[fieldId].filter(item => item.id != field.id);
-
-    setChildField(prevItems => {
-      return prevItems.filter(item => item.id !== field.id);
-    });
-
-    console.log("deleteField ", field);
-
-    console.log("deleteField childField ", childFields);
   }
  
 
@@ -507,6 +348,10 @@ const ProfileScreen = props => {
      
     setPage('child');
     
+    setTimeout(function(){
+      childFormList.current.scrollToEnd({animating: true});
+    }, 200);
+    
   }
 
   return function cleanup() {
@@ -542,6 +387,13 @@ const ProfileScreen = props => {
       return prevItems.filter(item => item.id !== field.id);
     }); 
 
+  }
+
+
+  function goToChildField(field){
+     
+    global.field = field; 
+    props.navigation.navigate('FormScreen', {field: field}); 
   }
 
   function breadcrumbEven(path){
@@ -588,15 +440,13 @@ const ProfileScreen = props => {
                 {  
                   page == 'main'  ?   
 
-                <TouchableOpacity
-                  style={styles.buttonStyle}
+                <TouchableOpacity style={styles.buttonStyle}
                   onPress={() => { 
                     setChildFormField(prevItems => { 
                       return [];
                     });
-                  }
-                
-                  }>
+                  }}>
+
                   <Text style={styles.buttonTextStyle}>Submit</Text>
                 </TouchableOpacity>
                 : 
@@ -621,6 +471,7 @@ const ProfileScreen = props => {
                   index = {index}
                   fieldDef = {item} 
                   deletedItem={deleteFormItem} 
+                  goToChildField = {goToChildField}
                 />
               )}  /> 
           

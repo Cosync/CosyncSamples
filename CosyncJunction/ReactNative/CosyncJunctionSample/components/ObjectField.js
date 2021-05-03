@@ -27,7 +27,7 @@
 import React from 'react'; 
 import uuid from 'react-native-uuid';
 //Import all required component
-import {  View,  StyleSheet,  KeyboardAvoidingView, Text } from 'react-native';
+import {  View,  StyleSheet,  KeyboardAvoidingView, Text, TouchableOpacity } from 'react-native';
 import Ionicons from "react-native-vector-icons/FontAwesome";
 import InputText from "./InputText";
 import EnumList from "./EnumList"; 
@@ -37,26 +37,54 @@ const ObjectField = props => {
     const { fieldDef, index, ...attributes } = props;  
     
     let form = [];
-
+    
+    const handleAddMoreField = (field) => {
+      props.goToChildField(field);
+    }
      
-    fieldDef.properties.map((field, index) => {
+    fieldDef.properties.map((field, i) => {
       
-      if(field.fieldType != 'enum' && field.fieldType != 'object' && field.fieldType != 'array') form.push( < InputText item = {field}/> );
-      else if(field.fieldType == 'enum') form.push( < EnumList item = {field}/>);
-      else if (field.arrayFieldType == 'enum' && field.fieldType == 'array') form.push( < EnumList item = {field}/>);
-      else if (field.arrayFieldType != 'enum' && field.arrayFieldType != 'object' && field.fieldType == 'array') form.push(< InputText item = {field}/>);
-      else if(field.fieldType == 'object' || field.arrayFieldType == 'object') form.push( < ObjectField fieldDef = {field} index = {index} />);
+      if(field.fieldType != 'enum' && field.fieldType != 'object' && field.fieldType != 'array'){
+        form.push( < InputText item = {field}/> );
+      } 
+      else if(field.fieldType == 'enum') {
+        form.push( < EnumList item = {field}/>);
+      }
+      else if (field.arrayFieldType == 'enum' && field.fieldType == 'array'){
+
+        form.push( <TouchableOpacity onPress={() => handleAddMoreField(child)}  activeOpacity={0.5}>
+                    <Text style={styles.titleText} key={ uuid.v4() } >
+                      {field.display}: <Ionicons  name={"plus-circle"} color='#4638ab'  size={15} key={ uuid.v4() }/> 
+                    </Text>
+                  </TouchableOpacity>);
+        form.push( < EnumList item = {field} index = {index} deletedItem={props.deletedItem} />);
+      } 
+      else if (field.arrayFieldType != 'enum' && field.arrayFieldType != 'object' && field.fieldType == 'array'){
+        form.push( <TouchableOpacity onPress={() => handleAddMoreField(field)}  activeOpacity={0.5}>
+                    <Text style={styles.titleText} key={ uuid.v4() } >
+                      {field.display}: <Ionicons  name={"plus-circle"} color='#4638ab'  size={15} key={ uuid.v4() }/> 
+                    </Text>
+                  </TouchableOpacity>);
+        form.push(< InputText item = {field} index = {index} deletedItem={props.deletedItem} />);
+      } 
+      else if(field.fieldType == 'object' || field.arrayFieldType == 'object'){
+         
+        form.push( < ObjectField fieldDef = {field}  deletedItem={props.deletedItem} />);
+      } 
 
     }) 
 
     return (
       <View style={styles.mainBody} key = {uuid.v4() } >  
-        <KeyboardAvoidingView enabled> 
+        <KeyboardAvoidingView enabled key = {uuid.v4() }> 
         
-          <Text key = {uuid.v4() } >{fieldDef.display}: {index}  {index > 0  ? <Ionicons  name={"minus-circle"} color='#bf360c'  size={20} onPress={() => props.deletedItem(fieldDef)}/> : null}</Text>
-            <View style = {styles.container}  key = {uuid.v4() } >
-              {form}
-            </View>
+          <Text style={styles.titleText} key = {uuid.v4() } >
+            {fieldDef.display}: {index}  {index > 0  ? <Ionicons key={ uuid.v4() } name={"minus-circle"} color='#bf360c'  size={20} onPress={() => props.deletedItem(fieldDef)}/> : null}
+          </Text>
+
+          <View style = {styles.container}  key = {uuid.v4() } >
+            {form}
+          </View>
         </KeyboardAvoidingView>
       </View>
 
@@ -72,8 +100,22 @@ const styles = StyleSheet.create({
       padding: 10,
     },
     container: { 
+       
       paddingTop: 10,
-    }
+    },
+    titleText: {
+      textAlign: 'left',
+      padding: 10,
+      fontSize: 14,
+      fontWeight: 'bold', 
+      marginLeft: 10,
+      
+    },
+    sectionChildStyle: {
+      flexDirection: 'row', 
+      marginLeft: 45,
+      marginRight: 45 
+    },
 });
 
 
