@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import CosyncJWTSwift
 
 struct LoggedInView: View {
     @EnvironmentObject var appState: AppState
@@ -23,13 +24,13 @@ struct LoggedInView: View {
                 Text(UserManager.shared.firstName)
                 Text(UserManager.shared.lastName)
                 
-                if let twofactorVerification = RESTManager.shared.twoFactorVerification,
+                if let twofactorVerification = CosyncJWTRest.shared.twoFactorVerification,
                    twofactorVerification == "phone" {
                     Divider()
                     HStack() {
                         TextField("phone E.164 format", text: $phoneNumber)
                         Button(action: {
-                            RESTManager.shared.setPhone(self.phoneNumber, onCompletion: { (err) in
+                            CosyncJWTRest.shared.setPhone(self.phoneNumber, onCompletion: { (err) in
                                     
                                 self.verifyCode = true
 
@@ -45,7 +46,7 @@ struct LoggedInView: View {
                         HStack() {
                             TextField("code", text: $phoneCode)
                             Button(action: {
-                                RESTManager.shared.verifyPhone(self.phoneCode, onCompletion: { (err) in
+                                CosyncJWTRest.shared.verifyPhone(self.phoneCode, onCompletion: { (err) in
                                         
                                     self.verifyCode = false
 
@@ -82,7 +83,7 @@ struct LoggedInView: View {
                 // Button on the leading side
                 leading:
                 Button(action: {
-                    RESTManager.shared.logout()
+                    CosyncJWTRest.shared.logout()
                     RealmManager.shared.logout(onCompletion: { (err) in
                     })
 
@@ -139,7 +140,7 @@ struct ChangePasswordView: View {
                 if  self.password.count > 0 &&
                     self.newPassword.count > 0  {
                     
-                    RESTManager.shared.changePassword(self.newPassword, password: self.password, onCompletion: { (err) in
+                    CosyncJWTRest.shared.changePassword(self.newPassword, password: self.password, onCompletion: { (err) in
                             
                         DispatchQueue.main.async {
                             if let _ = err {
@@ -208,7 +209,9 @@ struct InviteView: View {
                 
                 if  self.email.count > 0   {
                     
-                    RESTManager.shared.invite(self.email, metaData: nil, onCompletion: { (err) in
+                    CosyncJWTRest.shared.invite(self.email, metaData: nil,
+                                                senderUserId: RealmManager.shared.app.currentUser?.id,
+                                                onCompletion: { (err) in
                             
                         DispatchQueue.main.async {
                             if let _ = err {

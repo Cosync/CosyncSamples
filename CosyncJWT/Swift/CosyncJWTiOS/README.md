@@ -59,9 +59,6 @@ Deploy the Realm App
 XCode Project
 
 * Download the source code from Github
-* Install CryptoSwift using the Swift Package Manger
-
-    https://github.com/krzyzanowskim/CryptoSwift.git
 
 * Install Realm & RealmSwift using the Swift Package Manager
 

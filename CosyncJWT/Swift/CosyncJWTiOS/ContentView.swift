@@ -7,9 +7,16 @@
 //
 
 import SwiftUI
+import CosyncJWTSwift
 
 struct ContentView: View {
     @EnvironmentObject var appState: AppState
+    
+    init() {
+        CosyncJWTRest.shared.configure(appToken: Constants.APP_TOKEN,
+                                       cosyncRestAddress: Constants.COSYNC_REST_ADDRESS)
+
+    }
 
     var body: some View {
 

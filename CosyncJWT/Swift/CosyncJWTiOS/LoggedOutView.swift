@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import CosyncJWTSwift
 
 struct LoggedOutView: View {
     var body: some View {
@@ -209,10 +210,10 @@ struct SignupTab: View {
                         
                         if self.inviteCode.count == 0 {
                         
-                            RESTManager.shared.signup(self.email, password: self.password, metaData: metaData, onCompletion: { (err) in
+                            CosyncJWTRest.shared.signup(self.email, password: self.password, metaData: metaData, onCompletion: { (err) in
                                     
                                 DispatchQueue.main.async {
-                                    if let error = err as? RESTError {
+                                    if let error = err as? CosyncJWTError {
                                         self.showSignupError(message: error.message)
                                     } else {
                                         self.signupUI = .verifyCode
@@ -221,15 +222,15 @@ struct SignupTab: View {
                             })
                         } else {
                             
-                            RESTManager.shared.register(self.email, password: self.password, metaData: metaData, code: self.inviteCode, onCompletion: { (err) in
+                            CosyncJWTRest.shared.register(self.email, password: self.password, metaData: metaData, code: self.inviteCode, onCompletion: { (err) in
                                     
                                 DispatchQueue.main.async {
-                                    if let error = err as? RESTError {
+                                    if let error = err as? CosyncJWTError {
                                         self.showSignupError(message: error.message)
                                     } else {
                                         UserManager.shared.login(email: self.email, password: self.password) { (err) in
                                             DispatchQueue.main.async {
-                                                if let error = err as? RESTError {
+                                                if let error = err as? CosyncJWTError {
                                                     self.showSignupError(message: error.message)
                                                 } else {
                                                     self.appState.target = .loggedIn
@@ -259,16 +260,16 @@ struct SignupTab: View {
                     
                     if self.code.isNumeric && self.code.count == 6 {
                         
-                        RESTManager.shared.completeSignup(self.email, code: self.code, onCompletion: { (err) in
+                        CosyncJWTRest.shared.completeSignup(self.email, code: self.code, onCompletion: { (err) in
                             
                             DispatchQueue.main.async {
-                                if let error = err as? RESTError {
+                                if let error = err as? CosyncJWTError {
                                     self.showSignupError(message: error.message)
                                  } else {
                                     
                                     UserManager.shared.login(email: self.email, password: self.password) { (err) in
                                         DispatchQueue.main.async {
-                                            if let error = err as? RESTError {
+                                            if let error = err as? CosyncJWTError {
                                                 self.showSignupError(message: error.message)
                                             } else {
                                                 self.signupUI = .signup

@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum RESTError: Error {
+enum CosyncJWTError: Error {
     case invalidAppToken                // 400
     case appNoLongerExist               // 401
     case appSuspended                   // 402
@@ -73,10 +73,10 @@ enum RESTError: Error {
         }
     }
     
-    static func checkResponse(data: Data?, response: URLResponse?, error: Error?) -> RESTError? {
+    static func checkResponse(data: Data?, response: URLResponse?, error: Error?) -> CosyncJWTError? {
         
         if error != nil {
-            return RESTError.internalServerError
+            return CosyncJWTError.internalServerError
         }
         if let httpResponse = response as? HTTPURLResponse {
             if httpResponse.statusCode == 200 {
@@ -89,57 +89,57 @@ enum RESTError: Error {
                             switch code {
 
                             case 400:
-                                return RESTError.invalidAppToken
+                                return CosyncJWTError.invalidAppToken
                             case 401:
-                                return RESTError.appNoLongerExist
+                                return CosyncJWTError.appNoLongerExist
                             case 402:
-                                return RESTError.appSuspended
+                                return CosyncJWTError.appSuspended
                             case 403:
-                                return RESTError.missingParameter
+                                return CosyncJWTError.missingParameter
                             case 404:
-                                return RESTError.accountSuspended
+                                return CosyncJWTError.accountSuspended
                             case 405:
-                                return RESTError.invalidAccessToken
+                                return CosyncJWTError.invalidAccessToken
                             case 406:
-                                return RESTError.appInviteNotSupported
+                                return CosyncJWTError.appInviteNotSupported
                             case 407:
-                                return RESTError.appSignupNotSupported
+                                return CosyncJWTError.appSignupNotSupported
                             case 408:
-                                return RESTError.appGoogle2FactorNotSupported
+                                return CosyncJWTError.appGoogle2FactorNotSupported
                             case 409:
-                                return RESTError.appPhone2FactorNotSupported
+                                return CosyncJWTError.appPhone2FactorNotSupported
                             case 410:
-                                return RESTError.appUserPhoneNotVerified
+                                return CosyncJWTError.appUserPhoneNotVerified
                             case 411:
-                                return RESTError.expiredSignupCode
+                                return CosyncJWTError.expiredSignupCode
                             case 500:
-                                return RESTError.internalServerError
+                                return CosyncJWTError.internalServerError
                             case 600:
-                                return RESTError.invalidLoginCredentials
+                                return CosyncJWTError.invalidLoginCredentials
                             case 601:
-                                return RESTError.handleAlreadyRegistered
+                                return CosyncJWTError.handleAlreadyRegistered
                             case 602:
-                                return RESTError.invalidData
+                                return CosyncJWTError.invalidData
                             case 603:
-                                return RESTError.emailDoesNotExist
+                                return CosyncJWTError.emailDoesNotExist
                             case 604:
-                                return RESTError.invalidMetaData
+                                return CosyncJWTError.invalidMetaData
                             default:
-                                return RESTError.internalServerError
+                                return CosyncJWTError.internalServerError
                             }
                         } else {
-                            return RESTError.internalServerError
+                            return CosyncJWTError.internalServerError
                         }
                     } else {
-                        return RESTError.internalServerError
+                        return CosyncJWTError.internalServerError
                     }
                 } else {
-                    return RESTError.internalServerError
+                    return CosyncJWTError.internalServerError
                 }
             } else if httpResponse.statusCode == 500 {
-                return RESTError.internalServerError
+                return CosyncJWTError.internalServerError
             }
         }
-        return RESTError.internalServerError
+        return CosyncJWTError.internalServerError
     }
 }

@@ -9,7 +9,7 @@
 import Foundation
 import CryptoSwift
 
-class RESTManager {
+class CosyncJWTRest {
     
     // Login credentials
     var jwt: String?
@@ -49,12 +49,12 @@ class RESTManager {
     static let invitePath = "api/appuser/invite"
     static let registerPath = "api/appuser/register"
 
-    static let shared = RESTManager()
+    static let shared = CosyncJWTRest()
 
     // Login into CosyncJWT
     func login(_ handle: String, password: String, onCompletion completion: @escaping (Error?) -> Void) {
         
-        RESTManager.shared.getApplication(onCompletion: { (err) in
+        CosyncJWTRest.shared.getApplication(onCompletion: { (err) in
             
             if let error = err {
                 completion(error)
@@ -66,7 +66,7 @@ class RESTManager {
 
                 let session = URLSession(configuration: config)
                 
-                let url = URL(string: "\(restPath)/\(RESTManager.loginPath)")!
+                let url = URL(string: "\(restPath)/\(CosyncJWTRest.loginPath)")!
                 var urlRequest = URLRequest(url: url)
                 urlRequest.httpMethod = "POST"
                 urlRequest.allHTTPHeaderFields = ["app-token": appToken]
@@ -81,7 +81,7 @@ class RESTManager {
                 let task = session.dataTask(with: urlRequest) { data, response, error in
                 
                     // ensure there is no error for this HTTP response
-                    let errorResponse = RESTError.checkResponse(data: data, response: response, error: error)
+                    let errorResponse = CosyncJWTError.checkResponse(data: data, response: response, error: error)
                     guard errorResponse == nil  else {
                         completion(errorResponse)
                         return
@@ -89,13 +89,13 @@ class RESTManager {
 
                     // ensure there is data returned from this HTTP response
                     guard let content = data else {
-                        completion(RESTError.internalServerError)
+                        completion(CosyncJWTError.internalServerError)
                         return
                     }
                     
                     // serialise the data / NSData object into Dictionary [String : Any]
                     guard let json = (try? JSONSerialization.jsonObject(with: content, options: JSONSerialization.ReadingOptions.mutableContainers)) as? [String: Any] else {
-                        completion(RESTError.internalServerError)
+                        completion(CosyncJWTError.internalServerError)
                         return
                     }
                     
@@ -107,7 +107,7 @@ class RESTManager {
 
                         completion(nil)
                     } else {
-                        completion(RESTError.internalServerError)
+                        completion(CosyncJWTError.internalServerError)
                     }
                 }
                 
@@ -120,7 +120,7 @@ class RESTManager {
     // Singup into CosyncJWT
     func signup(_ handle: String, password: String, metaData: String?, onCompletion completion: @escaping (Error?) -> Void) {
 
-        RESTManager.shared.getApplication(onCompletion: { (err) in
+        CosyncJWTRest.shared.getApplication(onCompletion: { (err) in
             
             if let error = err {
                 completion(error)
@@ -134,7 +134,7 @@ class RESTManager {
 
                     let session = URLSession(configuration: config)
                     
-                    let url = URL(string: "\(restPath)/\(RESTManager.signupPath)")!
+                    let url = URL(string: "\(restPath)/\(CosyncJWTRest.signupPath)")!
                     var urlRequest = URLRequest(url: url)
                     urlRequest.httpMethod = "POST"
                     urlRequest.allHTTPHeaderFields = ["app-token": appToken]
@@ -156,7 +156,7 @@ class RESTManager {
                     let task = session.dataTask(with: urlRequest) { data, response, error in
                     
                         // ensure there is no error for this HTTP response
-                        let errorResponse = RESTError.checkResponse(data: data, response: response, error: error)
+                        let errorResponse = CosyncJWTError.checkResponse(data: data, response: response, error: error)
                         guard errorResponse == nil  else {
                             completion(errorResponse)
                             return
@@ -164,7 +164,7 @@ class RESTManager {
 
                         // ensure there is data returned from this HTTP response
                         guard let content = data else {
-                            completion(RESTError.internalServerError)
+                            completion(CosyncJWTError.internalServerError)
                             return
                         }
                         
@@ -173,7 +173,7 @@ class RESTManager {
                         if str == "true" {
                             completion(nil)
                         } else {
-                            completion(RESTError.internalServerError)
+                            completion(CosyncJWTError.internalServerError)
                         }
 
                     }
@@ -181,7 +181,7 @@ class RESTManager {
                     // execute the HTTP request
                     task.resume()
                 } else {
-                    completion(RESTError.invalidPassword)
+                    completion(CosyncJWTError.invalidPassword)
                 }
             }
         })
@@ -269,7 +269,7 @@ class RESTManager {
 
         let session = URLSession(configuration: config)
         
-        let url = URL(string: "\(restPath)/\(RESTManager.completeSignupPath)")!
+        let url = URL(string: "\(restPath)/\(CosyncJWTRest.completeSignupPath)")!
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = "POST"
         urlRequest.allHTTPHeaderFields = ["app-token": appToken]
@@ -284,7 +284,7 @@ class RESTManager {
 
         let task = session.dataTask(with: urlRequest) { data, response, error in
         
-            let errorResponse = RESTError.checkResponse(data: data, response: response, error: error)
+            let errorResponse = CosyncJWTError.checkResponse(data: data, response: response, error: error)
             guard errorResponse == nil  else {
                 completion(errorResponse)
                 return
@@ -292,13 +292,13 @@ class RESTManager {
             
             // ensure there is data returned from this HTTP response
             guard let content = data else {
-                completion(RESTError.internalServerError)
+                completion(CosyncJWTError.internalServerError)
                 return
             }
             
             // serialise the data / NSData object into Dictionary [String : Any]
             guard let json = (try? JSONSerialization.jsonObject(with: content, options: JSONSerialization.ReadingOptions.mutableContainers)) as? [String: Any] else {
-                completion(RESTError.internalServerError)
+                completion(CosyncJWTError.internalServerError)
                 return
             }
             
@@ -313,7 +313,7 @@ class RESTManager {
                 completion(nil)
             } else {
                 
-                completion(RESTError.internalServerError)
+                completion(CosyncJWTError.internalServerError)
             }
 
         }
@@ -334,14 +334,14 @@ class RESTManager {
 
             let session = URLSession(configuration: config)
             
-            let url = URL(string: "\(restPath)/\(RESTManager.getUserPath)")!
+            let url = URL(string: "\(restPath)/\(CosyncJWTRest.getUserPath)")!
             
             let urlRequest = URLRequest(url: url)
             
             let task = session.dataTask(with: urlRequest) { data, response, error in
             
                 // ensure there is no error for this HTTP response
-                let errorResponse = RESTError.checkResponse(data: data, response: response, error: error)
+                let errorResponse = CosyncJWTError.checkResponse(data: data, response: response, error: error)
                 guard errorResponse == nil  else {
                     completion(errorResponse)
                     return
@@ -349,13 +349,13 @@ class RESTManager {
 
                 // ensure there is data returned from this HTTP response
                 guard let content = data else {
-                    completion(RESTError.internalServerError)
+                    completion(CosyncJWTError.internalServerError)
                     return
                 }
                 
                 // serialise the data / NSData object into Dictionary [String : Any]
                 guard let json = (try? JSONSerialization.jsonObject(with: content, options: JSONSerialization.ReadingOptions.mutableContainers)) as? [String: Any] else {
-                    completion(RESTError.internalServerError)
+                    completion(CosyncJWTError.internalServerError)
                     return
                 }
                 
@@ -388,7 +388,7 @@ class RESTManager {
             task.resume()
             
         } else {
-            completion(RESTError.internalServerError)
+            completion(CosyncJWTError.internalServerError)
         }
     }
     
@@ -404,7 +404,7 @@ class RESTManager {
 
             let session = URLSession(configuration: config)
             
-            let url = URL(string: "\(restPath)/\(RESTManager.setPhonePath)")!
+            let url = URL(string: "\(restPath)/\(CosyncJWTRest.setPhonePath)")!
             var urlRequest = URLRequest(url: url)
             
             urlRequest.httpMethod = "POST"
@@ -421,7 +421,7 @@ class RESTManager {
             let task = session.dataTask(with: urlRequest) { data, response, error in
             
                 // ensure there is no error for this HTTP response
-                let errorResponse = RESTError.checkResponse(data: data, response: response, error: error)
+                let errorResponse = CosyncJWTError.checkResponse(data: data, response: response, error: error)
                 guard errorResponse == nil  else {
                     completion(errorResponse)
                     return
@@ -429,7 +429,7 @@ class RESTManager {
 
                 // ensure there is data returned from this HTTP response
                 guard let content = data else {
-                    completion(RESTError.internalServerError)
+                    completion(CosyncJWTError.internalServerError)
                     return
                 }
                 
@@ -438,7 +438,7 @@ class RESTManager {
                 if str == "true" {
                     completion(nil)
                 } else {
-                    completion(RESTError.internalServerError)
+                    completion(CosyncJWTError.internalServerError)
                 }
                 
                 completion(nil)
@@ -449,7 +449,7 @@ class RESTManager {
             task.resume()
             
         } else {
-            completion(RESTError.internalServerError)
+            completion(CosyncJWTError.internalServerError)
         }
     }
     
@@ -465,7 +465,7 @@ class RESTManager {
 
             let session = URLSession(configuration: config)
             
-            let url = URL(string: "\(restPath)/\(RESTManager.verifyPhonePath)")!
+            let url = URL(string: "\(restPath)/\(CosyncJWTRest.verifyPhonePath)")!
             var urlRequest = URLRequest(url: url)
             
             urlRequest.httpMethod = "POST"
@@ -482,7 +482,7 @@ class RESTManager {
             let task = session.dataTask(with: urlRequest) { data, response, error in
             
                 // ensure there is no error for this HTTP response
-                let errorResponse = RESTError.checkResponse(data: data, response: response, error: error)
+                let errorResponse = CosyncJWTError.checkResponse(data: data, response: response, error: error)
                 guard errorResponse == nil  else {
                     completion(errorResponse)
                     return
@@ -490,7 +490,7 @@ class RESTManager {
 
                 // ensure there is data returned from this HTTP response
                 guard let content = data else {
-                    completion(RESTError.internalServerError)
+                    completion(CosyncJWTError.internalServerError)
                     return
                 }
                 
@@ -499,7 +499,7 @@ class RESTManager {
                 if str == "true" {
                     completion(nil)
                 } else {
-                    completion(RESTError.internalServerError)
+                    completion(CosyncJWTError.internalServerError)
                 }
                 
                 completion(nil)
@@ -510,7 +510,7 @@ class RESTManager {
             task.resume()
             
         } else {
-            completion(RESTError.internalServerError)
+            completion(CosyncJWTError.internalServerError)
         }
     }
     
@@ -525,7 +525,7 @@ class RESTManager {
 
         let session = URLSession(configuration: config)
         
-        let url = URL(string: "\(restPath)/\(RESTManager.forgotPasswordPath)")!
+        let url = URL(string: "\(restPath)/\(CosyncJWTRest.forgotPasswordPath)")!
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = "POST"
         urlRequest.allHTTPHeaderFields = ["app-token": appToken]
@@ -540,7 +540,7 @@ class RESTManager {
         let task = session.dataTask(with: urlRequest) { data, response, error in
         
             // ensure there is no error for this HTTP response
-            let errorResponse = RESTError.checkResponse(data: data, response: response, error: error)
+            let errorResponse = CosyncJWTError.checkResponse(data: data, response: response, error: error)
             guard errorResponse == nil  else {
                 completion(errorResponse)
                 return
@@ -548,7 +548,7 @@ class RESTManager {
             
             // ensure there is data returned from this HTTP response
             guard let content = data else {
-                completion(RESTError.internalServerError)
+                completion(CosyncJWTError.internalServerError)
                 return
             }
             
@@ -557,7 +557,7 @@ class RESTManager {
             if str == "true" {
                 completion(nil)
             } else {
-                completion(RESTError.internalServerError)
+                completion(CosyncJWTError.internalServerError)
             }
         }
         
@@ -578,7 +578,7 @@ class RESTManager {
 
             let session = URLSession(configuration: config)
             
-            let url = URL(string: "\(restPath)/\(RESTManager.resetPasswordPath)")!
+            let url = URL(string: "\(restPath)/\(CosyncJWTRest.resetPasswordPath)")!
             var urlRequest = URLRequest(url: url)
             urlRequest.httpMethod = "POST"
             urlRequest.allHTTPHeaderFields = ["app-token": appToken]
@@ -595,7 +595,7 @@ class RESTManager {
             let task = session.dataTask(with: urlRequest) { data, response, error in
             
                 // ensure there is no error for this HTTP response
-                let errorResponse = RESTError.checkResponse(data: data, response: response, error: error)
+                let errorResponse = CosyncJWTError.checkResponse(data: data, response: response, error: error)
                 guard errorResponse == nil  else {
                     completion(errorResponse)
                     return
@@ -603,7 +603,7 @@ class RESTManager {
 
                 // ensure there is data returned from this HTTP response
                 guard let content = data else {
-                    completion(RESTError.internalServerError)
+                    completion(CosyncJWTError.internalServerError)
                     return
                 }
                 
@@ -612,7 +612,7 @@ class RESTManager {
                 if str == "true" {
                     completion(nil)
                 } else {
-                    completion(RESTError.internalServerError)
+                    completion(CosyncJWTError.internalServerError)
                 }
 
             }
@@ -621,7 +621,7 @@ class RESTManager {
             task.resume()
             
         } else {
-            completion(RESTError.invalidPassword)
+            completion(CosyncJWTError.invalidPassword)
         }
 
     }
@@ -638,7 +638,7 @@ class RESTManager {
 
                 let session = URLSession(configuration: config)
                 
-                let url = URL(string: "\(restPath)/\(RESTManager.changePasswordPath)")!
+                let url = URL(string: "\(restPath)/\(CosyncJWTRest.changePasswordPath)")!
                 var urlRequest = URLRequest(url: url)
                 urlRequest.httpMethod = "POST"
                 urlRequest.allHTTPHeaderFields = ["access-token": accessToken]
@@ -654,7 +654,7 @@ class RESTManager {
                 let task = session.dataTask(with: urlRequest) { data, response, error in
                 
                     // ensure there is no error for this HTTP response
-                    let errorResponse = RESTError.checkResponse(data: data, response: response, error: error)
+                    let errorResponse = CosyncJWTError.checkResponse(data: data, response: response, error: error)
                     guard errorResponse == nil  else {
                         completion(errorResponse)
                         return
@@ -662,7 +662,7 @@ class RESTManager {
 
                     // ensure there is data returned from this HTTP response
                     guard let content = data else {
-                        completion(RESTError.internalServerError)
+                        completion(CosyncJWTError.internalServerError)
                         return
                     }
                     
@@ -671,7 +671,7 @@ class RESTManager {
                     if str == "true" {
                         completion(nil)
                     } else {
-                        completion(RESTError.internalServerError)
+                        completion(CosyncJWTError.internalServerError)
                     }
 
                 }
@@ -681,7 +681,7 @@ class RESTManager {
             }
             
         } else {
-            completion(RESTError.invalidPassword)
+            completion(CosyncJWTError.invalidPassword)
         }
     }
     
@@ -696,14 +696,14 @@ class RESTManager {
 
         let session = URLSession(configuration: config)
         
-        let url = URL(string: "\(restPath)/\(RESTManager.getApplicationPath)")!
+        let url = URL(string: "\(restPath)/\(CosyncJWTRest.getApplicationPath)")!
         
         let urlRequest = URLRequest(url: url)
         
         let task = session.dataTask(with: urlRequest) { data, response, error in
         
             // ensure there is no error for this HTTP response
-            let errorResponse = RESTError.checkResponse(data: data, response: response, error: error)
+            let errorResponse = CosyncJWTError.checkResponse(data: data, response: response, error: error)
             guard errorResponse == nil  else {
                 completion(errorResponse)
                 return
@@ -711,13 +711,13 @@ class RESTManager {
 
             // ensure there is data returned from this HTTP response
             guard let content = data else {
-                completion(RESTError.internalServerError)
+                completion(CosyncJWTError.internalServerError)
                 return
             }
             
             // serialise the data / NSData object into Dictionary [String : Any]
             guard let json = (try? JSONSerialization.jsonObject(with: content, options: JSONSerialization.ReadingOptions.mutableContainers)) as? [String: Any] else {
-                completion(RESTError.internalServerError)
+                completion(CosyncJWTError.internalServerError)
                 return
             }
             
@@ -771,7 +771,7 @@ class RESTManager {
             let config = URLSessionConfiguration.default
             let session = URLSession(configuration: config)
             
-            let url = URL(string: "\(restPath)/\(RESTManager.invitePath)")!
+            let url = URL(string: "\(restPath)/\(CosyncJWTRest.invitePath)")!
             var urlRequest = URLRequest(url: url)
             urlRequest.httpMethod = "POST"
             urlRequest.allHTTPHeaderFields = ["access-token": accessToken]
@@ -793,7 +793,7 @@ class RESTManager {
             let task = session.dataTask(with: urlRequest) { data, response, error in
             
                 // ensure there is no error for this HTTP response
-                let errorResponse = RESTError.checkResponse(data: data, response: response, error: error)
+                let errorResponse = CosyncJWTError.checkResponse(data: data, response: response, error: error)
                 guard errorResponse == nil  else {
                     completion(errorResponse)
                     return
@@ -801,7 +801,7 @@ class RESTManager {
 
                 // ensure there is data returned from this HTTP response
                 guard let content = data else {
-                    completion(RESTError.internalServerError)
+                    completion(CosyncJWTError.internalServerError)
                     return
                 }
                 
@@ -810,7 +810,7 @@ class RESTManager {
                 if str == "true" {
                     completion(nil)
                 } else {
-                    completion(RESTError.internalServerError)
+                    completion(CosyncJWTError.internalServerError)
                 }
 
             }
@@ -824,7 +824,7 @@ class RESTManager {
     // register into CosyncJWT
     func register(_ handle: String, password: String, metaData: String?, code: String, onCompletion completion: @escaping (Error?) -> Void) {
         
-        RESTManager.shared.getApplication(onCompletion: { (err) in
+        CosyncJWTRest.shared.getApplication(onCompletion: { (err) in
             
             if let error = err {
                 completion(error)
@@ -839,7 +839,7 @@ class RESTManager {
 
                     let session = URLSession(configuration: config)
                     
-                    let url = URL(string: "\(restPath)/\(RESTManager.registerPath)")!
+                    let url = URL(string: "\(restPath)/\(CosyncJWTRest.registerPath)")!
                     var urlRequest = URLRequest(url: url)
                     urlRequest.httpMethod = "POST"
                     urlRequest.allHTTPHeaderFields = ["app-token": appToken]
@@ -864,7 +864,7 @@ class RESTManager {
                     let task = session.dataTask(with: urlRequest) { data, response, error in
                     
                         // ensure there is no error for this HTTP response
-                        let errorResponse = RESTError.checkResponse(data: data, response: response, error: error)
+                        let errorResponse = CosyncJWTError.checkResponse(data: data, response: response, error: error)
                         guard errorResponse == nil  else {
                             completion(errorResponse)
                             return
@@ -872,13 +872,13 @@ class RESTManager {
 
                         // ensure there is data returned from this HTTP response
                         guard let content = data else {
-                            completion(RESTError.internalServerError)
+                            completion(CosyncJWTError.internalServerError)
                             return
                         }
                         
                         // serialise the data / NSData object into Dictionary [String : Any]
                         guard let json = (try? JSONSerialization.jsonObject(with: content, options: JSONSerialization.ReadingOptions.mutableContainers)) as? [String: Any] else {
-                            completion(RESTError.internalServerError)
+                            completion(CosyncJWTError.internalServerError)
                             return
                         }
                         
@@ -892,7 +892,7 @@ class RESTManager {
 
                             completion(nil)
                         } else {
-                            completion(RESTError.internalServerError)
+                            completion(CosyncJWTError.internalServerError)
                         }
 
                     }
@@ -902,7 +902,7 @@ class RESTManager {
                     
                     
                 } else {
-                    completion(RESTError.invalidPassword)
+                    completion(CosyncJWTError.invalidPassword)
                 }
             }
         })

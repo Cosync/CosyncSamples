@@ -8,6 +8,7 @@
 
 import Foundation
 import SwiftUI
+import CosyncJWTSwift
 
 enum PasswordUI: Int {
     case password
@@ -76,10 +77,10 @@ struct PasswordView: View {
                         
                         if  self.email.count > 0 {
                             
-                            RESTManager.shared.forgotPassword(self.email, onCompletion: { (error) in
+                            CosyncJWTRest.shared.forgotPassword(self.email, onCompletion: { (error) in
                                     
                                 DispatchQueue.main.async {
-                                    if let error = error as? RESTError {
+                                    if let error = error as? CosyncJWTError {
                                         self.forgotPasswordError(message: error.message)
                                     } else {
                                         self.passwordUI = .verifyCode
@@ -106,10 +107,10 @@ struct PasswordView: View {
                         
                         if self.password.count > 0 && self.code.isNumeric && self.code.count == 6 {
                             
-                            RESTManager.shared.resetPassword(self.email, password: self.password, code: self.code, onCompletion: { (error) in
+                            CosyncJWTRest.shared.resetPassword(self.email, password: self.password, code: self.code, onCompletion: { (error) in
                                     
                                 DispatchQueue.main.async {
-                                    if let error = error as? RESTError {
+                                    if let error = error as? CosyncJWTError {
                                         self.forgotPasswordError(message: error.message)
                                     } else {
                                         self.forgotPasswordSuccess()

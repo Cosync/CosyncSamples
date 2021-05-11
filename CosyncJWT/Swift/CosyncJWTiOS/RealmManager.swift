@@ -8,6 +8,7 @@
 
 import Foundation
 import RealmSwift
+import CosyncJWTSwift
 
 class RealmManager {
     
@@ -30,7 +31,7 @@ class RealmManager {
             case .success( _):
                 completion(nil)
             case .failure( _):
-                completion(RESTError.internalServerError)
+                completion(CosyncJWTError.internalServerError)
             }
             
         }
@@ -43,7 +44,7 @@ class RealmManager {
             user.logOut(completion: { (error) in
                 
                 guard error == nil else {
-                    completion(RESTError.internalServerError)
+                    completion(CosyncJWTError.internalServerError)
                     return
                 }
                 

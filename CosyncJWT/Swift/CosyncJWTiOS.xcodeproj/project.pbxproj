@@ -10,10 +10,9 @@
 		561A652025CA3ED000CD3BA6 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 561A651F25CA3ED000CD3BA6 /* README.md */; };
 		561A652525CA4AF300CD3BA6 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = 561A652425CA4AF300CD3BA6 /* Realm */; };
 		561A652725CA4AF300CD3BA6 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 561A652625CA4AF300CD3BA6 /* RealmSwift */; };
-		561A652B25CA4C7000CD3BA6 /* CryptoSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 561A652A25CA4C7000CD3BA6 /* CryptoSwift */; };
-		5640B7CD24E1E8EF003350E2 /* RESTError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5640B7CC24E1E8EF003350E2 /* RESTError.swift */; };
 		5640B7CF24E2397F003350E2 /* RealmManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5640B7CE24E2397F003350E2 /* RealmManager.swift */; };
 		5640B7D324E481F6003350E2 /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5640B7D224E481F6003350E2 /* UserManager.swift */; };
+		5650D2432649729A005E3D3C /* CosyncJWTSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 5650D2422649729A005E3D3C /* CosyncJWTSwift */; };
 		565CF8B724DC60CE0047CE93 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 565CF8B624DC60CE0047CE93 /* AppDelegate.swift */; };
 		565CF8B924DC60CE0047CE93 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 565CF8B824DC60CE0047CE93 /* SceneDelegate.swift */; };
 		565CF8BB24DC60CE0047CE93 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 565CF8BA24DC60CE0047CE93 /* ContentView.swift */; };
@@ -24,7 +23,6 @@
 		565CF8CF24DC77930047CE93 /* LoggedOutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 565CF8CE24DC77930047CE93 /* LoggedOutView.swift */; };
 		565CF8D124DC77BB0047CE93 /* LoggedInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 565CF8D024DC77BB0047CE93 /* LoggedInView.swift */; };
 		565CF8D324DC96090047CE93 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 565CF8D224DC96090047CE93 /* Constants.swift */; };
-		565CF8D524DC97260047CE93 /* RESTManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 565CF8D424DC97260047CE93 /* RESTManager.swift */; };
 		565CF8D724DCEB6D0047CE93 /* AlertExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 565CF8D624DCEB6D0047CE93 /* AlertExtension.swift */; };
 		565CF8DA24DE43430047CE93 /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 565CF8D924DE43430047CE93 /* StringExtension.swift */; };
 		56F529CF24E607BE00CC1EB2 /* PasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56F529CE24E607BE00CC1EB2 /* PasswordView.swift */; };
@@ -32,7 +30,6 @@
 
 /* Begin PBXFileReference section */
 		561A651F25CA3ED000CD3BA6 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = CosyncJWTiOS/README.md; sourceTree = SOURCE_ROOT; };
-		5640B7CC24E1E8EF003350E2 /* RESTError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RESTError.swift; sourceTree = "<group>"; };
 		5640B7CE24E2397F003350E2 /* RealmManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmManager.swift; sourceTree = "<group>"; };
 		5640B7D224E481F6003350E2 /* UserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
 		565CF8B324DC60CE0047CE93 /* CosyncJWTiOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CosyncJWTiOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -47,7 +44,6 @@
 		565CF8CE24DC77930047CE93 /* LoggedOutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggedOutView.swift; sourceTree = "<group>"; };
 		565CF8D024DC77BB0047CE93 /* LoggedInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggedInView.swift; sourceTree = "<group>"; };
 		565CF8D224DC96090047CE93 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
-		565CF8D424DC97260047CE93 /* RESTManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RESTManager.swift; sourceTree = "<group>"; };
 		565CF8D624DCEB6D0047CE93 /* AlertExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertExtension.swift; sourceTree = "<group>"; };
 		565CF8D924DE43430047CE93 /* StringExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
 		56F529CE24E607BE00CC1EB2 /* PasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordView.swift; sourceTree = "<group>"; };
@@ -58,9 +54,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5650D2432649729A005E3D3C /* CosyncJWTSwift in Frameworks */,
 				561A652725CA4AF300CD3BA6 /* RealmSwift in Frameworks */,
 				561A652525CA4AF300CD3BA6 /* Realm in Frameworks */,
-				561A652B25CA4C7000CD3BA6 /* CryptoSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -104,8 +100,6 @@
 				565CF8D024DC77BB0047CE93 /* LoggedInView.swift */,
 				56F529CE24E607BE00CC1EB2 /* PasswordView.swift */,
 				565CF8CC24DC769A0047CE93 /* AppState.swift */,
-				565CF8D424DC97260047CE93 /* RESTManager.swift */,
-				5640B7CC24E1E8EF003350E2 /* RESTError.swift */,
 				5640B7CE24E2397F003350E2 /* RealmManager.swift */,
 				5640B7D224E481F6003350E2 /* UserManager.swift */,
 				565CF8BC24DC60CF0047CE93 /* Assets.xcassets */,
@@ -152,7 +146,7 @@
 			packageProductDependencies = (
 				561A652425CA4AF300CD3BA6 /* Realm */,
 				561A652625CA4AF300CD3BA6 /* RealmSwift */,
-				561A652A25CA4C7000CD3BA6 /* CryptoSwift */,
+				5650D2422649729A005E3D3C /* CosyncJWTSwift */,
 			);
 			productName = CosyncJWTiOS;
 			productReference = 565CF8B324DC60CE0047CE93 /* CosyncJWTiOS.app */;
@@ -184,7 +178,7 @@
 			mainGroup = 565CF8AA24DC60CE0047CE93;
 			packageReferences = (
 				561A652325CA4AF300CD3BA6 /* XCRemoteSwiftPackageReference "realm-cocoa" */,
-				561A652925CA4C7000CD3BA6 /* XCRemoteSwiftPackageReference "CryptoSwift" */,
+				5650D2412649729A005E3D3C /* XCRemoteSwiftPackageReference "CosyncJWTSwift" */,
 			);
 			productRefGroup = 565CF8B424DC60CE0047CE93 /* Products */;
 			projectDirPath = "";
@@ -223,8 +217,6 @@
 				565CF8CF24DC77930047CE93 /* LoggedOutView.swift in Sources */,
 				5640B7CF24E2397F003350E2 /* RealmManager.swift in Sources */,
 				565CF8D324DC96090047CE93 /* Constants.swift in Sources */,
-				565CF8D524DC97260047CE93 /* RESTManager.swift in Sources */,
-				5640B7CD24E1E8EF003350E2 /* RESTError.swift in Sources */,
 				565CF8BB24DC60CE0047CE93 /* ContentView.swift in Sources */,
 				565CF8D724DCEB6D0047CE93 /* AlertExtension.swift in Sources */,
 				565CF8CD24DC769A0047CE93 /* AppState.swift in Sources */,
@@ -433,12 +425,12 @@
 				minimumVersion = 10.5.1;
 			};
 		};
-		561A652925CA4C7000CD3BA6 /* XCRemoteSwiftPackageReference "CryptoSwift" */ = {
+		5650D2412649729A005E3D3C /* XCRemoteSwiftPackageReference "CosyncJWTSwift" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/krzyzanowskim/CryptoSwift.git";
+			repositoryURL = "https://github.com/Cosync/CosyncJWTSwift.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.3.8;
+				minimumVersion = 1.0.1;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -454,10 +446,10 @@
 			package = 561A652325CA4AF300CD3BA6 /* XCRemoteSwiftPackageReference "realm-cocoa" */;
 			productName = RealmSwift;
 		};
-		561A652A25CA4C7000CD3BA6 /* CryptoSwift */ = {
+		5650D2422649729A005E3D3C /* CosyncJWTSwift */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 561A652925CA4C7000CD3BA6 /* XCRemoteSwiftPackageReference "CryptoSwift" */;
-			productName = CryptoSwift;
+			package = 5650D2412649729A005E3D3C /* XCRemoteSwiftPackageReference "CosyncJWTSwift" */;
+			productName = CosyncJWTSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
