@@ -21,7 +21,7 @@ On the Cosync portal
 
 On the MongoDB Atlas side
 
-* Create a Free Atlas Cluster. Under 'Additional Settings' select version 'MongoDB 4.4 - Beta'
+* Create a Free Atlas Cluster. Under 'Additional Settings' select version 'MongoDB 4.4'
 * Name new Atlas Cluster CosyncJWTiOS
 * Hit Create Cluster
 
@@ -59,6 +59,14 @@ Deploy the Realm App
 XCode Project
 
 * Download the source code from Github
+
+* Install CosyncJWTSwift using the Swift Package Manager
+
+    https://github.com/Cosync/CosyncJWTSwift.git
+
+    Leave the default value of Up to Next Major, then click Next.
+
+    Select CosyncJWTSwift, then click Finish.
 
 * Install Realm & RealmSwift using the Swift Package Manager
 
