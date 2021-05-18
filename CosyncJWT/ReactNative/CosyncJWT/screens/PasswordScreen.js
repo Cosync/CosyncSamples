@@ -37,11 +37,11 @@ import {
 import Loader from '../components/Loader'; 
 import Configure from '../config/Config'; 
 import md5 from 'md5';
-import * as CosyncJWT from '../managers/CosyncJWTManager'; 
+import CosyncJWTReact from 'cosync-jwt-react-native'; 
 
 const PasswordScreen = props => {
   
-  
+  let cosync = new CosyncJWTReact(global.config);
   let [loading, setLoading] = useState(false);
   let [errortext, setErrortext] = useState(''); 
   let [infotext, setInfotext] = useState('');
@@ -67,7 +67,7 @@ const PasswordScreen = props => {
 
     setLoading(true);  
     
-    CosyncJWT.postData('/api/appuser/changePassword', {password: md5(userPassword), newPassword: md5(newUserPassword)} ).then(result => {
+    cosync.password.changePassword(md5(userPassword), md5(newUserPassword)).then(result => {
 
       setLoading(false);
       console.log('CosyncJWT PasswordScreen result  ', result);

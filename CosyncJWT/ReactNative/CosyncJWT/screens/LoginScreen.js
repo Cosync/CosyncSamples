@@ -38,7 +38,7 @@ import {
 } from 'react-native'; 
 import Loader from '../components/Loader'; 
 import Configure, { CosyncApp } from '../config/Config';  
-import * as CosyncJWT from '../managers/CosyncJWTManager'; 
+import CosyncJWTReact from 'cosync-jwt-react-native'; 
 import * as Realm from '../managers/RealmManager'; 
 import md5 from 'md5';
 
@@ -56,12 +56,16 @@ const LoginScreen = props => {
 
   global.appId = Configure.Realm.appId;  
    
+  let cosync = new CosyncJWTReact(Configure.CosyncApp);
 
   useEffect(() => {
-    CosyncJWT.fetchData('/api/appuser/getApplication').then(result => {  
+    cosync.app.getApplication().then(result => {  
       global.appData = result;
       if(result.twoFactorVerification == 'google') setTwoFactorText('Enter Auth token verification code');
-    });
+    }).catch(err => {
+      
+      alert(`Invalid Data: ${err.message}`)
+    })
    
   }, []);
 
@@ -103,16 +107,15 @@ const LoginScreen = props => {
       return;
     }
 
-    let dataToSend = {
-      handle: userEmail,
-      password: md5(userPassword)
-    }; 
+    
 
-    CosyncJWT.postData('/api/appuser/login', dataToSend).then(result => {
+    cosync.login.login(userEmail, md5(userPassword)).then(result => { 
 
       console.log('CosyncJWT login result  ', result);
       setLoading(false);
       global.userData = result;  
+      
+
       if(result.code){ 
         
         setErrortext(result.message);
@@ -124,16 +127,13 @@ const LoginScreen = props => {
         return;
       } 
 
-      CosyncJWT.fetchData('/api/appuser/getUser').then(data => {  
-        global.userData.data = data; 
-       
+      let config = Configure.CosyncApp;
+      config.accessToken = result['access-token'];
+      global.config = config;
+      cosync.config = config;
 
-        // global.userData.realmUser = {id: 'test'};
-        // console.log('CosyncJWT login global.userData 2 ', global.userData); 
-        // setLoading(false); 
-        // props.navigation.navigate('DrawerNavigationRoutes'); 
-
-        
+      cosync.profile.getUser().then(data => {  
+        global.userData.data = data;  
 
         loginToMongoDBRealm(global.userData.jwt); 
       }); 
@@ -148,14 +148,9 @@ const LoginScreen = props => {
 
   const completeLogin = () => {
 
-    setLoading(true); 
-
-    let dataToSend = {
-      loginToken: global.userData['login-token'],
-      code: loginCode
-    }; 
-
-    CosyncJWT.postData('/api/appuser/loginComplete', dataToSend).then(result => {
+    setLoading(true);  
+    
+    cosync.login.loginComplete(global.userData['login-token'], loginCode).then(result => {
       console.log('completeLogin', result);
 
       if(result.code){
@@ -167,7 +162,12 @@ const LoginScreen = props => {
         setCompleteLogin(true);
         global.userData = result;  
 
-        CosyncJWT.fetchData('/api/appuser/getUser').then(data => {
+        let config = Configure.CosyncApp;
+        config.accessToken = result['access-token'];
+        global.config = config;
+        cosync.config = config;
+        
+        cosync.profile.getUser().then(data => {  
           global.userData.data = data; 
           loginToMongoDBRealm(global.userData.jwt); 
         });
@@ -195,7 +195,8 @@ const LoginScreen = props => {
       props.navigation.navigate('DrawerNavigationRoutes');
 
     }).catch(err => {
-      setErrortext(err.message);
+       
+      setErrortext(`MongoDB Realm Error: ${err.message}`);
     });
 
     
