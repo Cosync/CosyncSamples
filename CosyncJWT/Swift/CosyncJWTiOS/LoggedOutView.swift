@@ -47,7 +47,8 @@ struct LoginTab: View {
     @State private var password = ""
     @EnvironmentObject var appState: AppState
     @State private var message: AlertMessage? = nil
-
+    @State var isLoggingIn = false
+    
     func showLoginInvalidParameters(){
         self.message = AlertMessage(title: "Login Failed", message: "You have entered an invalid handle or password.", target: .none, state: self.appState)
     }
@@ -81,17 +82,27 @@ struct LoginTab: View {
             
             Divider()
             
+            if isLoggingIn {
+                ProgressView()
+            }
+            
             Button(action: {
 
                 if self.email.count > 0 && self.password.count > 0 {
-                    
+                    isLoggingIn = true
                     UserManager.shared.login(email: self.email, password: self.password) { (error) in
                         
                         DispatchQueue.main.async {
+                            isLoggingIn = false
+                            
                             if error != nil {
                                 self.showLoginInvalidParameters()
                             } else {
-                                self.appState.target = .loggedIn
+                                if let _ = CosyncJWTRest.shared.loginToken {
+                                    self.appState.target = .loginComplete
+                                } else {
+                                    self.appState.target = .loggedIn
+                                }
                             }
                         }
                     }
@@ -119,7 +130,8 @@ struct LoginTab: View {
             .padding()
             
 
-        }.font(.title)
+        }
+        .font(.title)
         .alert(item: $message) { message in
             Alert(message)
         }
@@ -142,6 +154,7 @@ struct SignupTab: View {
     @EnvironmentObject var appState: AppState
     @State private var message: AlertMessage? = nil
     @State var signupUI: SignupUI = .signup
+    @State var isLoggingIn = false
     
     func showSignupInvalidParameters(){
         self.message = AlertMessage(title: "Signup Failed", message: "You have entered an invalid handle or password.", target: .none, state: self.appState)
@@ -213,6 +226,10 @@ struct SignupTab: View {
             
             Divider()
             
+            if isLoggingIn {
+                ProgressView()
+            }
+            
             if self.signupUI == .signup {
                 Button(action: {
                     
@@ -226,10 +243,11 @@ struct SignupTab: View {
                         let metaData = "{\"user_data\": {\"name\": {\"first\": \"\(self.firstName)\", \"last\": \"\(self.lastName)\"}}}"
                         
                         if self.inviteCode.count == 0 {
-                        
+                            isLoggingIn = true
                             CosyncJWTRest.shared.signup(self.email, password: self.password, metaData: metaData, onCompletion: { (err) in
                                     
                                 DispatchQueue.main.async {
+                                    isLoggingIn = false
                                     if let error = err as? CosyncJWTError {
                                         self.showSignupError(message: error.message)
                                     } else {
@@ -238,15 +256,18 @@ struct SignupTab: View {
                                 }
                             })
                         } else {
-                            
+                            isLoggingIn = true
                             CosyncJWTRest.shared.register(self.email, password: self.password, metaData: metaData, code: self.inviteCode, onCompletion: { (err) in
                                     
                                 DispatchQueue.main.async {
+                                    isLoggingIn = false
                                     if let error = err as? CosyncJWTError {
                                         self.showSignupError(message: error.message)
                                     } else {
+                                        isLoggingIn = true
                                         UserManager.shared.login(email: self.email, password: self.password) { (err) in
                                             DispatchQueue.main.async {
+                                                isLoggingIn = false
                                                 if let error = err as? CosyncJWTError {
                                                     self.showSignupError(message: error.message)
                                                 } else {

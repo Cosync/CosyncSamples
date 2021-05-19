@@ -12,7 +12,6 @@
 		561A652725CA4AF300CD3BA6 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 561A652625CA4AF300CD3BA6 /* RealmSwift */; };
 		5640B7CF24E2397F003350E2 /* RealmManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5640B7CE24E2397F003350E2 /* RealmManager.swift */; };
 		5640B7D324E481F6003350E2 /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5640B7D224E481F6003350E2 /* UserManager.swift */; };
-		5650D2432649729A005E3D3C /* CosyncJWTSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 5650D2422649729A005E3D3C /* CosyncJWTSwift */; };
 		565CF8B724DC60CE0047CE93 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 565CF8B624DC60CE0047CE93 /* AppDelegate.swift */; };
 		565CF8B924DC60CE0047CE93 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 565CF8B824DC60CE0047CE93 /* SceneDelegate.swift */; };
 		565CF8BB24DC60CE0047CE93 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 565CF8BA24DC60CE0047CE93 /* ContentView.swift */; };
@@ -25,6 +24,8 @@
 		565CF8D324DC96090047CE93 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 565CF8D224DC96090047CE93 /* Constants.swift */; };
 		565CF8D724DCEB6D0047CE93 /* AlertExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 565CF8D624DCEB6D0047CE93 /* AlertExtension.swift */; };
 		565CF8DA24DE43430047CE93 /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 565CF8D924DE43430047CE93 /* StringExtension.swift */; };
+		56C0490326558E7400AFD981 /* LoginCompleteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56C0490226558E7400AFD981 /* LoginCompleteView.swift */; };
+		56C049092655CC5000AFD981 /* CosyncJWTSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 56C049082655CC5000AFD981 /* CosyncJWTSwift */; };
 		56F529CF24E607BE00CC1EB2 /* PasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56F529CE24E607BE00CC1EB2 /* PasswordView.swift */; };
 /* End PBXBuildFile section */
 
@@ -46,6 +47,7 @@
 		565CF8D224DC96090047CE93 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		565CF8D624DCEB6D0047CE93 /* AlertExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertExtension.swift; sourceTree = "<group>"; };
 		565CF8D924DE43430047CE93 /* StringExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
+		56C0490226558E7400AFD981 /* LoginCompleteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginCompleteView.swift; sourceTree = "<group>"; };
 		56F529CE24E607BE00CC1EB2 /* PasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -54,7 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5650D2432649729A005E3D3C /* CosyncJWTSwift in Frameworks */,
+				56C049092655CC5000AFD981 /* CosyncJWTSwift in Frameworks */,
 				561A652725CA4AF300CD3BA6 /* RealmSwift in Frameworks */,
 				561A652525CA4AF300CD3BA6 /* Realm in Frameworks */,
 			);
@@ -97,6 +99,7 @@
 				565CF8B824DC60CE0047CE93 /* SceneDelegate.swift */,
 				565CF8BA24DC60CE0047CE93 /* ContentView.swift */,
 				565CF8CE24DC77930047CE93 /* LoggedOutView.swift */,
+				56C0490226558E7400AFD981 /* LoginCompleteView.swift */,
 				565CF8D024DC77BB0047CE93 /* LoggedInView.swift */,
 				56F529CE24E607BE00CC1EB2 /* PasswordView.swift */,
 				565CF8CC24DC769A0047CE93 /* AppState.swift */,
@@ -146,7 +149,7 @@
 			packageProductDependencies = (
 				561A652425CA4AF300CD3BA6 /* Realm */,
 				561A652625CA4AF300CD3BA6 /* RealmSwift */,
-				5650D2422649729A005E3D3C /* CosyncJWTSwift */,
+				56C049082655CC5000AFD981 /* CosyncJWTSwift */,
 			);
 			productName = CosyncJWTiOS;
 			productReference = 565CF8B324DC60CE0047CE93 /* CosyncJWTiOS.app */;
@@ -178,7 +181,7 @@
 			mainGroup = 565CF8AA24DC60CE0047CE93;
 			packageReferences = (
 				561A652325CA4AF300CD3BA6 /* XCRemoteSwiftPackageReference "realm-cocoa" */,
-				5650D2412649729A005E3D3C /* XCRemoteSwiftPackageReference "CosyncJWTSwift" */,
+				56C049072655CC5000AFD981 /* XCRemoteSwiftPackageReference "CosyncJWTSwift" */,
 			);
 			productRefGroup = 565CF8B424DC60CE0047CE93 /* Products */;
 			projectDirPath = "";
@@ -212,6 +215,7 @@
 				56F529CF24E607BE00CC1EB2 /* PasswordView.swift in Sources */,
 				565CF8D124DC77BB0047CE93 /* LoggedInView.swift in Sources */,
 				565CF8DA24DE43430047CE93 /* StringExtension.swift in Sources */,
+				56C0490326558E7400AFD981 /* LoginCompleteView.swift in Sources */,
 				5640B7D324E481F6003350E2 /* UserManager.swift in Sources */,
 				565CF8B924DC60CE0047CE93 /* SceneDelegate.swift in Sources */,
 				565CF8CF24DC77930047CE93 /* LoggedOutView.swift in Sources */,
@@ -288,7 +292,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -343,7 +347,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -425,12 +429,12 @@
 				minimumVersion = 10.5.1;
 			};
 		};
-		5650D2412649729A005E3D3C /* XCRemoteSwiftPackageReference "CosyncJWTSwift" */ = {
+		56C049072655CC5000AFD981 /* XCRemoteSwiftPackageReference "CosyncJWTSwift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Cosync/CosyncJWTSwift.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.1;
+				minimumVersion = 1.0.3;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -446,9 +450,9 @@
 			package = 561A652325CA4AF300CD3BA6 /* XCRemoteSwiftPackageReference "realm-cocoa" */;
 			productName = RealmSwift;
 		};
-		5650D2422649729A005E3D3C /* CosyncJWTSwift */ = {
+		56C049082655CC5000AFD981 /* CosyncJWTSwift */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 5650D2412649729A005E3D3C /* XCRemoteSwiftPackageReference "CosyncJWTSwift" */;
+			package = 56C049072655CC5000AFD981 /* XCRemoteSwiftPackageReference "CosyncJWTSwift" */;
 			productName = CosyncJWTSwift;
 		};
 /* End XCSwiftPackageProductDependency section */

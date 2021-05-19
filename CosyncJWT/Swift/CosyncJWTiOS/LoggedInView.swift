@@ -28,9 +28,26 @@ import CosyncJWTSwift
 
 struct LoggedInView: View {
     @EnvironmentObject var appState: AppState
-    @State var phoneNumber = ""
+    @State var phone = CosyncJWTRest.shared.phone ?? ""
+    @State var phoneVerified = CosyncJWTRest.shared.phoneVerified ?? false
+    @State var twoFactorPhoneVerification = CosyncJWTRest.shared.twoFactorPhoneVerification ?? false
     @State var phoneCode = ""
+    @State var changePhoneNumber = false
     @State var verifyCode = false
+    @State private var message: AlertMessage? = nil
+    
+    func errorSetPhone(err: Error?){
+        if let cosyncJWTError = err as? CosyncJWTError {
+            self.message = AlertMessage(title: "Set Phone", message: cosyncJWTError.message, target: .none, state: self.appState)
+        }
+    }
+    
+    func errorVerifyPhone(err: Error?){
+        if let cosyncJWTError = err as? CosyncJWTError {
+            self.message = AlertMessage(title: "Verify Phone", message: cosyncJWTError.message, target: .none, state: self.appState)
+        }
+    }
+    
     var body: some View {
         NavigationView {
             
@@ -41,19 +58,40 @@ struct LoggedInView: View {
                 Text(UserManager.shared.firstName)
                 Text(UserManager.shared.lastName)
                 
-                if let twofactorVerification = CosyncJWTRest.shared.twoFactorVerification,
-                   twofactorVerification == "phone" {
+                // show phone number stuff if app supports 2-factor phone verification
+                if let  twofactorVerification = CosyncJWTRest.shared.twoFactorVerification,
+                        twofactorVerification == "phone" {
+                    
                     Divider()
+                    
                     HStack() {
-                        TextField("phone E.164 format", text: $phoneNumber)
+                        if phoneVerified && changePhoneNumber==false {
+                            Text(phone)
+                            Spacer()
+                        } else {
+                            TextField("phone E.164 format", text: $phone)
+                        }
+                        
                         Button(action: {
-                            CosyncJWTRest.shared.setPhone(self.phoneNumber, onCompletion: { (err) in
-                                    
-                                self.verifyCode = true
+                            if phoneVerified && changePhoneNumber==false {
+                                changePhoneNumber = true
+                                phone = ""
+                            } else {
+                                CosyncJWTRest.shared.setPhone(phone, onCompletion: { (err) in
+                                    if err == nil {
+                                        verifyCode = true
+                                    } else {
+                                        errorSetPhone(err: err)
+                                    }
+                                })
+                            }
 
-                            })
                         }) {
-                            Text("Set Phone")
+                            if phoneVerified && changePhoneNumber==false {
+                                Text("Change Phone")
+                            } else {
+                                Text("Set Phone")
+                            }
                         }.accentColor(.blue)
                     }
                     
@@ -63,10 +101,14 @@ struct LoggedInView: View {
                         HStack() {
                             TextField("code", text: $phoneCode)
                             Button(action: {
-                                CosyncJWTRest.shared.verifyPhone(self.phoneCode, onCompletion: { (err) in
-                                        
-                                    self.verifyCode = false
-
+                                CosyncJWTRest.shared.verifyPhone(phoneCode, onCompletion: { (err) in
+                                    if err == nil {
+                                        changePhoneNumber = false
+                                        verifyCode = false
+                                        phoneVerified = true
+                                    } else {
+                                        errorVerifyPhone(err: err)
+                                    }
                                 })
                             }) {
                                 Text("Verify Code")
@@ -74,7 +116,19 @@ struct LoggedInView: View {
                         }
                     }
                 }
-
+                
+                if phoneVerified {
+                    Toggle("Enable 2-Factor verification", isOn: $twoFactorPhoneVerification)
+                    .onChange(of: twoFactorPhoneVerification) { value in
+                        DispatchQueue.main.async {
+                            CosyncJWTRest.shared.setTwoFactorPhoneVerification(value, onCompletion: { (err) in
+                                if err != nil {
+                                    errorVerifyPhone(err: err)
+                                }
+                            })
+                        }
+                    }
+                }
 
                 Divider()
                 
@@ -92,6 +146,9 @@ struct LoggedInView: View {
                 Spacer()
             }
             .padding()
+            .alert(item: $message) { message in
+                Alert(message)
+            }
             
 
             // Use .inline for the smaller nav bar

@@ -29,6 +29,7 @@ import Foundation
 enum TargetUI: Int {
     case none
     case loggedOut
+    case loginComplete
     case loggedIn
     case password
 }

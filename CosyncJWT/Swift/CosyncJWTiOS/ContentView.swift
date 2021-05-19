@@ -42,6 +42,8 @@ struct ContentView: View {
                 LoggedOutView()
             } else if self.appState.target == .loggedIn {
                 LoggedInView()
+            } else if self.appState.target == .loginComplete {
+                LoginCompleteView()
             } else {
                 PasswordView()
             }
