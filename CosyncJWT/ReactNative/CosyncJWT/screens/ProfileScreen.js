@@ -38,7 +38,7 @@ import {
 import Clipboard from '@react-native-clipboard/clipboard';
 import Loader from '../components/Loader'; 
 import Configure from '../config/Config';  
-import * as CosyncJWT from '../managers/CosyncJWTManager'; 
+import CosyncJWTReact from 'cosync-jwt-react-native'; 
 
 const ProfileScreen = props => { 
   let [loading, setLoading] = useState(false);
@@ -52,11 +52,12 @@ const ProfileScreen = props => {
   let [isGoogleTwoFactor, setGoogleTwoFactor] = useState(false); 
   let [isPhoneTwoFactor, setPhoneTwoFactor] = useState(false); 
   let [googleSecretKey, setGoogleSecretKey] = useState(''); 
+  let cosync = new CosyncJWTReact(global.config);
 
   global.appId = Configure.Realm.appId;   
  
   useEffect(() => {
-    CosyncJWT.getCosyncApplicationData().then(result => { 
+    cosync.app.getApplication().then(result => {  
       global.appData = result;
 
       console.log("global.userData.data ", global.userData.data);
@@ -69,7 +70,7 @@ const ProfileScreen = props => {
       let phoneVerified = global.userData.data ? global.userData.data.phoneVerified : false;
       setPhoneVerified(phoneVerified);
 
-      if(global.userData.data.phone) setCurrentUserPhone(global.userData.data.phone);
+      if(global.userData && global.userData.data && global.userData.data.phone) setCurrentUserPhone(global.userData.data.phone);
     });
   }, []);
 
@@ -96,7 +97,7 @@ const ProfileScreen = props => {
     }
 
     
-    CosyncJWT.postData('/api/appuser/invite', {handle:userEmail, senderUserId:global.userData.realmUser.id}).then(result => { 
+    cosync.profile.invite(userEmail, global.realmUser.id).then(result => { 
 
       if(result == true){
         alert('Success');
@@ -118,7 +119,7 @@ const ProfileScreen = props => {
     let isTwoFactor = !isPhoneTwoFactor;
     setGoogleSecretKey(''); 
 
-    CosyncJWT.postData('/api/appuser/setTwoFactorPhoneVerification', {twoFactor: isTwoFactor}).then(result => {   
+    cosync.profile.setTwoFactorGoogleVerification(isTwoFactor).then(result => {  
 
       if(result == true){ 
         global.userData.data.twoFactorPhoneVerification = isTwoFactor; 
@@ -145,7 +146,7 @@ const ProfileScreen = props => {
       }
 
 
-      CosyncJWT.postData('/api/appuser/verifyPhone', {code:userPhoneCode}).then(result => { 
+      cosync.profile.verifyPhone(userPhoneCode).then(result => { 
 
         if(result == true){
           
@@ -180,7 +181,7 @@ const ProfileScreen = props => {
     
  
     
-    CosyncJWT.postData('/api/appuser/setPhone', {phone:userPhone}).then(result => { 
+    cosync.profile.setPhone(userPhone).then(result => { 
 
       if(result == true){
         setVerifyPhone(true);
@@ -211,9 +212,7 @@ const ProfileScreen = props => {
     let isTwoFactor = !isGoogleTwoFactor;
     setGoogleSecretKey(''); 
 
-    CosyncJWT.postData('/api/appuser/setTwoFactorGoogleVerification', {twoFactor: isTwoFactor}).then(result => {  
-      
-
+    cosync.profile.setTwoFactorGoogleVerification(isTwoFactor).then(result => { 
 
       if(result == true || result.googleSecretKey){
 

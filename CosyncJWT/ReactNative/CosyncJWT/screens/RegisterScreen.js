@@ -33,7 +33,8 @@ import {  StyleSheet,
   Keyboard,
   TouchableOpacity,
   KeyboardAvoidingView, } from 'react-native';
-import * as CosyncJWT from '../managers/CosyncJWTManager';   
+import Configure from '../config/Config';  
+import CosyncJWTReact from 'cosync-jwt-react-native';  
 import * as Realm from '../managers/RealmManager'; 
 import Loader from '../components/Loader'; 
 import md5 from 'md5';
@@ -49,7 +50,7 @@ const RegisterScreen = props => {
   let [userPassword, setUserPassword] = useState(''); 
   let [signupCode, setSignupCode] = useState(''); 
   let [loading, setLoading] = useState(false);  
-
+  let cosync = new CosyncJWTReact(Configure.CosyncApp);
   const ref_input_lastname = useRef();
   const ref_input_email = useRef();
   const ref_input_pwd = useRef(); 
@@ -59,7 +60,7 @@ const RegisterScreen = props => {
   global.realmPrivate = null; 
 
   useEffect(() => {
-    CosyncJWT.fetchData('/api/appuser/getApplication').then(result => {  
+    cosync.app.getApplication().then(result => { 
       global.appData = result;
     });
    
@@ -129,17 +130,9 @@ const RegisterScreen = props => {
       },
       email: userEmail
   };
-
-
-  let dataToSend = {
-      handle: userEmail,
-      code: signupCode,
-      password: md5(userPassword),
-      metaData : JSON.stringify(metaData)
-  }; 
+ 
   
-  
-    CosyncJWT.postData('/api/appuser/register', dataToSend).then(result => {
+  cosync.register.register(userEmail, md5(userPassword), signupCode, metaData).then(result => {
 
       setLoading(false);   
       

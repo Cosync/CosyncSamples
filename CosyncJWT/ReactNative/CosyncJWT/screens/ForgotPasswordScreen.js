@@ -39,10 +39,12 @@ import {
 import Loader from '../components/Loader'; 
 import Configure, { CosyncApp } from '../config/Config'; 
 import md5 from 'md5';
-import * as CosyncJWT from '../managers/CosyncJWTManager'; 
+import CosyncJWTReact from 'cosync-jwt-react-native'; 
 
 const ForgotPasswordScreen = props => {
   
+  let cosync = new CosyncJWTReact(global.config);
+
   let [userEmail, setUserEmail] = useState('');
   let [verifyCode, setVerifyCode] = useState(false); 
   let [loading, setLoading] = useState(false);
@@ -83,7 +85,7 @@ const ForgotPasswordScreen = props => {
     else {
 
       
-      CosyncJWT.postData('/api/appuser/forgotPassword', {handle: handle}).then(result => {
+      cosync.password.forgotPassword(handle).then(result => {
 
         setLoading(false);
         console.log('CosyncJWT forgotPassword result  ', result);
@@ -132,7 +134,7 @@ const ForgotPasswordScreen = props => {
 
     setLoading(true);   
 
-    CosyncJWT.postData('/api/appuser/resetPassword', {handle:userEmail, password:md5(userPassword), code:resetCode}).then(result => {
+    cosync.password.resetPassword(userEmail, md5(userPassword), resetCode).then(result => {
       setLoading(false); 
       console.log('resetPassword ', result);
 
