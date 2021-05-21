@@ -22,11 +22,8 @@
 //  Created by Tola Voeung.
 //  Copyright © 2020 cosync. All rights reserved.
 //
-import Realm from "realm"; 
-import Schema from '../config/Schema';
-import Configure from '../config/Config' 
- 
-
+import Realm from "realm";
+import Configure from '../config/Config';
 
 export const login = (jwt) => {
   return new Promise((resolve, reject) => { 
@@ -36,16 +33,15 @@ export const login = (jwt) => {
       timeout: 10000,
     };
 
-    closeAllRealm(); 
+    
  
     const app = new Realm.App(appConfig);  
     const credentials = Realm.Credentials.jwt(jwt);
       
     app.logIn(credentials).then(user => { 
-      global.user = user; 
+      global.realmUser = user;  
+      console.log('realm logIn user: ', user.id);
 
-      global.privatePartition = `user_id=${global.user.id}`;
-       
       resolve(user);
 
     }).catch(err => {
@@ -54,112 +50,6 @@ export const login = (jwt) => {
     }) 
   })
 }
-
-const closeAllRealm = () => {
-  
-  try {
-    for (const key in  global.realmPartition) {
-      const realm =  global.realmPartition[key]; 
-      if(realm) realm.close(); 
-    }
-  } catch (error) {
-        
-  } 
-
-  global.realmPartition = {};
-
-}
-
-
-export const openRealm = () => {
-
-  return new Promise((resolve, reject) => {
-
-    if(global.realm && global.realmPrivate){
-      resolve(global)
-      return;
-    }
-
-    let configPublic = {
-      schema:  [Schema.CosyncAsset],
-      sync: {
-        user: global.user,
-        partitionValue: Configure.Realm.publicPartition
-      }
-    }; 
-
-    let configPrivate = {
-      schema:  [Schema.CosyncAsset, Schema.CosyncAssetUpload],
-      sync: {
-        user: global.user,
-        partitionValue: global.privatePartition,
-      }
-    };  
-      
-    try {
-
-      Realm.open(configPublic).then(realm => {
-        global.realm = realm; 
-
-        Realm.open(configPrivate).then(priRealm => {
-          global.realmPrivate = priRealm;
-          resolve({realm: realm, realmPrivate: priRealm}); 
-  
-        })
-
-      }).catch(err => {
-        reject(err);
-      })
-      
-    } catch (error) { 
-      reject(error);
-    }
-    
-  })
-}
-
-
-
-export const openRealmPartition = (partitionValue, reopen) => {
-
-  return new Promise((resolve, reject) => {
-    
-    if(global.realmPartition[partitionValue]){
-      if(!reopen){
-        resolve(global.realmPartition[partitionValue]);
-        return;
-      }  
-      
-    } 
-
-    let configPartition = {
-      schema:  [Schema.CosyncAsset, Schema.CosyncAssetUpload],
-      sync: {
-        user: global.user,
-        partitionValue: partitionValue
-      }
-    };  
-      
-    try {
-
-      if(global.realmPartition[partitionValue]) global.realmPartition[partitionValue].close();
-       
-      Realm.open(configPartition).then(realm => { 
-        global.realmPartition[partitionValue] = realm;
-        resolve(realm); 
-      }).catch(err => {
-        console.error(err)
-        reject(err); 
-      })
-      
-    } catch (error) { 
-      console.error(err)
-      reject(error);
-    }
-    
-  })
-}
-
  
 
 

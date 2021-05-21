@@ -37,6 +37,7 @@ import Configure from '../config/Config';
 import CosyncJWTReact from 'cosync-jwt-react-native';  
 import * as Realm from '../managers/RealmManager'; 
 import md5 from 'md5';
+import _ from 'lodash';
 import Loader from '../components/Loader'; 
   
 
@@ -63,6 +64,9 @@ const SignupScreen = props => {
   useEffect(() => {
     cosync.app.getApplication().then(result => {  
       global.appData = result;
+
+      console.log('global.appData ', global.appData);
+
     });
    
   }, []);
@@ -117,8 +121,7 @@ const SignupScreen = props => {
     cosync.signup.completeSignup(userEmail, signupCode).then(result => {
 
       setLoading(false); 
-      console.log('completeSignup ', result);
-
+      
       if(result && result.jwt){
         
         global.userData = result; 
@@ -169,21 +172,19 @@ const SignupScreen = props => {
 
     setLoading(true);   
     
+    let metaData = {}; 
   
-    let metaData = {
-      name: {
-          first: firstName,
-          last: lastName
-      },
-      email: userEmail
-    }; 
-  
+   
+    if(global.appData.metaData){
+      global.appData.metaData.forEach(field => {
+        _.set(metaData, field.path, `test value ${field.fieldName}`); // add your value here
+      });
+    }
+    
     cosync.signup.signup(userEmail, md5(userPassword), metaData).then(result => { 
 
-      setLoading(false);   
-
+      setLoading(false);  
       
-      console.log('result ', result);
       if(result == 'true' || result === true){ 
 
         if(global.appData.signupFlow == 'none'){ 

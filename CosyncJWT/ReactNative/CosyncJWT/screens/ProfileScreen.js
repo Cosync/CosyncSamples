@@ -97,7 +97,7 @@ const ProfileScreen = props => {
     }
 
     
-    cosync.profile.invite(userEmail, global.userData.realmUser.id).then(result => { 
+    cosync.profile.invite(userEmail, global.realmUser.id).then(result => { 
 
       if(result == true){
         alert('Success');
@@ -119,7 +119,7 @@ const ProfileScreen = props => {
     let isTwoFactor = !isPhoneTwoFactor;
     setGoogleSecretKey(''); 
 
-    CosyncJWT.postData('/api/appuser/setTwoFactorPhoneVerification', {twoFactor: isTwoFactor}).then(result => {   
+    cosync.profile.setTwoFactorGoogleVerification(isTwoFactor).then(result => {  
 
       if(result == true){ 
         global.userData.data.twoFactorPhoneVerification = isTwoFactor; 
