@@ -24,9 +24,9 @@
 //
 
 exports.Realm = {
-    appId: 'applicationjwt-mhswk' 
+    appId: '' 
 }
 
 exports.CosyncApp = { 
-    appToken: "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBJZCI6ImMzYjlhMWUyZDA3NTQ5NTQ5M2ZlYzZkNGEwNzY4NDFjIiwic2NvcGUiOiJhcHAiLCJpYXQiOjE2MjE1NjY3NDB9.C3IzrtmJGufHTk1CDhD15Eh6WEISBgktYz6HWVIWOBylVbCdhRb8QiUskyX_7uGcqLTcmAb9zDA9eXOiw5tVJI0-A0EEiUdG-gqGND6yayPs9rJ2C21hTtg2LRtOzPdB_kgU_nfL_9rbY0l4Krcu48dbgj5iL4Ig9auO0EYK-0hEaup-EXL1fXmch5aEdI66YgtqUJF6bSfAuB3dCh_zTh27-MghNLZN_jFp7y-uIrtdevPfslRc9zXSfKB0Gn8AFuSa6py9I-T0oy5ZqLo3Mj2H5l-R3lxUAEoagWmVsuYj9olFoUvJkDlU8fVXqipGUdbj5Gp6OkY1kHNmBtzocNvbegKVQovtxfpzGIlWeGZ2dTnOzHelEq3cAUBwxEi5NnPuArHFAUH9CUZsho4SegsO6ji7Q8mhGStWUVHa0Zq8suFq-_a0vBaEh8jSYYd5YLge2bAJXzv4vsAyRPtvTJ96WCyQWsrXZjECOLzutN4rdV7EUqtR7N103q6BlTYo"
+    appToken: ""
 }
