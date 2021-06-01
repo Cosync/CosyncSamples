@@ -62,7 +62,7 @@ React Native Project
 - Go to CosyncSamples/CosyncJWT/ReactNative/CosyncJWT
 - Install npm package - npm install
 - Copy the Realm id from the top left button in the Realm panel in the web UI
-- Edit the REALM_APP_ID in the Constants.swift function with the copied Realm Id
-- Edit the APP_TOKEN in the Constants.swift function with the APP_TOKEN from the Cosync Portal
+- Edit the Realm appId in the config/Config.js file with the copied Realm Id
+- Edit the CosyncApp appToken in the config/Config.js file with the APP_TOKEN from the Cosync Portal
 
 Run the app 'react-native run-ios'
