@@ -34,9 +34,8 @@ import {  StyleSheet,
   TouchableOpacity,
   KeyboardAvoidingView, } from 'react-native';
 import Configure from '../config/Config';  
-import CosyncJWTReact from 'cosync-jwt-react-native';  
-import * as Realm from '../managers/RealmManager'; 
-import md5 from 'md5';
+import CosyncJWTReactNative from 'cosync-jwt-react-native';  
+import * as Realm from '../managers/RealmManager';  
 import _ from 'lodash';
 import Loader from '../components/Loader'; 
   
@@ -53,7 +52,7 @@ const SignupScreen = props => {
   let [signupCode, setSignupCode] = useState(''); 
   let [loading, setLoading] = useState(false); 
   let [verifyCode, setVerifyCode] = useState(false);  
-  let cosync = new CosyncJWTReact(Configure.CosyncApp);
+  let cosync = new CosyncJWTReactNative(Configure.CosyncApp);
   const ref_input_lastname = useRef();
   const ref_input_email = useRef();
   const ref_input_pwd = useRef(); 
@@ -102,12 +101,6 @@ const SignupScreen = props => {
     if (!userPassword) {
       alert('Please Fill Password');
       return false;
-    }
- 
-      
-    if (userPassword.length < 5) {
-      alert('Password must be at least 5 charactor.');
-      return false;
     } 
 
     return true;
@@ -124,16 +117,16 @@ const SignupScreen = props => {
       
       if(result && result.jwt){
         
-        global.userData = result; 
-
-        let config = Configure.CosyncApp; 
-        config.accessToken = result['access-token'];
-        global.config = config; 
-        cosync.config = config;
-
-        loginToMongoDBRealm(result.jwt);
+        global.userData = result;  
         setInfoText('Successfully Register.');  
-        //props.navigation.navigate('DrawerNavigationRoutes');
+        cosync.realmManager.login(result.jwt, Configure.Realm.appId).then(res => {
+          setLoading(false);
+          props.navigation.navigate('DrawerNavigationRoutes'); 
+        })
+        .catch(err => {
+          setLoading(false);
+          setErrortext(`MongoDB Realm Error: ${err.message}`);
+        });
       }
       else{
         
@@ -145,21 +138,7 @@ const SignupScreen = props => {
       setErrorCodetext(`Error: ${err.message}`);
     })
   }
-
-  const loginToMongoDBRealm = (jwt) => {
-
-    Realm.login(jwt).then(user => { 
-
-      global.realmUser= user;
-       
-      props.navigation.navigate('DrawerNavigationRoutes');
-      
-    }).catch(err => {
-      setErrortext(err.message);
-    });
-
-    
-  }
+ 
   
   const handleSubmitPress = () => {
 
@@ -181,30 +160,46 @@ const SignupScreen = props => {
       });
     }
     
-    cosync.signup.signup(userEmail, md5(userPassword), metaData).then(result => { 
+    let validate = cosync.password.validatePassword(userPassword);
+    if(validate){ 
+      cosync.signup.signup(userEmail, userPassword, metaData).then(result => { 
 
-      setLoading(false);  
-      
-      if(result == 'true' || result === true){ 
+        setLoading(false);  
+        
+        if(result == 'true' || result === true){ 
 
-        if(global.appData.signupFlow == 'none'){ 
-          setInfoText('Successfully Register.');  
+          if(global.appData.signupFlow == 'none'){ 
+            setInfoText('Successfully Register.');  
+          }
+          else{
+            setInfoText(`Please check your email for account verification ${global.appData.signupFlow}`); 
+            if(global.appData.signupFlow == 'code') setVerifyCode(true);
+          }
+          
         }
         else{
-          setInfoText(`Please check your email for account verification ${global.appData.signupFlow}`); 
-          if(global.appData.signupFlow == 'code') setVerifyCode(true);
+          
+          setErrortext(`Error: ${result.message}`);
         }
-        
-      }
-      else{
-        
-        setErrortext(`Error: ${result.message}`);
-      }
-    }).catch(err => {
-      setLoading(false); 
-      console.log(err);
-      setErrortext(`Error: ${err.message}`);
-    })
+      }).catch(err => {
+        setLoading(false); 
+        console.log(err);
+        setErrortext(`Error: ${err.message}`);
+      })
+
+    }
+    else {
+      setLoading(false);  
+      let message = `
+        Error: Invalid Password Rules:\nMinimum password length : ${global.cosyncAppData.passwordMinLength}
+        Minimun upper case : ${global.cosyncAppData.passwordMinUpper}
+        Minimum lower case : ${global.cosyncAppData.passwordMinLower}
+        Minimum digit charactor : ${global.cosyncAppData.passwordMinDigit}
+        Minimum special charactor: ${global.cosyncAppData.passwordMinSpecial}
+      `;
+      setErrortext(message);
+    }
+     
     
   };
 

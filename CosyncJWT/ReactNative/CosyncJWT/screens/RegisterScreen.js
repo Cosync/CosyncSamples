@@ -34,10 +34,10 @@ import {  StyleSheet,
   TouchableOpacity,
   KeyboardAvoidingView, } from 'react-native';
 import Configure from '../config/Config';  
-import CosyncJWTReact from 'cosync-jwt-react-native';  
+import CosyncJWTReactNative from 'cosync-jwt-react-native';  
 import * as Realm from '../managers/RealmManager'; 
 import Loader from '../components/Loader'; 
-import md5 from 'md5';
+ 
 
 const RegisterScreen = props => {
   
@@ -50,7 +50,7 @@ const RegisterScreen = props => {
   let [userPassword, setUserPassword] = useState(''); 
   let [signupCode, setSignupCode] = useState(''); 
   let [loading, setLoading] = useState(false);  
-  let cosync = new CosyncJWTReact(Configure.CosyncApp);
+  let cosync = new CosyncJWTReactNative(Configure.CosyncApp);
   const ref_input_lastname = useRef();
   const ref_input_email = useRef();
   const ref_input_pwd = useRef(); 
@@ -121,7 +121,7 @@ const RegisterScreen = props => {
       return;
     }
 
-    setLoading(true);   
+   
     
     let metaData = {
       name: {
@@ -131,16 +131,37 @@ const RegisterScreen = props => {
       email: userEmail
   };
  
+  let validate = cosync.password.validatePassword(userPassword);
+  if(!validate){
+    let message = `
+        Error: Invalid Password Rules:\nMinimum password length : ${global.cosyncAppData.passwordMinLength}
+        Minimun upper case : ${global.cosyncAppData.passwordMinUpper}
+        Minimum lower case : ${global.cosyncAppData.passwordMinLower}
+        Minimum digit charactor : ${global.cosyncAppData.passwordMinDigit}
+        Minimum special charactor: ${global.cosyncAppData.passwordMinSpecial}
+      `;
+      setErrortext(message);
+      return;
+  }
+
+  setLoading(true);   
   
-  cosync.register.register(userEmail, md5(userPassword), signupCode, metaData).then(result => {
+  cosync.register.register(userEmail, userPassword, signupCode, metaData).then(result => {
 
       setLoading(false);   
       
-      console.log('result ', result);
+      
 
       if(result.jwt){ 
         global.userData = result;   
-        loginToMongoDBRealm(result.jwt); 
+        cosync.realmManager.login(result.jwt, Configure.Realm.appId).then(res => {
+          setLoading(false);
+          props.navigation.navigate('DrawerNavigationRoutes'); 
+        })
+        .catch(err => {
+          setLoading(false);
+          setErrortext(`MongoDB Realm Error: ${err.message}`);
+        });
       }
       else{
         
@@ -152,27 +173,7 @@ const RegisterScreen = props => {
       setErrortext(`Error: ${err.message}`);
     })
     
-  };
-
- 
-   
-  const loginToMongoDBRealm = (jwt) => {
-
-    Realm.login(jwt).then(user => { 
-
-      global.userData.realmUser = user; 
-
-      setLoading(false); 
-      props.navigation.navigate('DrawerNavigationRoutes');
-
-    }).catch(err => {
-      setErrortext(err.message);
-    });
-
-    
-  }
-
-
+  }; 
  
 
   return (

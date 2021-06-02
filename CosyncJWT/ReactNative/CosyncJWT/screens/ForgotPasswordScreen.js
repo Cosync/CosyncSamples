@@ -37,13 +37,12 @@ import {
   KeyboardAvoidingView,
 } from 'react-native'; 
 import Loader from '../components/Loader'; 
-import Configure, { CosyncApp } from '../config/Config'; 
-import md5 from 'md5';
-import CosyncJWTReact from 'cosync-jwt-react-native'; 
+import Configure from '../config/Config';  
+import CosyncJWTReactNative from 'cosync-jwt-react-native'; 
 
 const ForgotPasswordScreen = props => {
   
-  let cosync = new CosyncJWTReact(global.config);
+  let cosync = new CosyncJWTReactNative(Configure.CosyncApp);
 
   let [userEmail, setUserEmail] = useState('');
   let [verifyCode, setVerifyCode] = useState(false); 
@@ -56,7 +55,7 @@ const ForgotPasswordScreen = props => {
   const ref_input_pwd = useRef();
   const ref_input_code = useRef();
 
-  global.appId = Configure.Realm.appId;  
+  
   const validateEmail = (text) => {
    
     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
@@ -85,7 +84,7 @@ const ForgotPasswordScreen = props => {
     else {
 
       
-      cosync.password.forgotPassword(handle).then(result => {
+      cosync.password.forgotPassword(userEmail).then(result => {
 
         setLoading(false);
         console.log('CosyncJWT forgotPassword result  ', result);
@@ -132,25 +131,40 @@ const ForgotPasswordScreen = props => {
       return;
     }
 
-    setLoading(true);   
+    let validate = cosync.password.validatePassword(userPassword);
+    if(!validate){
+      let message = `
+          Error: Invalid Password Rules:\nMinimum password length : ${global.cosyncAppData.passwordMinLength}
+          Minimun upper case : ${global.cosyncAppData.passwordMinUpper}
+          Minimum lower case : ${global.cosyncAppData.passwordMinLower}
+          Minimum digit charactor : ${global.cosyncAppData.passwordMinDigit}
+          Minimum special charactor: ${global.cosyncAppData.passwordMinSpecial}
+        `;
+        setErrortext(message);
+         
+    }
+    else{ 
 
-    cosync.password.resetPassword(userEmail, md5(userPassword), resetCode).then(result => {
-      setLoading(false); 
-      console.log('resetPassword ', result);
+      setLoading(true);   
 
-      if(result === true){  
-        alert('Please login with your new password');
-        props.navigation.navigate('LoginScreen');
-      }
-      else{
-        
-        setErrortext(`Error: ${result.message}`);
-      }
-    }).catch(err => { 
+      cosync.password.resetPassword(userEmail, userPassword, resetCode).then(result => {
+        setLoading(false); 
+        console.log('resetPassword ', result);
 
-      setLoading(false); 
-      setErrortext(`Error: ${err.message}`);
-    })
+        if(result === true){  
+          alert('Please login with your new password');
+          props.navigation.navigate('LoginScreen');
+        }
+        else{
+          
+          setErrortext(`Error: ${result.message}`);
+        }
+      }).catch(err => { 
+
+        setLoading(false); 
+        setErrortext(`Error: ${err.message}`);
+      })
+    }
   }
 
 

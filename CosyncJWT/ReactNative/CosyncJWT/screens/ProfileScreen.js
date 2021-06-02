@@ -38,7 +38,7 @@ import {
 import Clipboard from '@react-native-clipboard/clipboard';
 import Loader from '../components/Loader'; 
 import Configure from '../config/Config';  
-import CosyncJWTReact from 'cosync-jwt-react-native'; 
+import CosyncJWTReactNative from 'cosync-jwt-react-native'; 
 
 const ProfileScreen = props => { 
   let [loading, setLoading] = useState(false);
@@ -52,9 +52,8 @@ const ProfileScreen = props => {
   let [isGoogleTwoFactor, setGoogleTwoFactor] = useState(false); 
   let [isPhoneTwoFactor, setPhoneTwoFactor] = useState(false); 
   let [googleSecretKey, setGoogleSecretKey] = useState(''); 
-  let cosync = new CosyncJWTReact(global.config);
 
-  global.appId = Configure.Realm.appId;   
+  let cosync = new CosyncJWTReactNative(Configure.CosyncApp); 
  
   useEffect(() => {
     cosync.app.getApplication().then(result => {  
@@ -67,8 +66,8 @@ const ProfileScreen = props => {
       let phone2Facor = global.userData.data ? global.userData.data.twoFactorPhoneVerification : false;
       setPhoneTwoFactor(phone2Facor);
 
-      let phoneVerified = global.userData.data ? global.userData.data.phoneVerified : false;
-      setPhoneVerified(phoneVerified);
+      let isPhoneVerified = global.userData.data ? global.userData.data.phoneVerified : false;
+      setPhoneVerified(isPhoneVerified);
 
       if(global.userData && global.userData.data && global.userData.data.phone) setCurrentUserPhone(global.userData.data.phone);
     });

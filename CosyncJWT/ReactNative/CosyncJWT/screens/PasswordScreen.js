@@ -35,13 +35,13 @@ import {
   KeyboardAvoidingView,
 } from 'react-native'; 
 import Loader from '../components/Loader'; 
-import Configure from '../config/Config'; 
-import md5 from 'md5';
-import CosyncJWTReact from 'cosync-jwt-react-native'; 
+import Configure from '../config/Config';  
+import CosyncJWTReactNative from 'cosync-jwt-react-native'; 
 
 const PasswordScreen = props => {
   
-  let cosync = new CosyncJWTReact(global.config);
+  let cosync = new CosyncJWTReactNative(Configure.CosyncApp);
+
   let [loading, setLoading] = useState(false);
   let [errortext, setErrortext] = useState(''); 
   let [infotext, setInfotext] = useState('');
@@ -50,7 +50,7 @@ const PasswordScreen = props => {
   let [newUserPassword, setNewUserPassword] = useState('');
 
   const ref_input_pwd = useRef(); 
-  global.appId = Configure.Realm.appId;  
+ 
   const handleResetPassword = () => {
     
     setErrortext('');
@@ -65,20 +65,40 @@ const PasswordScreen = props => {
       return;
     } 
 
-    setLoading(true);  
-    
-    cosync.password.changePassword(md5(userPassword), md5(newUserPassword)).then(result => {
 
-      setLoading(false);
-      console.log('CosyncJWT PasswordScreen result  ', result);
-      if(result == true) setInfotext('Your password has been set.');
-      if(result.message) setErrortext(result.message);
-    }).catch(err => {
-      setLoading(false);
-      console.log('CosyncJWT PasswordScreen err  ', err);
-      setErrortext(err.message);
-    }) 
-  
+    let validate = cosync.password.validatePassword(newUserPassword);
+    if(!validate){
+      let message = `
+          Error: Invalid Password Rules:\nMinimum password length : ${global.cosyncAppData.passwordMinLength}
+          Minimun upper case : ${global.cosyncAppData.passwordMinUpper}
+          Minimum lower case : ${global.cosyncAppData.passwordMinLower}
+          Minimum digit charactor : ${global.cosyncAppData.passwordMinDigit}
+          Minimum special charactor: ${global.cosyncAppData.passwordMinSpecial}
+        `;
+        setErrortext(message);
+       
+    }
+    else{ 
+      setLoading(true);  
+      
+      cosync.password.changePassword(userPassword, newUserPassword).then(result => {
+
+        setUserPassword(' ');
+        setNewUserPassword(' ');
+
+        setLoading(false);
+        console.log('CosyncJWT PasswordScreen result  ', result);
+        if(result == true) setInfotext('Your password has been set.');
+        if(result.message) setErrortext(result.message);
+
+        
+
+      }).catch(err => {
+        setLoading(false);
+        console.log('CosyncJWT PasswordScreen err  ', err);
+        setErrortext(err.message);
+      }) 
+    }
   };
 
 
