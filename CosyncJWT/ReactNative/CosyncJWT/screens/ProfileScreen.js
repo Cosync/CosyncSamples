@@ -98,8 +98,15 @@ const ProfileScreen = props => {
       return;
     }
 
+    let metadata = {};
+
+    if(global.appData.metaDataInvite.length){
+      global.appData.metaDataInvite.forEach(field => {
+        _.set(metadata, field.path, `test value ${field.fieldName}`); // add your value here
+      });
+    }
     
-    global.cosync.profile.invite(userEmail, global.realmUser.id).then(result => { 
+    global.cosync.profile.invite(userEmail, metadata).then(result => { 
 
       if(result == true){
         alert('Success');
