@@ -35,7 +35,6 @@ import {  StyleSheet,
   KeyboardAvoidingView, } from 'react-native';
 import Configure from '../config/Config';  
 import CosyncJWTReactNative from 'cosync-jwt-react-native';  
-import * as Realm from '../managers/RealmManager'; 
 import Loader from '../components/Loader'; 
  
 
@@ -50,7 +49,7 @@ const RegisterScreen = props => {
   let [userPassword, setUserPassword] = useState(''); 
   let [signupCode, setSignupCode] = useState(''); 
   let [loading, setLoading] = useState(false);  
-  let cosync = new CosyncJWTReactNative(Configure.CosyncApp);
+  
   const ref_input_lastname = useRef();
   const ref_input_email = useRef();
   const ref_input_pwd = useRef(); 
@@ -60,7 +59,9 @@ const RegisterScreen = props => {
   global.realmPrivate = null; 
 
   useEffect(() => {
-    cosync.app.getApplication().then(result => { 
+    if(!global.cosync) global.cosync = new CosyncJWTReactNative(Configure.CosyncApp).getInstance();
+
+    global.cosync.app.getApplication().then(result => { 
       global.appData = result;
     });
    
@@ -131,7 +132,7 @@ const RegisterScreen = props => {
       email: userEmail
   };
  
-  let validate = cosync.password.validatePassword(userPassword);
+  let validate = global.cosync.password.validatePassword(userPassword);
   if(!validate){
     let message = `
         Error: Invalid Password Rules:\nMinimum password length : ${global.cosyncAppData.passwordMinLength}
@@ -146,7 +147,7 @@ const RegisterScreen = props => {
 
   setLoading(true);   
   
-  cosync.register.register(userEmail, userPassword, signupCode, metaData).then(result => {
+  global.cosync.register.register(userEmail, userPassword, signupCode, metaData).then(result => {
 
       setLoading(false);   
       
@@ -154,7 +155,7 @@ const RegisterScreen = props => {
 
       if(result.jwt){ 
         global.userData = result;   
-        cosync.realmManager.login(result.jwt, Configure.Realm.appId).then(res => {
+        global.cosync.realmManager.login(result.jwt, Configure.Realm.appId).then(res => {
           setLoading(false);
           props.navigation.navigate('DrawerNavigationRoutes'); 
         })

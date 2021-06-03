@@ -38,8 +38,7 @@ import {
 } from 'react-native'; 
 import Loader from '../components/Loader'; 
 import Configure from '../config/Config';  
-import CosyncJWTReactNative from 'cosync-jwt-react-native'; 
-import * as Realm from '../managers/RealmManager';  
+import CosyncJWTReactNative from 'cosync-jwt-react-native';  
 
 const LoginScreen = props => {
   
@@ -52,13 +51,12 @@ const LoginScreen = props => {
 
   let [errortext, setErrortext] = useState('');
   const ref_input_pwd = useRef(); 
-
- 
   
-  let cosync = new CosyncJWTReactNative(Configure.CosyncApp);
 
   useEffect(() => {
-    cosync.app.getApplication().then(result => {  
+    global.cosync = new CosyncJWTReactNative(Configure.CosyncApp).getInstance();
+
+    global.cosync.app.getApplication().then(result => {  
       global.appData = result;
       if(result.twoFactorVerification == 'google') setTwoFactorText('Enter Auth token verification code');
     }).catch(err => {
@@ -108,7 +106,7 @@ const LoginScreen = props => {
 
     
 
-    cosync.login.login(userEmail, userPassword).then(result => { 
+    global.cosync.login.login(userEmail, userPassword).then(result => { 
 
       console.log('CosyncJWT login result  ', result);
       
@@ -127,13 +125,13 @@ const LoginScreen = props => {
       } 
  
 
-      cosync.profile.getUser().then(data => {  
+      global.cosync.profile.getUser().then(data => {  
         global.userData.data = data;  
-
-        cosync.realmManager.login(global.userData.jwt, Configure.Realm.appId).then(res => {
+        setLoading(false);
+        global.cosync.realmManager.login(global.userData.jwt, Configure.Realm.appId).then(res => {
           props.navigation.navigate('DrawerNavigationRoutes');
 
-          setLoading(false);
+          
         })
         .catch(err => {
           setLoading(false);
@@ -154,7 +152,7 @@ const LoginScreen = props => {
 
     setLoading(true);  
     
-    cosync.login.loginComplete(global.userData['login-token'], loginCode).then(result => {
+    global.cosync.login.loginComplete(global.userData['login-token'], loginCode).then(result => {
       console.log('completeLogin', result);
 
       if(result.code){
@@ -166,10 +164,10 @@ const LoginScreen = props => {
         setCompleteLogin(true);
         global.userData = result;  
         
-        cosync.profile.getUser().then(data => {
+        global.cosync.profile.getUser().then(data => {
           global.userData.data = data; 
 
-          cosync.realmManager.login(result.jwt, Configure.Realm.appId).then(res => {
+          global.cosync.realmManager.login(result.jwt, Configure.Realm.appId).then(res => {
             setLoading(false);
             props.navigation.navigate('DrawerNavigationRoutes');
           })

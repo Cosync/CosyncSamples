@@ -35,7 +35,6 @@ import {  StyleSheet,
   KeyboardAvoidingView, } from 'react-native';
 import Configure from '../config/Config';  
 import CosyncJWTReactNative from 'cosync-jwt-react-native';  
-import * as Realm from '../managers/RealmManager';  
 import _ from 'lodash';
 import Loader from '../components/Loader'; 
   
@@ -52,7 +51,7 @@ const SignupScreen = props => {
   let [signupCode, setSignupCode] = useState(''); 
   let [loading, setLoading] = useState(false); 
   let [verifyCode, setVerifyCode] = useState(false);  
-  let cosync = new CosyncJWTReactNative(Configure.CosyncApp);
+  
   const ref_input_lastname = useRef();
   const ref_input_email = useRef();
   const ref_input_pwd = useRef(); 
@@ -61,7 +60,9 @@ const SignupScreen = props => {
   global.realmPrivate = null; 
 
   useEffect(() => {
-    cosync.app.getApplication().then(result => {  
+    if(!global.cosync) global.cosync = new CosyncJWTReactNative(Configure.CosyncApp).getInstance();
+
+    global.cosync.app.getApplication().then(result => {  
       global.appData = result;
 
       console.log('global.appData ', global.appData);
@@ -111,7 +112,7 @@ const SignupScreen = props => {
 
     
   
-    cosync.signup.completeSignup(userEmail, signupCode).then(result => {
+    global.cosync.signup.completeSignup(userEmail, signupCode).then(result => {
 
       setLoading(false); 
       
@@ -119,7 +120,7 @@ const SignupScreen = props => {
         
         global.userData = result;  
         setInfoText('Successfully Register.');  
-        cosync.realmManager.login(result.jwt, Configure.Realm.appId).then(res => {
+        global.cosync.realmManager.login(result.jwt, Configure.Realm.appId).then(res => {
           setLoading(false);
           props.navigation.navigate('DrawerNavigationRoutes'); 
         })
@@ -160,9 +161,9 @@ const SignupScreen = props => {
       });
     }
     
-    let validate = cosync.password.validatePassword(userPassword);
+    let validate = global.cosync.password.validatePassword(userPassword);
     if(validate){ 
-      cosync.signup.signup(userEmail, userPassword, metaData).then(result => { 
+      global.cosync.signup.signup(userEmail, userPassword, metaData).then(result => { 
 
         setLoading(false);  
         

@@ -40,9 +40,7 @@ import Loader from '../components/Loader';
 import Configure from '../config/Config';  
 import CosyncJWTReactNative from 'cosync-jwt-react-native'; 
 
-const ForgotPasswordScreen = props => {
-  
-  let cosync = new CosyncJWTReactNative(Configure.CosyncApp);
+const ForgotPasswordScreen = props => { 
 
   let [userEmail, setUserEmail] = useState('');
   let [verifyCode, setVerifyCode] = useState(false); 
@@ -54,6 +52,12 @@ const ForgotPasswordScreen = props => {
   
   const ref_input_pwd = useRef();
   const ref_input_code = useRef();
+
+  useEffect(() => {
+    
+    if(!global.cosync) global.cosync = new CosyncJWTReactNative(Configure.CosyncApp).getInstance();
+
+  }, []);
 
   
   const validateEmail = (text) => {
@@ -77,14 +81,14 @@ const ForgotPasswordScreen = props => {
 
     
 
-    setLoading(true);  
+    
     if(verifyCode){
       handleSubmitVerifyCodePress()
     }
     else {
 
-      
-      cosync.password.forgotPassword(userEmail).then(result => {
+      setLoading(true);  
+      global.cosync.password.forgotPassword(userEmail).then(result => {
 
         setLoading(false);
         console.log('CosyncJWT forgotPassword result  ', result);
@@ -119,19 +123,15 @@ const ForgotPasswordScreen = props => {
     if (!userPassword) {
       alert('Please fill Password');
       return;
-    }
-
-    if (userPassword.length < 5) {
-      alert('Password must be at least 5 charactor.');
-      return false;
     } 
+   
 
     if (!resetCode) {
       alert('Please fill code');
       return;
     }
 
-    let validate = cosync.password.validatePassword(userPassword);
+    let validate = global.cosync.password.validatePassword(userPassword);
     if(!validate){
       let message = `
           Error: Invalid Password Rules:\nMinimum password length : ${global.cosyncAppData.passwordMinLength}
@@ -147,7 +147,7 @@ const ForgotPasswordScreen = props => {
 
       setLoading(true);   
 
-      cosync.password.resetPassword(userEmail, userPassword, resetCode).then(result => {
+      global.cosync.password.resetPassword(userEmail, userPassword, resetCode).then(result => {
         setLoading(false); 
         console.log('resetPassword ', result);
 
@@ -196,7 +196,6 @@ const ForgotPasswordScreen = props => {
                 keyboardType="email-address" 
                 returnKeyType="next" 
                 autoComplete= {'off'}
-                onSubmitEditing={() => ref_input_pwd.current.focus()}
                 blurOnSubmit={false}
                 
               />

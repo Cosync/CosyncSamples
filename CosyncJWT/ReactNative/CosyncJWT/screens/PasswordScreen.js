@@ -38,9 +38,7 @@ import Loader from '../components/Loader';
 import Configure from '../config/Config';  
 import CosyncJWTReactNative from 'cosync-jwt-react-native'; 
 
-const PasswordScreen = props => {
-  
-  let cosync = new CosyncJWTReactNative(Configure.CosyncApp);
+const PasswordScreen = props => { 
 
   let [loading, setLoading] = useState(false);
   let [errortext, setErrortext] = useState(''); 
@@ -51,6 +49,12 @@ const PasswordScreen = props => {
 
   const ref_input_pwd = useRef(); 
  
+  useEffect(() => {
+    
+    if(!global.cosync) global.cosync = new CosyncJWTReactNative(Configure.CosyncApp).getInstance();
+
+  }, []);
+
   const handleResetPassword = () => {
     
     setErrortext('');
@@ -66,7 +70,7 @@ const PasswordScreen = props => {
     } 
 
 
-    let validate = cosync.password.validatePassword(newUserPassword);
+    let validate = global.cosync.password.validatePassword(newUserPassword);
     if(!validate){
       let message = `
           Error: Invalid Password Rules:\nMinimum password length : ${global.cosyncAppData.passwordMinLength}
@@ -81,7 +85,7 @@ const PasswordScreen = props => {
     else{ 
       setLoading(true);  
       
-      cosync.password.changePassword(userPassword, newUserPassword).then(result => {
+      global.cosync.password.changePassword(userPassword, newUserPassword).then(result => {
 
         setUserPassword(' ');
         setNewUserPassword(' ');

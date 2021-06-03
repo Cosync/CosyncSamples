@@ -53,10 +53,13 @@ const ProfileScreen = props => {
   let [isPhoneTwoFactor, setPhoneTwoFactor] = useState(false); 
   let [googleSecretKey, setGoogleSecretKey] = useState(''); 
 
-  let cosync = new CosyncJWTReactNative(Configure.CosyncApp); 
+  
  
   useEffect(() => {
-    cosync.app.getApplication().then(result => {  
+
+    if(!global.cosync) global.cosync = new CosyncJWTReactNative(Configure.CosyncApp).getInstance();
+
+    global.cosync.app.getApplication().then(result => {  
       global.appData = result;
 
       console.log("global.userData.data ", global.userData.data);
@@ -96,7 +99,7 @@ const ProfileScreen = props => {
     }
 
     
-    cosync.profile.invite(userEmail, global.realmUser.id).then(result => { 
+    global.cosync.profile.invite(userEmail, global.realmUser.id).then(result => { 
 
       if(result == true){
         alert('Success');
@@ -118,7 +121,7 @@ const ProfileScreen = props => {
     let isTwoFactor = !isPhoneTwoFactor;
     setGoogleSecretKey(''); 
 
-    cosync.profile.setTwoFactorGoogleVerification(isTwoFactor).then(result => {  
+    global.cosync.profile.setTwoFactorGoogleVerification(isTwoFactor).then(result => {  
 
       if(result == true){ 
         global.userData.data.twoFactorPhoneVerification = isTwoFactor; 
@@ -145,7 +148,7 @@ const ProfileScreen = props => {
       }
 
 
-      cosync.profile.verifyPhone(userPhoneCode).then(result => { 
+      global.cosync.profile.verifyPhone(userPhoneCode).then(result => { 
 
         if(result == true){
           
@@ -180,7 +183,7 @@ const ProfileScreen = props => {
     
  
     
-    cosync.profile.setPhone(userPhone).then(result => { 
+    global.cosync.profile.setPhone(userPhone).then(result => { 
 
       if(result == true){
         setVerifyPhone(true);
@@ -211,7 +214,7 @@ const ProfileScreen = props => {
     let isTwoFactor = !isGoogleTwoFactor;
     setGoogleSecretKey(''); 
 
-    cosync.profile.setTwoFactorGoogleVerification(isTwoFactor).then(result => { 
+    global.cosync.profile.setTwoFactorGoogleVerification(isTwoFactor).then(result => { 
 
       if(result == true || result.googleSecretKey){
 
