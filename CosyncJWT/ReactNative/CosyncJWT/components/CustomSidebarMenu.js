@@ -67,8 +67,9 @@ const CustomSidebarMenu = props => {
             text: 'Confirm',
             onPress: () => { 
               global.userData = {};
+              if(global.cosync) global.cosync.logout();
               props.navigation.navigate('Auth');
-               
+              
             },
           },
         ],

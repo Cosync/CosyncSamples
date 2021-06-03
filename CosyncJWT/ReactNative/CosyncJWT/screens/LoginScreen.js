@@ -127,11 +127,11 @@ const LoginScreen = props => {
 
       global.cosync.profile.getUser().then(data => {  
         global.userData.data = data;  
-        setLoading(false);
+        
         global.cosync.realmManager.login(global.userData.jwt, Configure.Realm.appId).then(res => {
-          props.navigation.navigate('DrawerNavigationRoutes');
 
-          
+          setLoading(false);
+          props.navigation.navigate('DrawerNavigationRoutes'); 
         })
         .catch(err => {
           setLoading(false);
