@@ -178,8 +178,11 @@ const SignupScreen = props => {
           }
           
         }
+        else if(result && result['access-token'] && global.appData.signupFlow == 'none'){ 
+          setInfoText('Successfully Register.');  
+        }
         else{
-          
+          console.log(result);
           setErrortext(`Error: ${result.message}`);
         }
       }).catch(err => {
