@@ -165,9 +165,10 @@ const SignupScreen = props => {
     if(validate){ 
       global.cosync.signup.signup(userEmail, userPassword, metaData).then(result => { 
 
-        setLoading(false);  
+        setLoading(false); 
         
         if(result == 'true' || result === true){ 
+         
 
           if(global.appData.signupFlow == 'none'){ 
             setInfoText('Successfully Register.');  
@@ -178,13 +179,29 @@ const SignupScreen = props => {
           }
           
         }
-        else if(result && result['access-token'] && global.appData.signupFlow == 'none'){ 
-          setInfoText('Successfully Register.');  
+        else if(result && result.jwt && global.appData.signupFlow == 'none'){ 
+
+          setLoading(true); 
+          setInfoText('Successfully Register. Logging in to Realm now...');
+      
+          global.userData = result;  
+          
+          global.cosync.realmManager.login(result.jwt, Configure.Realm.appId).then(res => {
+            setLoading(false);
+            props.navigation.navigate('DrawerNavigationRoutes'); 
+          })
+          .catch(err => {
+            setLoading(false);
+            setErrortext(`MongoDB Realm Error: ${err.message}`);
+          });
+          
+
         }
-        else{
-          console.log(result);
+        else if(result.message){
           setErrortext(`Error: ${result.message}`);
         }
+        else  setErrortext(`Error: Something went wrong.`);
+         
       }).catch(err => {
         setLoading(false); 
         console.log(err);
