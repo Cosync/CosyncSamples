@@ -121,56 +121,16 @@ const AssetScreen = props => {
      
       cosyncAssetUpload.removeListener(assetsUploadEventListener); 
       cosyncAssetUpload.addListener(assetsUploadEventListener); 
-       
-      // global.realmPartition[`user_id=${global.user.id}`].write(() => {   
-      //   global.realmPartition[`user_id=${global.user.id}`].delete(cosyncAssetUpload); 
-      // });
-
-      // cosyncAssetUpload.forEach(element => { 
-      //   global.realmPartition[`user_id=${global.user.id}`].delete(element);
-      //   if(element.status == 'initialized'){ 
-      //     let item = element; 
-      //     item.key = element._id.toString(); 
-      //     setUploadList(prevItems => { 
-      //       return [...prevItems, item];
-      //     });
-      //   }
-      // }); 
 
     }
 
     function assetsUploadEventListener(assets, changes){
 
-      // changes.insertions.forEach((index) => {
-      //   let item = assets[index]; 
-      //   //console.log('assetsUploadEventListener insertions = ', item.status);
-
-      //   if(item.status == 'initialized'){
-
-      //     item.key = item._id.toString(); 
-
-      //     // setUploadList(prevItems => { 
-      //     //   return [item, ...prevItems];
-      //     // }); 
-
-      //     // let newList = assetList.map(el => (
-      //     //   el.key === item.key ?  {...el, upload: true} : el 
-      //     // ));
-
-      //     // if(newList.length){
-      //     //   setAssetList(prevItems => { 
-      //     //     return [newList];
-      //     //   }); 
-      //     // }
-
-      //   }
-      // });
+     
 
       changes.modifications.forEach((index) => {
         let modifiedItem = assets[index];  
         
-        // console.log('assetsUploadEventListener modifications _id = ', modifiedItem._id);
-        // console.log('assetsUploadEventListener modifications = ', modifiedItem.status);
         if(modifiedItem.status == 'initialized'){
 
           modifiedItem.key = modifiedItem._id.toString(); 
@@ -230,11 +190,7 @@ const AssetScreen = props => {
 
       const assetsPrivate = global.realmPartition[global.privatePartition].objects(Configure.Realm.cosyncAsset);  
 
-      // global.realmPartition[`user_id=${global.user.id}`].write(() => {   
-      //   global.realmPartition[`user_id=${global.user.id}`].delete(assetsPrivate); 
-      // });
-
-
+      
       let sortedResult = assetsPrivate.sorted("createdAt", false);
       assetsPrivate.removeListener(assetsEventListener); 
       assetsPrivate.addListener(assetsEventListener); 
@@ -272,23 +228,7 @@ const AssetScreen = props => {
             return [item, ...prevItems];
           }); 
         }
-      });
-
-
-      // changes.modifications.forEach((index) => {
-      //   let item = assets[index]; 
-      //   item.key = item._id.toString(); 
-
-      //   if(item.status == 'active'){   
-      //     let newList = assetList.map(el => (
-      //       el.key === item.key ?  {...el, item} : el
-      //     ));
-
-      //     setAssetList(prevItems => { 
-      //       return [newList];
-      //     }); 
-      //   }
-      // });
+      }); 
        
     }
 
@@ -379,15 +319,7 @@ const itemUploaded = (item) => {
     global.realmPartition[global.privatePartition].create(Configure.Realm.cosyncAssetUpload, { _id: item._id, status: "uploaded" }, "modified"); 
   });
 
-  // setAssetList(currentList => { 
-  //   return currentList.filter(el => {  
-  //     if(el.key == item._id.toString()){  
-  //       el.status = 'active'; 
-  //       return el;
-  //     }
-  //     else return el;
-  //   })
-  // });  
+   
    
 };
 
@@ -429,9 +361,7 @@ const uploadRequest = (source) => {
       return [assetObject, ...prevItems];
     }); 
 
-    // setTimeout(function(){
-    //   assetFlatList.current.scrollToEnd({animating: true});
-    // }, 1000);
+   
 
   });  
 
