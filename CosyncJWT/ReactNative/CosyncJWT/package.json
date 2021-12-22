@@ -15,8 +15,8 @@
     "bson": "^4.2.0",
     "cosync-jwt-react-native": "^1.0.4",
     "lodash": "^4.17.21", 
-    "react": "16.13.1",
-    "react-native": "0.63.3",
+    "react": "17.0.2",
+    "react-native": "0.66.4",
     "react-native-gesture-handler": "^1.8.0",
     "react-native-reanimated": "^1.13.1",
     "react-native-safe-area-context": "^3.1.8",
@@ -27,14 +27,14 @@
     "realm": "^10.1.4"
   },
   "devDependencies": {
-    "@babel/core": "7.12.13",
-    "@babel/runtime": "7.12.13",
-    "@react-native-community/eslint-config": "1.1.0",
-    "babel-jest": "25.5.1",
-    "eslint": "6.8.0",
-    "jest": "25.5.4",
-    "metro-react-native-babel-preset": "0.59.0",
-    "react-test-renderer": "16.13.1"
+    "@babel/core": "7.16.5",
+    "@babel/runtime": "7.16.5",
+    "@react-native-community/eslint-config": "2.0.0",
+    "babel-jest": "26.6.3",
+    "eslint": "7.14.0",
+    "jest": "26.6.3",
+    "metro-react-native-babel-preset": "0.66.2",
+    "react-test-renderer": "17.0.2"
   },
   "jest": {
     "preset": "react-native"
