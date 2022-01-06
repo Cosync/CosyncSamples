@@ -9,6 +9,7 @@
 import SwiftUI
 import CosyncJWTSwift
 
+
 struct LoginCompleteView: View {
     @EnvironmentObject var appState: AppState
     @State private var code = ""
@@ -46,27 +47,21 @@ struct LoginCompleteView: View {
                 }
                 
                 Button(action: {
-                    
-                    if code.isEmpty {
-                        invalidCode()
-                    } else {
-                        isLoggingIn = true
-                        UserManager.shared.loginComplete(code: code) { (error) in
-                            
-                            DispatchQueue.main.async {
+                    Task {
+                        if code.isEmpty {
+                            invalidCode()
+                        } else {
+                            isLoggingIn = true
+                            do {
+                                try await UserManager.shared.loginComplete(code: code)
                                 isLoggingIn = false
-                                
-                                if error != nil {
-                                    self.showErrorLoginComplete(err: error)
-                                } else {
-                                    self.appState.target = .loggedIn
-                                }
+                                self.appState.target = .loggedIn
+                            } catch {
+                                isLoggingIn = false
+                                self.showErrorLoginComplete(err: error)
                             }
                         }
                     }
-
-
-
                 }) {
                     
                     Text("Validate")

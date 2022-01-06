@@ -27,6 +27,7 @@ import Foundation
 import RealmSwift
 import CosyncJWTSwift
 
+
 class RealmManager {
     
     static let shared = RealmManager()
@@ -39,19 +40,10 @@ class RealmManager {
     
     deinit {
     }
-    
-    func login(_ jwt: String, onCompletion completion: @escaping (Error?) -> Void) {
+        
+    func login(_ jwt: String) async throws -> Void {
 
-        app.login(credentials: Credentials.jwt(token: jwt)) { result in
-            
-            switch result {
-            case .success( _):
-                completion(nil)
-            case .failure( _):
-                completion(CosyncJWTError.internalServerError)
-            }
-            
-        }
+        let _ = try await app.login(credentials: Credentials.jwt(token: jwt))
         
     }
     

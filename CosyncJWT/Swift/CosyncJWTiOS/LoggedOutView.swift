@@ -26,6 +26,7 @@
 import SwiftUI
 import CosyncJWTSwift
 
+
 struct LoggedOutView: View {
     var body: some View {
         TabView {
@@ -87,30 +88,25 @@ struct LoginTab: View {
             }
             
             Button(action: {
-
-                if self.email.count > 0 && self.password.count > 0 {
-                    isLoggingIn = true
-                    UserManager.shared.login(email: self.email, password: self.password) { (error) in
+                Task {
+                    if self.email.count > 0 && self.password.count > 0 {
+                        isLoggingIn = true
                         
-                        DispatchQueue.main.async {
-                            isLoggingIn = false
-                            
-                            if error != nil {
-                                self.showLoginInvalidParameters()
+                        do {
+                            try await UserManager.shared.login(email: self.email, password: self.password)
+                            if let _ = CosyncJWTRest.shared.loginToken {
+                                self.appState.target = .loginComplete
                             } else {
-                                if let _ = CosyncJWTRest.shared.loginToken {
-                                    self.appState.target = .loginComplete
-                                } else {
-                                    self.appState.target = .loggedIn
-                                }
+                                self.appState.target = .loggedIn
                             }
+                        } catch {
+                            self.showLoginInvalidParameters()
                         }
+                                                
+                    } else {
+                        self.showLoginInvalidParameters()
                     }
-                    
-                } else {
-                    self.showLoginInvalidParameters()
                 }
-
             }) {
                 Text("Login")
                     .padding(.horizontal)
@@ -232,58 +228,56 @@ struct SignupTab: View {
             
             if self.signupUI == .signup {
                 Button(action: {
-                    
-                    if  self.email.count > 0 &&
-                        self.password.count > 0 &&
-                        self.firstName.count > 0 &&
-                        self.lastName.count > 0 &&
-                        (self.inviteCode.count == 0 ||
-                            (self.inviteCode.count > 0 && self.inviteCode.isNumeric)) {
-                        
-                        let metaData = "{\"user_data\": {\"name\": {\"first\": \"\(self.firstName)\", \"last\": \"\(self.lastName)\"}}}"
-                        
-                        if self.inviteCode.count == 0 {
-                            isLoggingIn = true
-                            CosyncJWTRest.shared.signup(self.email, password: self.password, metaData: metaData, onCompletion: { (err) in
-                                    
-                                DispatchQueue.main.async {
+                    Task {
+                        if  self.email.count > 0 &&
+                            self.password.count > 0 &&
+                            self.firstName.count > 0 &&
+                            self.lastName.count > 0 &&
+                            (self.inviteCode.count == 0 ||
+                                (self.inviteCode.count > 0 && self.inviteCode.isNumeric)) {
+                            
+                            let metaData = "{\"user_data\": {\"name\": {\"first\": \"\(self.firstName)\", \"last\": \"\(self.lastName)\"}}}"
+                            
+                            if self.inviteCode.count == 0 {
+                                isLoggingIn = true
+                                
+                                do {
+                                    try await CosyncJWTRest.shared.signup(self.email, password: self.password, metaData: metaData)
                                     isLoggingIn = false
-                                    if let error = err as? CosyncJWTError {
-                                        self.showSignupError(message: error.message)
-                                    } else {
-                                        self.signupUI = .verifyCode
-                                    }
+                                    self.signupUI = .verifyCode
+                                    
+                                } catch let error as CosyncJWTError {
+                                    isLoggingIn = false
+                                    self.showSignupError(message: error.message)
+                                } catch {
+                                    isLoggingIn = false
+                                    self.showSignupInvalidParameters()
                                 }
-                            })
+                                
+                            } else {
+                                isLoggingIn = true
+                                
+                                do {
+                                    try await CosyncJWTRest.shared.register(self.email, password: self.password, metaData: metaData, code: self.inviteCode)
+                                    
+                                    try await UserManager.shared.login(email: self.email, password: self.password)
+                                    isLoggingIn = false
+                                    self.appState.target = .loggedIn
+                                    
+                                } catch let error as CosyncJWTError {
+                                    isLoggingIn = false
+                                    self.showSignupError(message: error.message)
+                                } catch {
+                                    isLoggingIn = false
+                                    self.showSignupInvalidParameters()
+                                }
+
+                            }
                         } else {
-                            isLoggingIn = true
-                            CosyncJWTRest.shared.register(self.email, password: self.password, metaData: metaData, code: self.inviteCode, onCompletion: { (err) in
-                                    
-                                DispatchQueue.main.async {
-                                    isLoggingIn = false
-                                    if let error = err as? CosyncJWTError {
-                                        self.showSignupError(message: error.message)
-                                    } else {
-                                        isLoggingIn = true
-                                        UserManager.shared.login(email: self.email, password: self.password) { (err) in
-                                            DispatchQueue.main.async {
-                                                isLoggingIn = false
-                                                if let error = err as? CosyncJWTError {
-                                                    self.showSignupError(message: error.message)
-                                                } else {
-                                                    self.appState.target = .loggedIn
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            })
+                            self.showSignupInvalidParameters()
                         }
-                    } else {
-                        self.showSignupInvalidParameters()
                     }
-                    
-                    
+ 
                 }) {
                     Text("Signup")
                         .padding(.horizontal)
@@ -296,34 +290,32 @@ struct SignupTab: View {
             } else {
                 Button(action: {
                     
-                    if self.code.isNumeric && self.code.count == 6 {
-                        
-                        CosyncJWTRest.shared.completeSignup(self.email, code: self.code, onCompletion: { (err) in
-                            
-                            DispatchQueue.main.async {
-                                if let error = err as? CosyncJWTError {
-                                    self.showSignupError(message: error.message)
-                                 } else {
-                                    
-                                    UserManager.shared.login(email: self.email, password: self.password) { (err) in
-                                        DispatchQueue.main.async {
-                                            if let error = err as? CosyncJWTError {
-                                                self.showSignupError(message: error.message)
-                                            } else {
-                                                self.signupUI = .signup
-                                                self.appState.target = .loggedIn
-                                            }
-                                        }
-                                    }
-                                    
-                                }
+                    Task {
+                        if self.code.isNumeric && self.code.count == 6 {
+                            isLoggingIn = true
+                            do {
+                                try await CosyncJWTRest.shared.completeSignup(self.email, code: self.code)
+                                
+                                try await UserManager.shared.login(email: self.email, password: self.password)
+                                
+                                isLoggingIn = false
+                                self.signupUI = .signup
+                                self.appState.target = .loggedIn
+                                
+                            } catch let error as CosyncJWTError {
+                                isLoggingIn = false
+                                self.showSignupError(message: error.message)
+                            } catch {
+                                isLoggingIn = false
+                                self.showSignupInvalidParameters()
                             }
-                        })
-                        
-                        
-                    } else {
-                        self.showSignupInvalidCode()
+                            
+                        } else {
+                            self.showSignupInvalidCode()
+                        }
                     }
+                    
+                    
                     
                 }) {
                     Text("Verify Code")

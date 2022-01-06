@@ -3,129 +3,113 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 55;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		561A652025CA3ED000CD3BA6 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 561A651F25CA3ED000CD3BA6 /* README.md */; };
-		561A652525CA4AF300CD3BA6 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = 561A652425CA4AF300CD3BA6 /* Realm */; };
-		561A652725CA4AF300CD3BA6 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 561A652625CA4AF300CD3BA6 /* RealmSwift */; };
-		5640B7CF24E2397F003350E2 /* RealmManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5640B7CE24E2397F003350E2 /* RealmManager.swift */; };
-		5640B7D324E481F6003350E2 /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5640B7D224E481F6003350E2 /* UserManager.swift */; };
-		565CF8B724DC60CE0047CE93 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 565CF8B624DC60CE0047CE93 /* AppDelegate.swift */; };
-		565CF8B924DC60CE0047CE93 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 565CF8B824DC60CE0047CE93 /* SceneDelegate.swift */; };
-		565CF8BB24DC60CE0047CE93 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 565CF8BA24DC60CE0047CE93 /* ContentView.swift */; };
-		565CF8BD24DC60CF0047CE93 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 565CF8BC24DC60CF0047CE93 /* Assets.xcassets */; };
-		565CF8C024DC60CF0047CE93 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 565CF8BF24DC60CF0047CE93 /* Preview Assets.xcassets */; };
-		565CF8C324DC60CF0047CE93 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 565CF8C124DC60CF0047CE93 /* LaunchScreen.storyboard */; };
-		565CF8CD24DC769A0047CE93 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 565CF8CC24DC769A0047CE93 /* AppState.swift */; };
-		565CF8CF24DC77930047CE93 /* LoggedOutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 565CF8CE24DC77930047CE93 /* LoggedOutView.swift */; };
-		565CF8D124DC77BB0047CE93 /* LoggedInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 565CF8D024DC77BB0047CE93 /* LoggedInView.swift */; };
-		565CF8D324DC96090047CE93 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 565CF8D224DC96090047CE93 /* Constants.swift */; };
-		565CF8D724DCEB6D0047CE93 /* AlertExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 565CF8D624DCEB6D0047CE93 /* AlertExtension.swift */; };
-		565CF8DA24DE43430047CE93 /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 565CF8D924DE43430047CE93 /* StringExtension.swift */; };
-		56C0490326558E7400AFD981 /* LoginCompleteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56C0490226558E7400AFD981 /* LoginCompleteView.swift */; };
-		56C049092655CC5000AFD981 /* CosyncJWTSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 56C049082655CC5000AFD981 /* CosyncJWTSwift */; };
-		56F529CF24E607BE00CC1EB2 /* PasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56F529CE24E607BE00CC1EB2 /* PasswordView.swift */; };
+		08CA318127873166004E0A92 /* CosyncJWTSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 08CA318027873166004E0A92 /* CosyncJWTSwift */; };
+		08F58B65277A1C1000F987ED /* CosyncJWTiOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F58B64277A1C1000F987ED /* CosyncJWTiOSApp.swift */; };
+		08F58B67277A1C1000F987ED /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F58B66277A1C1000F987ED /* ContentView.swift */; };
+		08F58B69277A1C1300F987ED /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 08F58B68277A1C1300F987ED /* Assets.xcassets */; };
+		08F58B6C277A1C1300F987ED /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 08F58B6B277A1C1300F987ED /* Preview Assets.xcassets */; };
+		08F58B75277A1D6800F987ED /* AlertExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F58B73277A1D6700F987ED /* AlertExtension.swift */; };
+		08F58B76277A1D6800F987ED /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F58B74277A1D6700F987ED /* StringExtension.swift */; };
+		08F58B78277A1E2200F987ED /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F58B77277A1E2200F987ED /* AppState.swift */; };
+		08F58B7A277A1E3400F987ED /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F58B79277A1E3400F987ED /* Constants.swift */; };
+		08F58B7C277A1E4900F987ED /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 08F58B7B277A1E4900F987ED /* README.md */; };
+		08F58B81277A1E7B00F987ED /* LoggedInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F58B7D277A1E7B00F987ED /* LoggedInView.swift */; };
+		08F58B82277A1E7B00F987ED /* LoggedOutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F58B7E277A1E7B00F987ED /* LoggedOutView.swift */; };
+		08F58B83277A1E7B00F987ED /* PasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F58B7F277A1E7B00F987ED /* PasswordView.swift */; };
+		08F58B84277A1E7B00F987ED /* LoginCompleteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F58B80277A1E7B00F987ED /* LoginCompleteView.swift */; };
+		08F58B87277A1E8700F987ED /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F58B85277A1E8600F987ED /* UserManager.swift */; };
+		08F58B88277A1E8700F987ED /* RealmManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F58B86277A1E8600F987ED /* RealmManager.swift */; };
+		08F58B94277A5D1D00F987ED /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = 08F58B93277A5D1D00F987ED /* Realm */; };
+		08F58B96277A5D1D00F987ED /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 08F58B95277A5D1D00F987ED /* RealmSwift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		561A651F25CA3ED000CD3BA6 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = CosyncJWTiOS/README.md; sourceTree = SOURCE_ROOT; };
-		5640B7CE24E2397F003350E2 /* RealmManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmManager.swift; sourceTree = "<group>"; };
-		5640B7D224E481F6003350E2 /* UserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
-		565CF8B324DC60CE0047CE93 /* CosyncJWTiOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CosyncJWTiOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		565CF8B624DC60CE0047CE93 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		565CF8B824DC60CE0047CE93 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		565CF8BA24DC60CE0047CE93 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		565CF8BC24DC60CF0047CE93 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		565CF8BF24DC60CF0047CE93 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		565CF8C224DC60CF0047CE93 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		565CF8C424DC60CF0047CE93 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		565CF8CC24DC769A0047CE93 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
-		565CF8CE24DC77930047CE93 /* LoggedOutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggedOutView.swift; sourceTree = "<group>"; };
-		565CF8D024DC77BB0047CE93 /* LoggedInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggedInView.swift; sourceTree = "<group>"; };
-		565CF8D224DC96090047CE93 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
-		565CF8D624DCEB6D0047CE93 /* AlertExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertExtension.swift; sourceTree = "<group>"; };
-		565CF8D924DE43430047CE93 /* StringExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
-		56C0490226558E7400AFD981 /* LoginCompleteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginCompleteView.swift; sourceTree = "<group>"; };
-		56F529CE24E607BE00CC1EB2 /* PasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordView.swift; sourceTree = "<group>"; };
+		08F58B61277A1C1000F987ED /* CosyncJWTiOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CosyncJWTiOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		08F58B64277A1C1000F987ED /* CosyncJWTiOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CosyncJWTiOSApp.swift; sourceTree = "<group>"; };
+		08F58B66277A1C1000F987ED /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		08F58B68277A1C1300F987ED /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		08F58B6B277A1C1300F987ED /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		08F58B73277A1D6700F987ED /* AlertExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlertExtension.swift; sourceTree = "<group>"; };
+		08F58B74277A1D6700F987ED /* StringExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
+		08F58B77277A1E2200F987ED /* AppState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		08F58B79277A1E3400F987ED /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		08F58B7B277A1E4900F987ED /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		08F58B7D277A1E7B00F987ED /* LoggedInView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoggedInView.swift; sourceTree = "<group>"; };
+		08F58B7E277A1E7B00F987ED /* LoggedOutView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoggedOutView.swift; sourceTree = "<group>"; };
+		08F58B7F277A1E7B00F987ED /* PasswordView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PasswordView.swift; sourceTree = "<group>"; };
+		08F58B80277A1E7B00F987ED /* LoginCompleteView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginCompleteView.swift; sourceTree = "<group>"; };
+		08F58B85277A1E8600F987ED /* UserManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
+		08F58B86277A1E8600F987ED /* RealmManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		565CF8B024DC60CE0047CE93 /* Frameworks */ = {
+		08F58B5E277A1C1000F987ED /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				56C049092655CC5000AFD981 /* CosyncJWTSwift in Frameworks */,
-				561A652725CA4AF300CD3BA6 /* RealmSwift in Frameworks */,
-				561A652525CA4AF300CD3BA6 /* Realm in Frameworks */,
+				08CA318127873166004E0A92 /* CosyncJWTSwift in Frameworks */,
+				08F58B96277A5D1D00F987ED /* RealmSwift in Frameworks */,
+				08F58B94277A5D1D00F987ED /* Realm in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		2233D14F04F72797A9187281 /* Frameworks */ = {
+		08F58B58277A1C1000F987ED = {
 			isa = PBXGroup;
 			children = (
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		565CF8AA24DC60CE0047CE93 = {
-			isa = PBXGroup;
-			children = (
-				565CF8B524DC60CE0047CE93 /* CosyncJWTiOS */,
-				565CF8B424DC60CE0047CE93 /* Products */,
-				2233D14F04F72797A9187281 /* Frameworks */,
+				08F58B63277A1C1000F987ED /* CosyncJWTiOS */,
+				08F58B62277A1C1000F987ED /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		565CF8B424DC60CE0047CE93 /* Products */ = {
+		08F58B62277A1C1000F987ED /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				565CF8B324DC60CE0047CE93 /* CosyncJWTiOS.app */,
+				08F58B61277A1C1000F987ED /* CosyncJWTiOS.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		565CF8B524DC60CE0047CE93 /* CosyncJWTiOS */ = {
+		08F58B63277A1C1000F987ED /* CosyncJWTiOS */ = {
 			isa = PBXGroup;
 			children = (
-				565CF8D824DE43200047CE93 /* Extensions */,
-				561A651F25CA3ED000CD3BA6 /* README.md */,
-				565CF8D224DC96090047CE93 /* Constants.swift */,
-				565CF8B624DC60CE0047CE93 /* AppDelegate.swift */,
-				565CF8B824DC60CE0047CE93 /* SceneDelegate.swift */,
-				565CF8BA24DC60CE0047CE93 /* ContentView.swift */,
-				565CF8CE24DC77930047CE93 /* LoggedOutView.swift */,
-				56C0490226558E7400AFD981 /* LoginCompleteView.swift */,
-				565CF8D024DC77BB0047CE93 /* LoggedInView.swift */,
-				56F529CE24E607BE00CC1EB2 /* PasswordView.swift */,
-				565CF8CC24DC769A0047CE93 /* AppState.swift */,
-				5640B7CE24E2397F003350E2 /* RealmManager.swift */,
-				5640B7D224E481F6003350E2 /* UserManager.swift */,
-				565CF8BC24DC60CF0047CE93 /* Assets.xcassets */,
-				565CF8C124DC60CF0047CE93 /* LaunchScreen.storyboard */,
-				565CF8C424DC60CF0047CE93 /* Info.plist */,
-				565CF8BE24DC60CF0047CE93 /* Preview Content */,
+				08F58B72277A1D3300F987ED /* Extensions */,
+				08F58B7B277A1E4900F987ED /* README.md */,
+				08F58B79277A1E3400F987ED /* Constants.swift */,
+				08F58B7E277A1E7B00F987ED /* LoggedOutView.swift */,
+				08F58B7D277A1E7B00F987ED /* LoggedInView.swift */,
+				08F58B80277A1E7B00F987ED /* LoginCompleteView.swift */,
+				08F58B7F277A1E7B00F987ED /* PasswordView.swift */,
+				08F58B77277A1E2200F987ED /* AppState.swift */,
+				08F58B86277A1E8600F987ED /* RealmManager.swift */,
+				08F58B85277A1E8600F987ED /* UserManager.swift */,
+				08F58B64277A1C1000F987ED /* CosyncJWTiOSApp.swift */,
+				08F58B66277A1C1000F987ED /* ContentView.swift */,
+				08F58B68277A1C1300F987ED /* Assets.xcassets */,
+				08F58B6A277A1C1300F987ED /* Preview Content */,
 			);
 			path = CosyncJWTiOS;
 			sourceTree = "<group>";
 		};
-		565CF8BE24DC60CF0047CE93 /* Preview Content */ = {
+		08F58B6A277A1C1300F987ED /* Preview Content */ = {
 			isa = PBXGroup;
 			children = (
-				565CF8BF24DC60CF0047CE93 /* Preview Assets.xcassets */,
+				08F58B6B277A1C1300F987ED /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
-		565CF8D824DE43200047CE93 /* Extensions */ = {
+		08F58B72277A1D3300F987ED /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				565CF8D624DCEB6D0047CE93 /* AlertExtension.swift */,
-				565CF8D924DE43430047CE93 /* StringExtension.swift */,
+				08F58B73277A1D6700F987ED /* AlertExtension.swift */,
+				08F58B74277A1D6700F987ED /* StringExtension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -133,13 +117,13 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		565CF8B224DC60CE0047CE93 /* CosyncJWTiOS */ = {
+		08F58B60277A1C1000F987ED /* CosyncJWTiOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 565CF8C724DC60CF0047CE93 /* Build configuration list for PBXNativeTarget "CosyncJWTiOS" */;
+			buildConfigurationList = 08F58B6F277A1C1300F987ED /* Build configuration list for PBXNativeTarget "CosyncJWTiOS" */;
 			buildPhases = (
-				565CF8AF24DC60CE0047CE93 /* Sources */,
-				565CF8B024DC60CE0047CE93 /* Frameworks */,
-				565CF8B124DC60CE0047CE93 /* Resources */,
+				08F58B5D277A1C1000F987ED /* Sources */,
+				08F58B5E277A1C1000F987ED /* Frameworks */,
+				08F58B5F277A1C1000F987ED /* Resources */,
 			);
 			buildRules = (
 			);
@@ -147,107 +131,94 @@
 			);
 			name = CosyncJWTiOS;
 			packageProductDependencies = (
-				561A652425CA4AF300CD3BA6 /* Realm */,
-				561A652625CA4AF300CD3BA6 /* RealmSwift */,
-				56C049082655CC5000AFD981 /* CosyncJWTSwift */,
+				08F58B93277A5D1D00F987ED /* Realm */,
+				08F58B95277A5D1D00F987ED /* RealmSwift */,
+				08CA318027873166004E0A92 /* CosyncJWTSwift */,
 			);
 			productName = CosyncJWTiOS;
-			productReference = 565CF8B324DC60CE0047CE93 /* CosyncJWTiOS.app */;
+			productReference = 08F58B61277A1C1000F987ED /* CosyncJWTiOS.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		565CF8AB24DC60CE0047CE93 /* Project object */ = {
+		08F58B59277A1C1000F987ED /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1160;
-				LastUpgradeCheck = 1230;
-				ORGANIZATIONNAME = cosync;
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1320;
+				LastUpgradeCheck = 1320;
 				TargetAttributes = {
-					565CF8B224DC60CE0047CE93 = {
-						CreatedOnToolsVersion = 11.6;
+					08F58B60277A1C1000F987ED = {
+						CreatedOnToolsVersion = 13.2.1;
 					};
 				};
 			};
-			buildConfigurationList = 565CF8AE24DC60CE0047CE93 /* Build configuration list for PBXProject "CosyncJWTiOS" */;
-			compatibilityVersion = "Xcode 9.3";
+			buildConfigurationList = 08F58B5C277A1C1000F987ED /* Build configuration list for PBXProject "CosyncJWTiOS" */;
+			compatibilityVersion = "Xcode 13.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				Base,
 			);
-			mainGroup = 565CF8AA24DC60CE0047CE93;
+			mainGroup = 08F58B58277A1C1000F987ED;
 			packageReferences = (
-				561A652325CA4AF300CD3BA6 /* XCRemoteSwiftPackageReference "realm-cocoa" */,
-				56C049072655CC5000AFD981 /* XCRemoteSwiftPackageReference "CosyncJWTSwift" */,
+				08F58B92277A5D1D00F987ED /* XCRemoteSwiftPackageReference "realm-cocoa" */,
+				08CA317F27873166004E0A92 /* XCRemoteSwiftPackageReference "CosyncJWTSwift" */,
 			);
-			productRefGroup = 565CF8B424DC60CE0047CE93 /* Products */;
+			productRefGroup = 08F58B62277A1C1000F987ED /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				565CF8B224DC60CE0047CE93 /* CosyncJWTiOS */,
+				08F58B60277A1C1000F987ED /* CosyncJWTiOS */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		565CF8B124DC60CE0047CE93 /* Resources */ = {
+		08F58B5F277A1C1000F987ED /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				565CF8C324DC60CF0047CE93 /* LaunchScreen.storyboard in Resources */,
-				565CF8C024DC60CF0047CE93 /* Preview Assets.xcassets in Resources */,
-				561A652025CA3ED000CD3BA6 /* README.md in Resources */,
-				565CF8BD24DC60CF0047CE93 /* Assets.xcassets in Resources */,
+				08F58B7C277A1E4900F987ED /* README.md in Resources */,
+				08F58B6C277A1C1300F987ED /* Preview Assets.xcassets in Resources */,
+				08F58B69277A1C1300F987ED /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		565CF8AF24DC60CE0047CE93 /* Sources */ = {
+		08F58B5D277A1C1000F987ED /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				565CF8B724DC60CE0047CE93 /* AppDelegate.swift in Sources */,
-				56F529CF24E607BE00CC1EB2 /* PasswordView.swift in Sources */,
-				565CF8D124DC77BB0047CE93 /* LoggedInView.swift in Sources */,
-				565CF8DA24DE43430047CE93 /* StringExtension.swift in Sources */,
-				56C0490326558E7400AFD981 /* LoginCompleteView.swift in Sources */,
-				5640B7D324E481F6003350E2 /* UserManager.swift in Sources */,
-				565CF8B924DC60CE0047CE93 /* SceneDelegate.swift in Sources */,
-				565CF8CF24DC77930047CE93 /* LoggedOutView.swift in Sources */,
-				5640B7CF24E2397F003350E2 /* RealmManager.swift in Sources */,
-				565CF8D324DC96090047CE93 /* Constants.swift in Sources */,
-				565CF8BB24DC60CE0047CE93 /* ContentView.swift in Sources */,
-				565CF8D724DCEB6D0047CE93 /* AlertExtension.swift in Sources */,
-				565CF8CD24DC769A0047CE93 /* AppState.swift in Sources */,
+				08F58B76277A1D6800F987ED /* StringExtension.swift in Sources */,
+				08F58B83277A1E7B00F987ED /* PasswordView.swift in Sources */,
+				08F58B78277A1E2200F987ED /* AppState.swift in Sources */,
+				08F58B81277A1E7B00F987ED /* LoggedInView.swift in Sources */,
+				08F58B82277A1E7B00F987ED /* LoggedOutView.swift in Sources */,
+				08F58B88277A1E8700F987ED /* RealmManager.swift in Sources */,
+				08F58B67277A1C1000F987ED /* ContentView.swift in Sources */,
+				08F58B75277A1D6800F987ED /* AlertExtension.swift in Sources */,
+				08F58B65277A1C1000F987ED /* CosyncJWTiOSApp.swift in Sources */,
+				08F58B7A277A1E3400F987ED /* Constants.swift in Sources */,
+				08F58B87277A1E8700F987ED /* UserManager.swift in Sources */,
+				08F58B84277A1E7B00F987ED /* LoginCompleteView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
-/* Begin PBXVariantGroup section */
-		565CF8C124DC60CF0047CE93 /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				565CF8C224DC60CF0047CE93 /* Base */,
-			);
-			name = LaunchScreen.storyboard;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
-
 /* Begin XCBuildConfiguration section */
-		565CF8C524DC60CF0047CE93 /* Debug */ = {
+		08F58B6D277A1C1300F987ED /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -292,7 +263,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -302,13 +273,13 @@
 			};
 			name = Debug;
 		};
-		565CF8C624DC60CF0047CE93 /* Release */ = {
+		08F58B6E277A1C1300F987ED /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -347,7 +318,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -357,41 +328,59 @@
 			};
 			name = Release;
 		};
-		565CF8C824DC60CF0047CE93 /* Debug */ = {
+		08F58B70277A1C1300F987ED /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"CosyncJWTiOS/Preview Content\"";
 				DEVELOPMENT_TEAM = WQQLK89MX8;
 				ENABLE_PREVIEWS = YES;
-				INFOPLIST_FILE = CosyncJWTiOS/Info.plist;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = cosync.io.CosyncJWTiOS;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = io.cosync.CosyncJWTiOS;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
-		565CF8C924DC60CF0047CE93 /* Release */ = {
+		08F58B71277A1C1300F987ED /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"CosyncJWTiOS/Preview Content\"";
 				DEVELOPMENT_TEAM = WQQLK89MX8;
 				ENABLE_PREVIEWS = YES;
-				INFOPLIST_FILE = CosyncJWTiOS/Info.plist;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = cosync.io.CosyncJWTiOS;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = io.cosync.CosyncJWTiOS;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -400,20 +389,20 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		565CF8AE24DC60CE0047CE93 /* Build configuration list for PBXProject "CosyncJWTiOS" */ = {
+		08F58B5C277A1C1000F987ED /* Build configuration list for PBXProject "CosyncJWTiOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				565CF8C524DC60CF0047CE93 /* Debug */,
-				565CF8C624DC60CF0047CE93 /* Release */,
+				08F58B6D277A1C1300F987ED /* Debug */,
+				08F58B6E277A1C1300F987ED /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		565CF8C724DC60CF0047CE93 /* Build configuration list for PBXNativeTarget "CosyncJWTiOS" */ = {
+		08F58B6F277A1C1300F987ED /* Build configuration list for PBXNativeTarget "CosyncJWTiOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				565CF8C824DC60CF0047CE93 /* Debug */,
-				565CF8C924DC60CF0047CE93 /* Release */,
+				08F58B70277A1C1300F987ED /* Debug */,
+				08F58B71277A1C1300F987ED /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -421,41 +410,41 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		561A652325CA4AF300CD3BA6 /* XCRemoteSwiftPackageReference "realm-cocoa" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/realm/realm-cocoa.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 10.5.1;
-			};
-		};
-		56C049072655CC5000AFD981 /* XCRemoteSwiftPackageReference "CosyncJWTSwift" */ = {
+		08CA317F27873166004E0A92 /* XCRemoteSwiftPackageReference "CosyncJWTSwift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Cosync/CosyncJWTSwift.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.3;
+				minimumVersion = 1.0.0;
+			};
+		};
+		08F58B92277A5D1D00F987ED /* XCRemoteSwiftPackageReference "realm-cocoa" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/realm/realm-cocoa.git";
+			requirement = {
+				branch = master;
+				kind = branch;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		561A652425CA4AF300CD3BA6 /* Realm */ = {
+		08CA318027873166004E0A92 /* CosyncJWTSwift */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 561A652325CA4AF300CD3BA6 /* XCRemoteSwiftPackageReference "realm-cocoa" */;
+			package = 08CA317F27873166004E0A92 /* XCRemoteSwiftPackageReference "CosyncJWTSwift" */;
+			productName = CosyncJWTSwift;
+		};
+		08F58B93277A5D1D00F987ED /* Realm */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 08F58B92277A5D1D00F987ED /* XCRemoteSwiftPackageReference "realm-cocoa" */;
 			productName = Realm;
 		};
-		561A652625CA4AF300CD3BA6 /* RealmSwift */ = {
+		08F58B95277A5D1D00F987ED /* RealmSwift */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 561A652325CA4AF300CD3BA6 /* XCRemoteSwiftPackageReference "realm-cocoa" */;
+			package = 08F58B92277A5D1D00F987ED /* XCRemoteSwiftPackageReference "realm-cocoa" */;
 			productName = RealmSwift;
-		};
-		56C049082655CC5000AFD981 /* CosyncJWTSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 56C049072655CC5000AFD981 /* XCRemoteSwiftPackageReference "CosyncJWTSwift" */;
-			productName = CosyncJWTSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
-	rootObject = 565CF8AB24DC60CE0047CE93 /* Project object */;
+	rootObject = 08F58B59277A1C1000F987ED /* Project object */;
 }

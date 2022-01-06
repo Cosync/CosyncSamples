@@ -26,6 +26,7 @@
 import SwiftUI
 import CosyncJWTSwift
 
+
 struct LoggedInView: View {
     @EnvironmentObject var appState: AppState
     @State var phone = CosyncJWTRest.shared.phone ?? ""
@@ -73,18 +74,20 @@ struct LoggedInView: View {
                         }
                         
                         Button(action: {
-                            if phoneVerified && changePhoneNumber==false {
-                                changePhoneNumber = true
-                                phone = ""
-                            } else {
-                                CosyncJWTRest.shared.setPhone(phone, onCompletion: { (err) in
-                                    if err == nil {
-                                        verifyCode = true
-                                    } else {
-                                        errorSetPhone(err: err)
+                            Task {
+                                if phoneVerified && changePhoneNumber==false {
+                                    changePhoneNumber = true
+                                    phone = ""
+                                } else {
+                                    do {
+                                        try await CosyncJWTRest.shared.setPhone(phone)
+                                    } catch {
+                                        errorSetPhone(err: error)
                                     }
-                                })
+
+                                }
                             }
+
 
                         }) {
                             if phoneVerified && changePhoneNumber==false {
@@ -101,15 +104,16 @@ struct LoggedInView: View {
                         HStack() {
                             TextField("code", text: $phoneCode)
                             Button(action: {
-                                CosyncJWTRest.shared.verifyPhone(phoneCode, onCompletion: { (err) in
-                                    if err == nil {
+                                Task {
+                                    do {
+                                        try await CosyncJWTRest.shared.verifyPhone(phoneCode)
                                         changePhoneNumber = false
                                         verifyCode = false
                                         phoneVerified = true
-                                    } else {
-                                        errorVerifyPhone(err: err)
+                                    } catch {
+                                        errorVerifyPhone(err: error)
                                     }
-                                })
+                                }
                             }) {
                                 Text("Verify Code")
                             }.accentColor(.blue)
@@ -120,13 +124,15 @@ struct LoggedInView: View {
                 if phoneVerified {
                     Toggle("Enable 2-Factor verification", isOn: $twoFactorPhoneVerification)
                     .onChange(of: twoFactorPhoneVerification) { value in
-                        DispatchQueue.main.async {
-                            CosyncJWTRest.shared.setTwoFactorPhoneVerification(value, onCompletion: { (err) in
-                                if err != nil {
-                                    errorVerifyPhone(err: err)
-                                }
-                            })
+                        Task {
+                            do {
+                                try await CosyncJWTRest.shared.setTwoFactorPhoneVerification(value)
+                            } catch {
+                                errorSetPhone(err: error)
+                            }
+
                         }
+
                     }
                 }
 
@@ -211,25 +217,23 @@ struct ChangePasswordView: View {
             
             Button(action: {
                 
-                if  self.password.count > 0 &&
-                    self.newPassword.count > 0  {
-                    
-                    CosyncJWTRest.shared.changePassword(self.newPassword, password: self.password, onCompletion: { (err) in
+                Task {
+                    if  self.password.count > 0 &&
+                        self.newPassword.count > 0  {
+                        
+                        do {
+                            try await CosyncJWTRest.shared.changePassword(self.newPassword, password: self.password)
+                            self.showChangePasswordSuccess()
+                            self.presentationMode.wrappedValue.dismiss()
                             
-                        DispatchQueue.main.async {
-                            if let _ = err {
-                                self.showChangePasswordInvalidParameters()
-                            } else {
-                                self.showChangePasswordSuccess()
-                                self.presentationMode.wrappedValue.dismiss()
-                            }
+                        } catch {
+                            self.showChangePasswordInvalidParameters()
                         }
-                    })
-                    
-                } else {
-                    self.showChangePasswordInvalidParameters()
+                        
+                    } else {
+                        self.showChangePasswordInvalidParameters()
+                    }
                 }
-                
                 
             }) {
                 Text("Change Password")
@@ -281,26 +285,25 @@ struct InviteView: View {
             
             Button(action: {
                 
-                if  self.email.count > 0   {
-                    
-                    CosyncJWTRest.shared.invite(self.email, metaData: nil,
-                                                senderUserId: RealmManager.shared.app.currentUser?.id,
-                                                onCompletion: { (err) in
-                            
-                        DispatchQueue.main.async {
-                            if let _ = err {
-                                self.showInviteInvalidParameters()
-                            } else {
-                                self.showInviteSuccess()
-                                self.presentationMode.wrappedValue.dismiss()
-                            }
+                Task {
+                    if  self.email.count > 0   {
+                        
+                        do {
+                            try await CosyncJWTRest.shared.invite(self.email, metaData: nil,
+                                                                  senderUserId: RealmManager.shared.app.currentUser?.id)
+                            self.showInviteSuccess()
+                            self.presentationMode.wrappedValue.dismiss()
+                        } catch {
+                            self.showInviteInvalidParameters()
                         }
-                    })
+                        
+                    } else {
+                        self.showInviteInvalidParameters()
+                    }
                     
-                } else {
-                    self.showInviteInvalidParameters()
                 }
                 
+
                 
             }) {
                 Text("Send Invite")

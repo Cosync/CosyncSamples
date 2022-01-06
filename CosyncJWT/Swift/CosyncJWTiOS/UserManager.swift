@@ -26,6 +26,7 @@
 import Foundation
 import CosyncJWTSwift
 
+
 class UserManager {
     
     static let shared = UserManager()
@@ -41,81 +42,49 @@ class UserManager {
     deinit {
     }
     
-    func loginGetUserData(completion: @escaping (Error?) -> Void) {
+    @MainActor func loginGetUserData() async throws -> Void {
         
-        CosyncJWTRest.shared.getUser(onCompletion: { (error) in
-            if error == nil {
-                if let metaData = CosyncJWTRest.shared.metaData {
-                    if let userData = metaData["user_data"] as? [String:Any] {
-                        if let name = userData["name"] as? [String:Any] {
-                            if let firstName = name["first"] as? String {
-                                self.firstName = firstName
-                            }
-                            if let lastName = name["last"] as? String {
-                                self.lastName = lastName
-                            }
-                        }
+        try await CosyncJWTRest.shared.getUser()
+        if let metaData = CosyncJWTRest.shared.metaData {
+            if let userData = metaData["user_data"] as? [String:Any] {
+                if let name = userData["name"] as? [String:Any] {
+                    if let firstName = name["first"] as? String {
+                        self.firstName = firstName
+                    }
+                    if let lastName = name["last"] as? String {
+                        self.lastName = lastName
                     }
                 }
-                if let handle = CosyncJWTRest.shared.handle {
-                    self.handle = handle
-                }
-                completion(nil)
-            } else {
-                completion(error)
             }
-        })
+        }
+        if let handle = CosyncJWTRest.shared.handle {
+            self.handle = handle
+        }
     }
     
-    func login(email: String, password: String, onCompletion completion: @escaping (Error?) -> Void) {
+    @MainActor func login(email: String, password: String) async throws -> Void {
         
-        CosyncJWTRest.shared.login(email, password: password, onCompletion: { (error) in
-                
-            DispatchQueue.main.async {
-                
-                if error == nil {
-                    
-                    if let _ = CosyncJWTRest.shared.loginToken {
-                        completion(nil)
-                    } else {
-                        RealmManager.shared.login(CosyncJWTRest.shared.jwt!, onCompletion: { (error) in
-                             
-                            if error == nil {
-                                DispatchQueue.main.async {
-                                    UserManager.shared.loginGetUserData(completion: { (error) in
-                                        completion(error)
-                                    })
-                                }
-                            } else {
-                                completion(error)
-                            }
-                        })
-                    }
-                } else {
-                    completion(error)
-                }
-            }
-        })
-    }
-    
-    func loginComplete(code: String, onCompletion completion: @escaping (Error?) -> Void) {
+        try await CosyncJWTRest.shared.login(email, password: password)
         
-        CosyncJWTRest.shared.loginComplete(code, onCompletion: { (error) in
-                
-            DispatchQueue.main.async {
-                
-                if error == nil {
-                    UserManager.shared.loginGetUserData(completion: { (error) in
-                        completion(error)
-                    })
-                } else {
-                    completion(error)
-                }
-            }
-        })
+        if  CosyncJWTRest.shared.loginToken == nil,
+            let jwt = CosyncJWTRest.shared.jwt {
+            
+            try await RealmManager.shared.login(jwt)
+            try await UserManager.shared.loginGetUserData()
+        }
     }
     
-    func logout(onCompletion completion: @escaping (Error?) -> Void) {
+    @MainActor func loginComplete(code: String) async throws -> Void  {
+        
+        try await CosyncJWTRest.shared.loginComplete(code)
+        if  let jwt = CosyncJWTRest.shared.jwt {
+            
+            try await RealmManager.shared.login(jwt)
+            try await UserManager.shared.loginGetUserData()
+        }
+    }
+    
+    @MainActor func logout(onCompletion completion: @escaping (Error?) -> Void) {
         
         self.firstName = ""
         self.lastName = ""

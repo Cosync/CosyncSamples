@@ -27,6 +27,7 @@ import Foundation
 import SwiftUI
 import CosyncJWTSwift
 
+
 enum PasswordUI: Int {
     case password
     case verifyCode
@@ -91,23 +92,23 @@ struct PasswordView: View {
                     
                 if self.passwordUI == .password {
                     Button(action: {
-                        
-                        if  self.email.count > 0 {
-                            
-                            CosyncJWTRest.shared.forgotPassword(self.email, onCompletion: { (error) in
-                                    
-                                DispatchQueue.main.async {
-                                    if let error = error as? CosyncJWTError {
-                                        self.forgotPasswordError(message: error.message)
-                                    } else {
-                                        self.passwordUI = .verifyCode
-                                    }
+                        Task {
+                            if  self.email.count > 0 {
+                                
+                                do {
+                                    try await CosyncJWTRest.shared.forgotPassword(self.email)
+                                    self.passwordUI = .verifyCode
+                                } catch let error as CosyncJWTError {
+                                    self.forgotPasswordError(message: error.message)
+                                } catch {
                                 }
-                            })
-                            
-                        } else {
-                            self.forgotPasswordInvalidParameters()
+                                
+                            } else {
+                                self.forgotPasswordInvalidParameters()
+                            }
                         }
+                        
+
                         
                         
                     }) {
@@ -122,24 +123,23 @@ struct PasswordView: View {
                 } else if self.passwordUI == .verifyCode {
                     Button(action: {
                         
-                        if self.password.count > 0 && self.code.isNumeric && self.code.count == 6 {
-                            
-                            CosyncJWTRest.shared.resetPassword(self.email, password: self.password, code: self.code, onCompletion: { (error) in
-                                    
-                                DispatchQueue.main.async {
-                                    if let error = error as? CosyncJWTError {
-                                        self.forgotPasswordError(message: error.message)
-                                    } else {
-                                        self.forgotPasswordSuccess()
-                                        self.passwordUI = .password
-                                    }
+                        Task {
+                            if self.password.count > 0 && self.code.isNumeric && self.code.count == 6 {
+                                
+                                do {
+                                    try await CosyncJWTRest.shared.resetPassword(self.email, password: self.password, code: self.code)
+                                    self.forgotPasswordSuccess()
+                                    self.passwordUI = .password
+                                } catch let error as CosyncJWTError {
+                                    self.forgotPasswordError(message: error.message)
+                                } catch {
                                 }
-                            })
-                            
-                        } else {
-                            self.forgotPasswordInvalidCode()
+                                
+                            } else {
+                                self.forgotPasswordInvalidCode()
+                            }
+
                         }
-                        
                         
                     }) {
                         Text("Verify Code")
