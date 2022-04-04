@@ -107,6 +107,7 @@ const UploadScreen = props => {
             { 
               _id: new ObjectId(),
               _partition:  global.privatePartition,
+              assetPartition: global.privatePartition,
               filePath: filePath, 
               uid: global.user.id,
               contentType: source.type,
