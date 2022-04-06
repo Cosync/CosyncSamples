@@ -36,6 +36,7 @@ import {
 } from 'react-native';
 
 // Import Image Picker
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import ImagePicker from 'react-native-image-picker';
 import ImageResizer from 'react-native-image-resizer';
 import Configure from '../config/Config'; 
@@ -107,6 +108,7 @@ const UploadScreen = props => {
             { 
               _id: new ObjectId(),
               _partition:  global.privatePartition,
+              assetPartition: global.privatePartition,
               filePath: filePath, 
               uid: global.user.id,
               contentType: source.type,
@@ -139,7 +141,12 @@ const UploadScreen = props => {
         },
       };
 
-      ImagePicker.showImagePicker(options, (response) => { 
+      const response = await launchImageLibrary(options);
+
+      //ImagePicker.showImagePicker(options, (response) => { 
+
+        console.log(response)
+        
         if (response.didCancel) console.log('User cancelled image picker');
         else if (response.error)  alert(response.error)
         else {
@@ -160,7 +167,7 @@ const UploadScreen = props => {
 
           uploadRequest(response);
         }
-      });
+      //});
     };
 
 
