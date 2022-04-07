@@ -43,8 +43,8 @@ import * as RealmLib from '../managers/RealmManager';
 
 const LoginScreen = props => {
   
-  let [userEmail, setUserEmail] = useState();
-  let [userPassword, setUserPassword] = useState();
+  let [userEmail, setUserEmail] = useState('');
+  let [userPassword, setUserPassword] = useState('');
   let [loading, setLoading] = useState(false);
   let [errortext, setErrortext] = useState('');
   const ref_input_pwd = useRef();
@@ -136,7 +136,7 @@ const LoginScreen = props => {
                 placeholder="Enter Password" 
                 keyboardType="default" 
                 returnKeyType="go"
-                onSubmitEditing={() => {Keyboard.dismiss, handleSubmitPress}}
+                onSubmitEditing={() => Keyboard.dismiss, handleSubmitPress}
                 blurOnSubmit={false}
                 textContentType={'none'}
                 autoComplete= {'off'}
