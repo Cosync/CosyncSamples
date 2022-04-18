@@ -23,7 +23,7 @@
 //  Copyright © 2022 cosync. All rights reserved.
 //
 
-import React, { useState, useRef, useEffect } from 'react'; 
+import React, { useState, useRef, useEffect, useContext } from 'react'; 
 import {  
   TextInput,
   View,
@@ -37,6 +37,7 @@ import Configure from '../config/Config';
 import CosyncJWTReactNative from 'cosync-jwt-react-native';  
 import Loader from '../components/Loader'; 
 import {globalStyle} from '../styles/globalStyle'
+import { AuthContext } from '../store/auth-context';
 
 const Register = props => {
   
@@ -54,7 +55,7 @@ const Register = props => {
   const ref_input_email = useRef();
   const ref_input_pwd = useRef(); 
   const ref_input_code = useRef(); 
-
+  const authCtx = useContext(AuthContext);
   global.realm = null;
   global.realmPrivate = null; 
 
@@ -125,9 +126,11 @@ const Register = props => {
    
     
     let metaData = {
-      name: {
-          first: firstName,
-          last: lastName
+      user_data : {
+        name: {
+            first: firstName,
+            last: lastName
+        }
       },
       email: userEmail
   };
@@ -149,15 +152,14 @@ const Register = props => {
   
   global.cosync.register.register(userEmail, userPassword, signupCode, metaData).then(result => {
 
-      setLoading(false);   
-      
-      
+      setLoading(false); 
 
       if(result.jwt){ 
         global.userData = result;   
         global.cosync.realmManager.login(result.jwt, Configure.Realm.appId).then(res => {
           setLoading(false);
-          props.navigation.navigate('DrawerNavigationRoutes'); 
+          authCtx.authenticate(result);
+          
         })
         .catch(err => {
           setLoading(false);

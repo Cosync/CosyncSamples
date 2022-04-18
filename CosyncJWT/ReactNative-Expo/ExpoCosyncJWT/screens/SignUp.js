@@ -130,8 +130,7 @@ const Signup = props => {
           setLoading(false);
 
           authCtx.authenticate(result);
-
-          //props.navigation.navigate('DrawerNavigationRoutes'); 
+ 
         })
         .catch(err => {
           setLoading(false);
@@ -198,8 +197,7 @@ const Signup = props => {
           global.cosync.realmManager.login(result.jwt, Configure.Realm.appId).then(res => {
             setLoading(false);
             authCtx.authenticate(result);
-
-            //props.navigation.navigate('DrawerNavigationRoutes'); 
+ 
           })
           .catch(err => {
             setLoading(false);
