@@ -82,7 +82,7 @@ const Profile = props => {
         setPhoneVerified(isPhoneVerified);
 
         if(global.userData && global.userData.data && global.userData.data.phone) setCurrentUserPhone(global.userData.data.phone);
-
+        if(global.userData && global.userData.data && global.userData.data.handle) setUserEmail(global.userData.data.handle);
         if(data.metaData && data.metaData.user_data) {
           setFirstName(data.metaData.user_data.name.first);
           setLastName(data.metaData.user_data.name.last);
@@ -123,12 +123,12 @@ const Profile = props => {
       } 
     };
 
-    global.cosync.profile.setUserMetadata(userEmail, metadata).then(result => { 
+    global.cosync.profile.setUserMetadata(metadata).then(result => { 
       if(result == true){
         alert('Success');
       } 
       else{ 
-        alert(`Error: ${result.message}`);
+        alert(`Fails: ${result.message}`);
       }
     }).catch(err => {
       alert(`Error: ${err.message}`);
@@ -306,9 +306,9 @@ const Profile = props => {
       
       <Loader loading={loading} />  
 
-        <View style={globalStyle.sectionStyle}>
-        <Text style={globalStyle.buttonTextStyle}>{userEmail}</Text>
-      </View>
+        
+      <Text style={globalStyle.infoTextStyle}>{userEmail}</Text>
+      
 
       <View style={globalStyle.sectionStyle}>
       
