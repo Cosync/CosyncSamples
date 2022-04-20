@@ -197,6 +197,10 @@ const Upload = props => {
             createUploadImages(); 
 
           }
+          else if(modifiedAsset.status == "error"){ 
+            setLoading(false);  
+            alert('Invalid upload data.')
+          }
         });
       }
     

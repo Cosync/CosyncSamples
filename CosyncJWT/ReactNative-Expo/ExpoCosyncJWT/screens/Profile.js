@@ -102,6 +102,18 @@ const Profile = props => {
   }
 
   const handleUpdateProfile = () => {
+
+    if (!firstName) {
+      alert('Please fill first name');
+      return;
+    } 
+
+    if (!lastName) {
+      alert('Please fill last name');
+      return;
+    } 
+
+
     let metadata = {
       user_data : {
         name: {
@@ -111,8 +123,16 @@ const Profile = props => {
       } 
     };
 
-    global.cosync.profile.set(userEmail, metadata).then(result => { 
-
+    global.cosync.profile.setUserMetadata(userEmail, metadata).then(result => { 
+      if(result == true){
+        alert('Success');
+      } 
+      else{ 
+        alert(`Error: ${result.message}`);
+      }
+    }).catch(err => {
+      alert(`Error: ${err.message}`);
+    })
   }
 
   const handleInvite = () => { 
@@ -287,17 +307,7 @@ const Profile = props => {
       <Loader loading={loading} />  
 
         <View style={globalStyle.sectionStyle}>
-        
-            <TextInput
-              style={globalStyle.inputStyle}
-              onChangeText={value => setFirstName(value)} 
-              placeholder="Email"
-              autoCapitalize="none" 
-              autoCorrect={false} 
-              returnKeyType="next"  
-              blurOnSubmit={false}
-              
-            />
+        <Text style={globalStyle.buttonTextStyle}>{userEmail}</Text>
       </View>
 
       <View style={globalStyle.sectionStyle}>

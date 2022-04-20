@@ -38,7 +38,7 @@ export const signup = (userEmail, userPassword) => {
     const app = new Realm.App(appConfig);
     if(app.currentUser) app.currentUser.logOut();
     
-    app.emailPasswordAuth.registerUser(userEmail, userPassword).then(result => { 
+    app.emailPasswordAuth.registerUser({userEmail, userPassword}).then(result => { 
       resolve(true)
     }).catch(err => {
       resolve(err)
