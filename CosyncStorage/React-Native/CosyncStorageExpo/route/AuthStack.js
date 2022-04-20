@@ -1,5 +1,5 @@
 //
-//  Config.js
+//  AuthStack.js
 //  CosyncJWT
 //
 //  Licensed to the Apache Software Foundation (ASF) under one
@@ -23,11 +23,33 @@
 //  Copyright © 2022 cosync. All rights reserved.
 //
 
-exports.Realm = {
-    appId: 'cosyncjwt-rbvpc' 
-}
 
-exports.CosyncApp = { 
-    apiUrl: "https://rest-dev.cosync.net",
-    appToken: "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBJZCI6ImJmZDIyZmNhMjc3MjQ3ZWY4YTE5MzcyNzlhZGYxODBiIiwic2NvcGUiOiJhcHAiLCJpYXQiOjE2NTA0MjM3NzZ9.cG6m1kgjtvIdiQrzT_wDeqcymVm9xQfoaQdNUQONSfDsudjEKAhYd6IUtYf2G4vmDEgXLG1-pU2kqPtTFFxK2ZYSAYrvcJG1MY41mpzRxviEuir_wjux4qsJ62Y-hw2ja2UDprEBksH-UXli_5JPwbSwKHNyhM2St4l5LFlduHbixykVKyZWh_UTjy3-EBBTwoG6jnT_VeqLlTVlQeEDS8fbtZghBfsGzBkxSHiZnyB8Id-u8rdX9ETb2SzpYhlrJu7KIkQcc2XWBGblT98Cy7Kt6O3mEu5jzkeOGSo4-TqFS1OPeW8Y3SuEQINX50CuyrNKev-HYJBtmKg8vdvwnh_wIbHF-f936UQgp28nDAJOOW9VlY-Fuybg7Dxc6oDAhoc0IYRSRZw3vDShoUaJT2UndPCzv9PNgWcTmqD0WUKPcpkQ9xVWgOj921ImsPhCBdzupBdtg9LlQuU5--wT0yLNYd8b0u9J1YJe0OwYlNrDH2CUd0CQiJ1j3ugFmlrV"
+import { createStackNavigator } from '@react-navigation/stack'; 
+import Login from '../screens/Login'; 
+import React from 'react';
+import Signup from '../screens/SignUp';
+
+const Stack = createStackNavigator();
+
+const AuthStack = () => {
+
+    const screenOptions = {
+        headerStyle:{
+            backgroundColor: '#4638ab'
+        },
+        headerTintColor:'white',
+        headerTitleStyle:{
+            fontWeight:'bold'
+        }
+    };
+
+    return (
+        <Stack.Navigator screenOptions = {screenOptions}>
+            
+            <Stack.Screen name="Login" component={Login} /> 
+            <Stack.Screen name="SignUp" component={Signup} />
+             
+        </Stack.Navigator>
+    )
 }
+export default AuthStack

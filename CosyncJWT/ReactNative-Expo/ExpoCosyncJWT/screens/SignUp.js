@@ -160,14 +160,15 @@ const Signup = props => {
 
     setLoading(true);   
     
-    let metaData = {}; 
-  
-   
-    if(global.appData.metaData){
-      global.appData.metaData.forEach(field => {
-        _.set(metaData, field.path, `test value ${field.fieldName}`); // add your value here
-      });
-    }
+    let metaData = {
+      user_data : {
+        name: {
+            first: firstName,
+            last: lastName
+        }
+      },
+      email: userEmail
+    };
     
     let validate = global.cosync.password.validatePassword(userPassword);
     if(validate){ 

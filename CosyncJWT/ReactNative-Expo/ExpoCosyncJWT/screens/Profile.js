@@ -47,6 +47,9 @@ const Profile = props => {
   let [userPhoneCode, setUserPhoneCode] = useState(''); 
   let [isVerifyPhone, setVerifyPhone] = useState(false);
   let [phoneVerified, setPhoneVerified] = useState(false);
+  let [firstName, setFirstName] = useState('');
+  let [lastName, setLastName] = useState('');
+   
 
   let [isGoogleTwoFactor, setGoogleTwoFactor] = useState(false); 
   let [isPhoneTwoFactor, setPhoneTwoFactor] = useState(false); 
@@ -62,20 +65,31 @@ const Profile = props => {
     }
 
 
+
     global.cosync.app.getApplication().then(result => {  
       global.appData = result;
 
-      console.log("global.userData.data ", global.userData.data);
-      let twoFactor = global.userData.data ? global.userData.data.twoFactorGoogleVerification : false;
-      setGoogleTwoFactor(twoFactor);
+      global.cosync.profile.getUser().then(data => { 
+        global.userData.data = data;
+        console.log("global.userData.data ", global.userData.data);
+        let twoFactor = global.userData.data ? global.userData.data.twoFactorGoogleVerification : false;
+        setGoogleTwoFactor(twoFactor);
 
-      let phone2Facor = global.userData.data ? global.userData.data.twoFactorPhoneVerification : false;
-      setPhoneTwoFactor(phone2Facor);
+        let phone2Facor = global.userData.data ? global.userData.data.twoFactorPhoneVerification : false;
+        setPhoneTwoFactor(phone2Facor);
 
-      let isPhoneVerified = global.userData.data ? global.userData.data.phoneVerified : false;
-      setPhoneVerified(isPhoneVerified);
+        let isPhoneVerified = global.userData.data ? global.userData.data.phoneVerified : false;
+        setPhoneVerified(isPhoneVerified);
 
-      if(global.userData && global.userData.data && global.userData.data.phone) setCurrentUserPhone(global.userData.data.phone);
+        if(global.userData && global.userData.data && global.userData.data.phone) setCurrentUserPhone(global.userData.data.phone);
+
+        if(data.metaData && data.metaData.user_data) {
+          setFirstName(data.metaData.user_data.name.first);
+          setLastName(data.metaData.user_data.name.last);
+        }
+
+      })
+      
     });
   }, []);
 
@@ -87,6 +101,19 @@ const Profile = props => {
     else return true;
   }
 
+  const handleUpdateProfile = () => {
+    let metadata = {
+      user_data : {
+        name: {
+            first: firstName,
+            last: lastName
+        }
+      } 
+    };
+
+    global.cosync.profile.set(userEmail, metadata).then(result => { 
+
+  }
 
   const handleInvite = () => { 
  
@@ -103,11 +130,11 @@ const Profile = props => {
 
     let metadata = {};
 
-    if(global.appData.metaDataInvite.length){
-      global.appData.metaDataInvite.forEach(field => {
-        _.set(metadata, field.path, `test value ${field.fieldName}`); // add your value here
-      });
-    }
+    // if(global.appData.metaDataInvite.length){
+    //   global.appData.metaDataInvite.forEach(field => {
+    //     _.set(metadata, field.path, `test value ${field.fieldName}`); // add your value here
+    //   });
+    // }
     
     global.cosync.profile.invite(userEmail, metadata).then(result => { 
 
@@ -259,7 +286,58 @@ const Profile = props => {
       
       <Loader loading={loading} />  
 
+        <View style={globalStyle.sectionStyle}>
+        
+            <TextInput
+              style={globalStyle.inputStyle}
+              onChangeText={value => setFirstName(value)} 
+              placeholder="Email"
+              autoCapitalize="none" 
+              autoCorrect={false} 
+              returnKeyType="next"  
+              blurOnSubmit={false}
+              
+            />
+      </View>
+
+      <View style={globalStyle.sectionStyle}>
       
+            <TextInput
+              style={globalStyle.inputStyle}
+              onChangeText={value => setFirstName(value)} 
+              placeholder="First Name"
+              autoCapitalize="none" 
+              autoCorrect={false} 
+              returnKeyType="next"  
+              value={firstName}
+              blurOnSubmit={false}
+              
+            />
+      </View>
+
+      <View style={globalStyle.sectionStyle}>
+    
+            <TextInput
+              style={globalStyle.inputStyle}
+              onChangeText={value => setLastName(value)} 
+              placeholder="Last Name"
+              autoCapitalize="none" 
+              autoCorrect={false} 
+              returnKeyType="next"  
+              value={lastName}
+              blurOnSubmit={false}
+              
+            />
+      </View>
+
+
+      <TouchableOpacity
+        style={globalStyle.buttonStyle}
+        activeOpacity={0.5}
+        onPress={handleUpdateProfile}>
+        <Text style={globalStyle.buttonTextStyle}>Update Profile</Text>
+      </TouchableOpacity>
+
 
         <Text style={globalStyle.infoTextStyle}> Invite Someone </Text>
 

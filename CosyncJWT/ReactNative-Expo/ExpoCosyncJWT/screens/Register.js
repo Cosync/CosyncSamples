@@ -125,14 +125,14 @@ const Register = props => {
 
    
     
-    let metaData = {
-      user_data : {
-        name: {
-            first: firstName,
-            last: lastName
-        }
-      },
-      email: userEmail
+  let metaData = {
+    user_data : {
+      name: {
+          first: firstName,
+          last: lastName
+      }
+    },
+    email: userEmail
   };
  
   let validate = global.cosync.password.validatePassword(userPassword);
@@ -150,24 +150,37 @@ const Register = props => {
 
   setLoading(true);   
   
-  global.cosync.register.register(userEmail, userPassword, signupCode, metaData).then(result => {
-
-      setLoading(false); 
+  global.cosync.register.register(userEmail, userPassword, signupCode, metaData).then(result => { 
 
       if(result.jwt){ 
         global.userData = result;   
-        global.cosync.realmManager.login(result.jwt, Configure.Realm.appId).then(res => {
-          setLoading(false);
-          authCtx.authenticate(result);
+        
+        global.cosync.profile.getUser().then(data => { 
           
+          setLoading(false); 
+
+          global.userData.data = data;  
+
+         
+          global.cosync.realmManager.login(result.jwt, Configure.Realm.appId).then(res => {
+            setLoading(false);
+            authCtx.authenticate(result);
+            
+          })
+          .catch(err => {
+            setLoading(false);
+            setErrortext(`MongoDB Realm Error: ${err.message}`);
+          });
+
+        }).catch(err => {
+          setLoading(false); 
+          console.log(err);
+          setErrortext(`Error: ${err.message}`);
         })
-        .catch(err => {
-          setLoading(false);
-          setErrortext(`MongoDB Realm Error: ${err.message}`);
-        });
+
       }
       else{
-        
+         setLoading(false); 
         setErrortext(`Error: ${result.message}`);
       }
     }).catch(err => {
