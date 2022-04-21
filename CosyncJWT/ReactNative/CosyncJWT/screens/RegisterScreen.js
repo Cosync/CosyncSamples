@@ -125,12 +125,14 @@ const RegisterScreen = props => {
    
     
     let metaData = {
-      name: {
-          first: firstName,
-          last: lastName
+      user_data : {
+        name: {
+            first: firstName,
+            last: lastName
+        }
       },
       email: userEmail
-  };
+    };
  
   let validate = global.cosync.password.validatePassword(userPassword);
   if(!validate){

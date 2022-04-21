@@ -60,11 +60,7 @@ const Profile = props => {
   useEffect(() => {
 
     if(!global.cosync) global.cosync = new CosyncJWTReactNative(Configure.CosyncApp).getInstance();
-    if(!global.userData) {
-      //props.navigation.navigate('Login')
-    }
-
-
+   
 
     global.cosync.app.getApplication().then(result => {  
       global.appData = result;
