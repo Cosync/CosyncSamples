@@ -48,7 +48,8 @@ const ProfileScreen = props => {
   let [userPhoneCode, setUserPhoneCode] = useState(''); 
   let [isVerifyPhone, setVerifyPhone] = useState(false);
   let [phoneVerified, setPhoneVerified] = useState(false);
-
+  let [firstName, setFirstName] = useState('');
+  let [lastName, setLastName] = useState('');
   let [isGoogleTwoFactor, setGoogleTwoFactor] = useState(false); 
   let [isPhoneTwoFactor, setPhoneTwoFactor] = useState(false); 
   let [googleSecretKey, setGoogleSecretKey] = useState(''); 
@@ -62,17 +63,26 @@ const ProfileScreen = props => {
     global.cosync.app.getApplication().then(result => {  
       global.appData = result;
 
-      console.log("global.userData.data ", global.userData.data);
-      let twoFactor = global.userData.data ? global.userData.data.twoFactorGoogleVerification : false;
-      setGoogleTwoFactor(twoFactor);
+      global.cosync.profile.getUser().then(data => { 
+        global.userData.data = data;
 
-      let phone2Facor = global.userData.data ? global.userData.data.twoFactorPhoneVerification : false;
-      setPhoneTwoFactor(phone2Facor);
+        console.log("global.userData.data ", global.userData.data);
+        let twoFactor = global.userData.data ? global.userData.data.twoFactorGoogleVerification : false;
+        setGoogleTwoFactor(twoFactor);
 
-      let isPhoneVerified = global.userData.data ? global.userData.data.phoneVerified : false;
-      setPhoneVerified(isPhoneVerified);
+        let phone2Facor = global.userData.data ? global.userData.data.twoFactorPhoneVerification : false;
+        setPhoneTwoFactor(phone2Facor);
 
-      if(global.userData && global.userData.data && global.userData.data.phone) setCurrentUserPhone(global.userData.data.phone);
+        let isPhoneVerified = global.userData.data ? global.userData.data.phoneVerified : false;
+        setPhoneVerified(isPhoneVerified);
+
+        if(global.userData && global.userData.data && global.userData.data.phone) setCurrentUserPhone(global.userData.data.phone);
+        if(global.userData && global.userData.data && global.userData.data.handle) setUserEmail(global.userData.data.handle);
+        if(data.metaData && data.metaData.user_data) {
+          setFirstName(data.metaData.user_data.name.first);
+          setLastName(data.metaData.user_data.name.last);
+        }
+      });
     });
   }, []);
 
@@ -251,9 +261,92 @@ const ProfileScreen = props => {
   }; 
 
 
+
+  const handleUpdateProfile = () => {
+
+    if (!firstName) {
+      alert('Please fill first name');
+      return;
+    } 
+
+    if (!lastName) {
+      alert('Please fill last name');
+      return;
+    } 
+
+
+    let metadata = {
+      user_data : {
+        name: {
+            first: firstName,
+            last: lastName
+        }
+      } 
+    };
+
+    global.cosync.profile.setUserMetadata(metadata).then(result => { 
+      if(result == true){
+        alert('Success');
+      } 
+      else{ 
+        alert(`Fails: ${result.message}`);
+      }
+    }).catch(err => {
+      alert(`Error: ${err.message}`);
+    })
+  }
+
+
+
   return (
     <View style={styles.mainBody}>
       <Loader loading={loading} />  
+
+
+      <Text style={styles.registerTextStyle}>{userEmail}</Text>
+      
+
+      <View style={styles.SectionStyle}>
+      
+            <TextInput
+              style={styles.inputStyle}
+              onChangeText={value => setFirstName(value)} 
+              placeholder="First Name"
+              autoCapitalize="none" 
+              autoCorrect={false} 
+              returnKeyType="next"  
+              value={firstName}
+              blurOnSubmit={false}
+              
+            />
+      </View>
+
+      <View style={styles.SectionStyle}>
+    
+            <TextInput
+              style={styles.inputStyle}
+              onChangeText={value => setLastName(value)} 
+              placeholder="Last Name"
+              autoCapitalize="none" 
+              autoCorrect={false} 
+              returnKeyType="next"  
+              value={lastName}
+              blurOnSubmit={false}
+              
+            />
+      </View>
+      
+      <View style={styles.viewSection}>
+
+        <View style={styles.SectionStyle}>
+          <TouchableOpacity
+            style={styles.buttonStyle}
+            activeOpacity={0.5}
+            onPress={handleUpdateProfile}>
+            <Text style={styles.buttonTextStyle}>Update Profile</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
 
       <View style={styles.viewSection}>
         <Text style={styles.registerTextStyle}> Invite Someone </Text>

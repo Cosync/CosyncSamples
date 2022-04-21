@@ -13,7 +13,7 @@
     "@react-native-clipboard/clipboard": "^1.6.0",
     "@react-native-community/masked-view": "^0.1.10",
     "bson": "^4.2.0",
-    "cosync-jwt-react-native": "^1.0.4",
+    "cosync-jwt-react-native": "^1.0.6",
     "lodash": "^4.17.21", 
     "react": "17.0.2",
     "react-native": "0.66.4",
