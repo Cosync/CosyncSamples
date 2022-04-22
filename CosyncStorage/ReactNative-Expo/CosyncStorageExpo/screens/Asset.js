@@ -36,7 +36,6 @@ import {
 
 // Import Image Picker 
 import Configure from '../config/Config'; 
-import * as RealmLib from '../managers/RealmManager';  
 import Loader from '../components/Loader';  
 import ProgressiveAsset from '../components/ProgressiveAsset';   
 
@@ -45,11 +44,10 @@ const Asset = props => {
   const [loading, setLoading] = useState(false);  
   const [assetList, setAssetList] = useState([]); 
 
-  //global.currentScreenIndex = 'AssetScreen';
-
 
   useEffect(() => {
-    openRealm();
+
+    loadAllAssets(); 
 
     props.navigation.addListener('didBlur', (e) =>{
       setAssetList(prevItems => { 
@@ -58,90 +56,94 @@ const Asset = props => {
       if(global.sound) global.sound.stop();
     })
 
-    const naviSub = props.navigation.addListener('willFocus', openRealm); 
-    return () => { 
-      naviSub.remove();
-    };
+     
 
   }, []);
  
 
-    async function openRealm(){
-        setLoading(true); 
-        
-        global.appId = Configure.Realm.appId; 
-  
-        // if(!global.user || !global.user.id){ 
-  
-        //   let userEmail = await AsyncStorage.getItem('user_email');
-        //   let userPassword = await AsyncStorage.getItem('user_password'); 
-            
-        //   if(!userEmail || !userPassword){
-        //       props.navigation.navigate('Auth'); 
-        //       return;
-        //   }
+   
+  async function loadAllAssets(){
 
-        //   let user = await RealmLib.login(userEmail, userPassword);
-        //   AsyncStorage.setItem('user_id', user.id);  
-          
-        // }  
+    console.log('loadAllAssets .... ');
+    setLoading(true);
+    setAssetList(prevItems => { 
+      return [];
+    }); 
 
-        await RealmLib.openRealmPartition(Configure.Realm.publicPartition);   
-        await RealmLib.openRealmPartition(`user_id=${global.user.id}`); 
-       
-        loadAllAssets(); 
+    const assetsPublic = await global.realm.objects(Configure.Realm.cosyncAsset).filtered(`uid = '${global.user.id}'`);  
+    console.log('loadAllAssets .... assetsPublic ', assetsPublic.length);
 
-        setLoading(false); 
-    }
+    let sortedAssetsPublic = assetsPublic.sorted("createdAt", false);
 
-    function loadAllAssets(){
+     
+    console.log('loadAllAssets .... sortedAssetsPublic ', sortedAssetsPublic.length);
 
-      setAssetList(prevItems => { 
-        return [];
-      }); 
+    assetsPublic.removeListener(assetsEventListener);
+    assetsPublic.addListener(assetsEventListener);
 
-      const assetsPublic = global.realmPartition[Configure.Realm.publicPartition].objects(Configure.Realm.cosyncAsset).filtered(`uid = '${global.user.id}' && status == 'active'`);  
-      let sortedAssetsPublic = assetsPublic.sorted("createdAt", false);
-      assetsPublic.removeListener(assetsEventListener); 
-      assetsPublic.addListener(assetsEventListener); 
-      sortedAssetsPublic.forEach(element => { 
+    sortedAssetsPublic.forEach(element => { 
+      if(element.status == "active"){
         let item = element; 
         item.id = element._id.toString();
         setAssetList(prevItems => { 
           return [item, ...prevItems];
         });
-      }); 
+      }
+    }); 
 
-      const assetsPrivate = global.realmPartition[`user_id=${global.user.id}`].objects(Configure.Realm.cosyncAsset).filtered(`status == 'active'`);  
-      let sortedResult = assetsPrivate.sorted("createdAt", false);
-      assetsPrivate.removeListener(assetsEventListener); 
-      assetsPrivate.addListener(assetsEventListener); 
+    const assetsPrivate = global.realmPrivate.objects(Configure.Realm.cosyncAsset);
+    console.log('loadAllAssets .... assetsPrivate ', assetsPrivate.length);
 
-      sortedResult.forEach(element => {
+    let sortedResult = assetsPrivate.sorted("createdAt", false);
+    assetsPrivate.removeListener(assetsEventListener);
+    assetsPrivate.addListener(assetsEventListener);
+
+    sortedResult.forEach(element => {
+      if(element.status == "active"){
         let item = element;
         item.id = element._id.toString();  
-         
+          
         setAssetList(prevItems => { 
           return [item, ...prevItems];
         });  
-      }); 
+      }
+    }); 
 
-      
+    setLoading(false);
 
 
-    }
+  }
 
     function assetsEventListener(assets, changes) { 
       // Update UI in response to inserted objects
       changes.insertions.forEach((index) => {
         let item = assets[index]; 
         
+        console.log("insertions ", item.status);
+
         if(item.status == 'active'){ 
           item.id = item._id.toString(); 
           setAssetList(prevItems => { 
             return [item, ...prevItems];
           }); 
         }
+      });
+
+      changes.modifications.forEach((index) => {
+        let item = assets[index]; 
+        console.log("modifications ", item.status);
+        if(item.status != 'active'){ 
+          item.id = item._id.toString(); 
+          assetList = assetList.filter(asset => asset._id != item._id);
+          setAssetList(assetList); 
+        }
+        else if(item.status == 'active'){ 
+          item.id = item._id.toString(); 
+          setAssetList(prevItems => { 
+            return [item, ...prevItems];
+          }); 
+        }
+         
       });
        
     }

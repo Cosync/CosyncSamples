@@ -65,35 +65,12 @@ const Upload = props => {
     setAssetSource({type: 'image'});
     openRealm();
 
-    async function openRealm(){
-      
-         
-      setLoading(true);
-      global.appId = Configure.Realm.appId; 
-        
+    async function openRealm(){ 
 
-        // if(!global.user || !global.user.id){ 
-  
-        //     let userEmail = await AsyncStorage.getItem('user_email');
-        //     let userPassword = await AsyncStorage.getItem('user_password');  
-              
-        //     if(!userEmail || !userPassword){
-        //       props.navigation.navigate('Auth'); 
-        //       return;
-        //     }
-
-        //     let user = await RealmLib.login(userEmail, userPassword);
-        //     AsyncStorage.setItem('user_id', user.id);  
-          
-        // }   
-  
-        
-        
-
-        await RealmLib.openRealmPartition(Configure.Realm.publicPartition);   
-        await RealmLib.openRealmPartition(global.privatePartition);
-        listenCosyncAssetUpload();
-        setLoading(false);
+      setLoading(true); 
+ 
+      listenCosyncAssetUpload();
+      setLoading(false);
        
     }
   }, [])
@@ -101,11 +78,11 @@ const Upload = props => {
 
     const uploadRequest = (source) => { 
         let uploadResult;
-        global.realmPartition[global.privatePartition].write(() => {  
+        global.realmPrivate.write(() => {  
           
           let imageName = source.uri.split('/').pop(); 
           let filePath = source.type.indexOf("image") > -1 ? `images/${imageName}` : `videos/${imageName}`;
-          uploadResult = global.realmPartition[global.privatePartition].create(Configure.Realm.cosyncAssetUpload, 
+          uploadResult = global.realmPrivate.create(Configure.Realm.cosyncAssetUpload, 
             { 
               _id: new ObjectId(),
               _partition:  global.privatePartition,
@@ -119,9 +96,7 @@ const Upload = props => {
               createdAt: new Date().toISOString()
             }); 
 
-        }); 
-
-        //uploadResult.addListener(eventObjectListener);
+        });
         
     }
 
@@ -149,10 +124,6 @@ const Upload = props => {
         else {
 
           response.type = response.type ? response.type : 'video/quicktime'; 
-           
-          console.log('launchImageLibrary ', response); 
-
-         
 
           setLoading(true);
           setCosyncAssetUpload(null);
@@ -171,8 +142,7 @@ const Upload = props => {
 
     function listenCosyncAssetUpload() {
       // Query realm for all instances of the "Task" type.
-      const assets = global.realmPartition[global.privatePartition]
-      .objects('CosyncAssetUpload').filtered(`sessionId = "${global.user.deviceId}"`);
+      const assets = global.realmPrivate.objects('CosyncAssetUpload').filtered(`sessionId = "${global.user.deviceId}"`);
     
       // Define the collection notification listener
       function listener(assets, changes) {
@@ -242,8 +212,8 @@ const Upload = props => {
 
 
     const updateUploadRecord = () => {
-      global.realmPartition[global.privatePartition].write(() => { 
-        global.realmPartition[global.privatePartition].create(Configure.Realm.cosyncAssetUpload, { _id: assetUpload._id, status: "uploaded" }, "modified");
+      realmPrivate.write(() => { 
+        realmPrivate.create(Configure.Realm.cosyncAssetUpload, { _id: assetUpload._id, status: "uploaded" }, "modified");
       });
     }
 

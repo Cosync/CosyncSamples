@@ -66,7 +66,12 @@ export const login = (userEmail, userPassword) => {
 
       global.privatePartition = `user_id=${global.user.id}`;
 
-      resolve(user);
+      openRealm().then( result => {
+        resolve(user);
+      }).catch(err => {
+        reject(err);
+      }) 
+      
     }).catch(err => {
       reject(err);
     }) 
@@ -99,7 +104,7 @@ export const openRealm = () => {
     }
 
     let configPublic = {
-      schema:  [Schema.CosyncAsset],
+      schema:  [Schema.CosyncAsset, Schema.CosyncAssetUpload],
       sync: {
         user: global.user,
         partitionValue: Configure.Realm.publicPartition
@@ -114,7 +119,7 @@ export const openRealm = () => {
       }
     };  
       
-    try {
+    try { 
 
       Realm.open(configPublic).then(realm => {
         global.realm = realm; 
