@@ -78,8 +78,8 @@ const Asset = props => {
      
     console.log('loadAllAssets .... sortedAssetsPublic ', sortedAssetsPublic.length);
 
-    assetsPublic.removeListener(assetsEventListener);
-    assetsPublic.addListener(assetsEventListener);
+    assetsPublic.removeListener(changeAssetEvent);
+    assetsPublic.addListener(changeAssetEvent);
 
     sortedAssetsPublic.forEach(element => { 
       if(element.status == "active"){
@@ -95,8 +95,8 @@ const Asset = props => {
     console.log('loadAllAssets .... assetsPrivate ', assetsPrivate.length);
 
     let sortedResult = assetsPrivate.sorted("createdAt", false);
-    assetsPrivate.removeListener(assetsEventListener);
-    assetsPrivate.addListener(assetsEventListener);
+    assetsPrivate.removeListener(changeAssetEvent);
+    assetsPrivate.addListener(changeAssetEvent);
 
     sortedResult.forEach(element => {
       if(element.status == "active"){
@@ -112,6 +112,28 @@ const Asset = props => {
     setLoading(false);
 
 
+  }
+
+  function changeAssetEvent(assets, changes){
+
+    if(changes.insertions.length || changes.modifications.length || changes.deletions.length){ 
+      
+      setAssetList(prevItems => { 
+        return [];
+      });  
+    
+      assets.forEach(element => {
+
+        if(element.status == "active"){
+          let item = element;
+          item.id = element._id.toString();  
+            
+          setAssetList(prevItems => { 
+            return [item, ...prevItems];
+          });  
+        }
+      }); 
+    }
   }
 
     function assetsEventListener(assets, changes) { 
@@ -130,12 +152,29 @@ const Asset = props => {
       });
 
       changes.modifications.forEach((index) => {
+
         let item = assets[index]; 
         console.log("modifications ", item.status);
+        console.log("modifications: id ", item._id)
+        console.log("modifications: assetList ", assetList.length)
+
         if(item.status != 'active'){ 
-          item.id = item._id.toString(); 
-          assetList = assetList.filter(asset => asset._id != item._id);
-          setAssetList(assetList); 
+          let itemId = item._id.toString(); 
+          setAssetList(existingItems => { 
+
+            console.log("existingItems ", existingItems.length);
+
+            return existingItems.filter((asset) => {
+
+
+              console.log("existingItems asset ", asset._id);
+
+
+              asset._id !== itemId
+            });
+          }); 
+
+           
         }
         else if(item.status == 'active'){ 
           item.id = item._id.toString(); 
@@ -144,6 +183,17 @@ const Asset = props => {
           }); 
         }
          
+      });
+
+      changes.deletions.forEach((index) => { 
+
+
+        setAssetList(existingItems => {
+          console.log("existingItems ", existingItems.length);
+
+          return existingItems.filter((item, i) => i !== index); 
+        }) 
+        
       });
        
     }
