@@ -24,7 +24,7 @@
 //
 
 exports.Realm = {
-    appId: 'cosyncstorage-hblvk',
+    appId: '',
     publicPartition: 'public', 
     cosyncAsset:'CosyncAsset', 
     cosyncAssetUpload : 'CosyncAssetUpload'
