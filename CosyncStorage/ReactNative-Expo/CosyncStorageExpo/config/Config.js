@@ -24,7 +24,7 @@
 //
 
 exports.Realm = {
-    appId: 'cosyncjwt-rbvpc',
+    appId: '',
     publicPartition: 'public', 
     cosyncAsset:'CosyncAsset', 
     cosyncAssetUpload : 'CosyncAssetUpload'
