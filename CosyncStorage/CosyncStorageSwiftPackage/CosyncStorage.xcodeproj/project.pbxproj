@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5246849227FD8B7B00E32F15 /* AssetPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 5246849127FD8B7B00E32F15 /* AssetPicker */; };
-		5246849427FD8B7B00E32F15 /* CosyncStorageAPI in Frameworks */ = {isa = PBXBuildFile; productRef = 5246849327FD8B7B00E32F15 /* CosyncStorageAPI */; };
+		526E35BE284D0F7300D7A126 /* AssetPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 526E35BD284D0F7300D7A126 /* AssetPicker */; };
+		526E35C0284D0F7300D7A126 /* CosyncStorageSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 526E35BF284D0F7300D7A126 /* CosyncStorageSwift */; };
 		52A6CFA927EC137E00462066 /* CosyncStorageApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52A6CFA827EC137E00462066 /* CosyncStorageApp.swift */; };
 		52A6CFAB27EC137E00462066 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52A6CFAA27EC137E00462066 /* ContentView.swift */; };
 		52A6CFAD27EC138000462066 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 52A6CFAC27EC138000462066 /* Assets.xcassets */; };
@@ -36,8 +36,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5246849427FD8B7B00E32F15 /* CosyncStorageAPI in Frameworks */,
-				5246849227FD8B7B00E32F15 /* AssetPicker in Frameworks */,
+				526E35BE284D0F7300D7A126 /* AssetPicker in Frameworks */,
+				526E35C0284D0F7300D7A126 /* CosyncStorageSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -100,8 +100,8 @@
 			);
 			name = CosyncStorage;
 			packageProductDependencies = (
-				5246849127FD8B7B00E32F15 /* AssetPicker */,
-				5246849327FD8B7B00E32F15 /* CosyncStorageAPI */,
+				526E35BD284D0F7300D7A126 /* AssetPicker */,
+				526E35BF284D0F7300D7A126 /* CosyncStorageSwift */,
 			);
 			productName = CosyncStorage;
 			productReference = 52A6CFA527EC137E00462066 /* CosyncStorage.app */;
@@ -132,7 +132,7 @@
 			);
 			mainGroup = 52A6CF9C27EC137E00462066;
 			packageReferences = (
-				5246849027FD8B7B00E32F15 /* XCRemoteSwiftPackageReference "CosyncStorageAPI" */,
+				526E35BC284D0F7300D7A126 /* XCRemoteSwiftPackageReference "CosyncStorageSwift" */,
 			);
 			productRefGroup = 52A6CFA627EC137E00462066 /* Products */;
 			projectDirPath = "";
@@ -372,26 +372,26 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		5246849027FD8B7B00E32F15 /* XCRemoteSwiftPackageReference "CosyncStorageAPI" */ = {
+		526E35BC284D0F7300D7A126 /* XCRemoteSwiftPackageReference "CosyncStorageSwift" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Cosync/CosyncStorageAPI.git";
+			repositoryURL = "https://github.com/Cosync/CosyncStorageSwift.git";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.1;
+				kind = exactVersion;
+				version = 1.0.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		5246849127FD8B7B00E32F15 /* AssetPicker */ = {
+		526E35BD284D0F7300D7A126 /* AssetPicker */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 5246849027FD8B7B00E32F15 /* XCRemoteSwiftPackageReference "CosyncStorageAPI" */;
+			package = 526E35BC284D0F7300D7A126 /* XCRemoteSwiftPackageReference "CosyncStorageSwift" */;
 			productName = AssetPicker;
 		};
-		5246849327FD8B7B00E32F15 /* CosyncStorageAPI */ = {
+		526E35BF284D0F7300D7A126 /* CosyncStorageSwift */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 5246849027FD8B7B00E32F15 /* XCRemoteSwiftPackageReference "CosyncStorageAPI" */;
-			productName = CosyncStorageAPI;
+			package = 526E35BC284D0F7300D7A126 /* XCRemoteSwiftPackageReference "CosyncStorageSwift" */;
+			productName = CosyncStorageSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
