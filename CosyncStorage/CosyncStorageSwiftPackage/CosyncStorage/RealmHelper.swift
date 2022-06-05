@@ -3,7 +3,7 @@
 
 import Foundation
 import RealmSwift
-import CosyncStorageAPI
+import CosyncStorageSwift
 
 class RealmHelper {
     
@@ -77,7 +77,7 @@ class RealmHelper {
                 self.userRealm = try await Realm(configuration: user.configuration(partitionValue: "user_id=\(uid)"), downloadBeforeOpen: .once)
                 self.publicRealm = try await Realm(configuration: user.configuration(partitionValue: "public"), downloadBeforeOpen: .once)
                  
-                CosyncStorageAPI.shared.configure(app: self.app!, privateRealm: self.userRealm!, publicRealm: self.publicRealm!)
+                CosyncStorageSwift.shared.configure(app: self.app!, privateRealm: self.userRealm!, publicRealm: self.publicRealm!)
                 
                 print("Successfully opened realms after downloading: uid \(uid)")
              }

@@ -8,7 +8,7 @@
 import SwiftUI
 import PhotosUI
 import AVKit
-import CosyncStorageAPI
+import CosyncStorageSwift
 import AssetPicker
 
 struct UploadView: View {
@@ -16,7 +16,7 @@ struct UploadView: View {
     @State private var selectedVideoUrl:URL?
     @State private var showImagePicker = false
     @State private var pickerResult: [String] = []
-    @StateObject private var cosyncHelper = CosyncStorageAPI.shared
+    @StateObject private var cosyncHelper = CosyncStorageSwift.shared
     
     @State private var selectedType = "image"
     @State private var expiredHours = "0"
@@ -75,8 +75,8 @@ struct UploadView: View {
             if cosyncHelper.uploadStart == false {
                 Button(action: {
                      
-                    CosyncStorageAPI.shared.reset()
-                    CosyncStorageAPI.shared.createAssetUpload(assetIdList: pickerResult, expiredHours: Double(expiredHours)! ,path: "asset")
+                    CosyncStorageSwift.shared.reset()
+                    CosyncStorageSwift.shared.createAssetUpload(assetIdList: pickerResult, expiredHours: Double(expiredHours)! ,path: "asset")
                 }) {
                     Text("upload")
                         .padding(.horizontal)
@@ -94,7 +94,7 @@ struct UploadView: View {
                         isPresented: $showImagePicker)
             }
         .onAppear{
-            CosyncStorageAPI.shared.reset()
+            CosyncStorageSwift.shared.reset()
         }
         
        

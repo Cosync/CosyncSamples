@@ -6,14 +6,14 @@
 //
 
 import SwiftUI
-import CosyncStorageAPI
+import CosyncStorageSwift
 import AVKit
 
 
 struct AssetView: View {
     
     
-    @StateObject private var cosyncHelper = CosyncStorageAPI.shared
+    @StateObject private var cosyncHelper = CosyncStorageSwift.shared
     
     @State private var showUpload = false
     
@@ -43,7 +43,7 @@ struct AssetView: View {
                                                 //if(asset.expirationHours > 0){
                                                    Button(action: {
                                                        Task{
-                                                           let _ = await CosyncStorageAPI.shared.refreshAsset(assetId: "\(asset._id)")
+                                                           let _ = await CosyncStorageSwift.shared.refreshAsset(assetId: "\(asset._id)")
                                                        }
                                                        
                                                       // ProgressView().progressViewStyle(.circular)
