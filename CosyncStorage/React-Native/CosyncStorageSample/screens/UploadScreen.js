@@ -36,7 +36,7 @@ import {
 } from 'react-native';
 
 // Import Image Picker
-import ImagePicker from 'react-native-image-picker';
+import {launchImageLibrary} from 'react-native-image-picker'; 
 import ImageResizer from 'react-native-image-resizer';
 import Configure from '../config/Config'; 
 import * as RealmLib from '../managers/RealmManager'; 
@@ -109,6 +109,7 @@ const UploadScreen = props => {
               _partition:  global.privatePartition,
               filePath: filePath, 
               uid: global.user.id,
+              assetPartition: Configure.Realm.publicPartition,
               contentType: source.type,
               status: 'pending',  
               expirationHours: parseFloat(expirationHours),  
@@ -139,27 +140,26 @@ const UploadScreen = props => {
         },
       };
 
-      ImagePicker.showImagePicker(options, (response) => { 
+      launchImageLibrary(options, (response) => {
         if (response.didCancel) console.log('User cancelled image picker');
         else if (response.error)  alert(response.error)
-        else {
-
-          response.type = response.type ? response.type : 'video/quicktime'; 
-           
-          // console.log('showImagePicker ', response); 
-
-          global.assetSource = response;
-
-          setLoading(true);
+        else if(response){
+          response.type = response.type ? response.type : 'video/quicktime';   
           setCosyncAssetUpload(null);
-          cosyncAssetUpload = null;
-
+          cosyncAssetUpload = null; 
           setUploadList([]);  
           
-          setAssetSource(response); 
-
+           
+          setLoading(true);
+          global.assetSource = response;
+          setAssetSource(response);  
           uploadRequest(response);
+           
         }
+        else {
+          alert('Invalid file')
+        }
+
       });
     };
 

@@ -181,8 +181,8 @@ const styles = StyleSheet.create({
         right: 0,
         top: 0,
         bottom: 0,
-        width: 380,
-        height: 380,
+        width: 360,
+        height: 360,
         justifyContent: 'center',
         
     },
@@ -193,8 +193,8 @@ const styles = StyleSheet.create({
         right: 0,
         top: 0,
         bottom: 0,
-        width: 380,
-        height: 380,
+        width: 360,
+        height: 360,
         alignItems: 'center', 
     },
     imageThumbStyle: {   
@@ -203,8 +203,8 @@ const styles = StyleSheet.create({
         right: 0,
         top: 0,
         bottom: 0,
-        width: 380,
-        height: 380,
+        width: 360,
+        height: 360,
         alignItems: 'center', 
     },
     
