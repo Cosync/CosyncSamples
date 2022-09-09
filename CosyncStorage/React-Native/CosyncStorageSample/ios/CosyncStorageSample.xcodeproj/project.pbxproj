@@ -209,6 +209,7 @@
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
 				C04F5CD55F8457C5064A4715 /* [CP] Copy Pods Resources */,
+				E75310AB09F5FA23B602437D /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -231,6 +232,7 @@
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				BC83A5A6B53D98193B17FE64 /* [CP] Copy Pods Resources */,
+				E53682DBFE61827AA5C5CE00 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -512,6 +514,42 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CosyncStorageSample-CosyncStorageSampleTests/Pods-CosyncStorageSample-CosyncStorageSampleTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E53682DBFE61827AA5C5CE00 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-CosyncStorageSample/Pods-CosyncStorageSample-frameworks.sh",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/OpenSSL-Universal/OpenSSL.framework/OpenSSL",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OpenSSL.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CosyncStorageSample/Pods-CosyncStorageSample-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E75310AB09F5FA23B602437D /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-CosyncStorageSample-CosyncStorageSampleTests/Pods-CosyncStorageSample-CosyncStorageSampleTests-frameworks.sh",
+				"${PODS_XCFRAMEWORKS_BUILD_DIR}/OpenSSL-Universal/OpenSSL.framework/OpenSSL",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OpenSSL.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CosyncStorageSample-CosyncStorageSampleTests/Pods-CosyncStorageSample-CosyncStorageSampleTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		FD10A7F022414F080027D42C /* Start Packager */ = {

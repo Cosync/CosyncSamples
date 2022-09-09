@@ -10,8 +10,7 @@ class RealmHelper {
     static let shared = RealmHelper()
    
     var app : App! = nil
-    var userRealm: Realm?
-    var publicRealm: Realm?
+    var realm: Realm?
      
     var user: User? {
         return self.app.currentUser
@@ -70,17 +69,35 @@ class RealmHelper {
     func initRealms() async throws -> Void {
         
         do {
+            var config = self.user!.flexibleSyncConfiguration()
             
-             
-            if  let user = self.app.currentUser,
-                let uid = self.currentUserId {
-                self.userRealm = try await Realm(configuration: user.configuration(partitionValue: "user_id=\(uid)"), downloadBeforeOpen: .once)
-                self.publicRealm = try await Realm(configuration: user.configuration(partitionValue: "public"), downloadBeforeOpen: .once)
-                 
-                CosyncStorageSwift.shared.configure(app: self.app!, privateRealm: self.userRealm!, publicRealm: self.publicRealm!)
+            config.objectTypes = [
+                                  CosyncAsset.self,
+                                  CosyncAssetUpload.self
+            ]
+            
+            realm = try await Realm(configuration: config, downloadBeforeOpen: .always)
+            let subscriptions = realm!.subscriptions
+            let foundCosyncUpload = subscriptions.first(named: "cosyncAssetUpload")
+            let foundCosyncAsset = subscriptions.first(named: "cosyncAsset")
+            
+            try await subscriptions.update({
+                if (foundCosyncUpload == nil) {
+                    subscriptions.append(
+                        QuerySubscription<CosyncAssetUpload>(name: "cosyncAssetUpload"){
+                            $0.userId == self.currentUserId!
+                        }
+                    )
+                }
                 
-                print("Successfully opened realms after downloading: uid \(uid)")
-             }
+                if (foundCosyncAsset == nil) {
+                    subscriptions.append(
+                        QuerySubscription<CosyncAsset>(name: "cosyncAsset")
+                    )
+                }
+            })
+            
+            CosyncStorageSwift.shared.configure(app: self.app, realm: self.realm!)
         }
         catch{
             

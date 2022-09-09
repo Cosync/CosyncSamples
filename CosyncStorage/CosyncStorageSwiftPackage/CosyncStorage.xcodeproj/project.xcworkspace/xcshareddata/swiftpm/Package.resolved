@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Cosync/CosyncStorageSwift.git",
       "state" : {
-        "revision" : "191e5ea2e59c17293c3276d8b43a44f52242df99",
-        "version" : "1.0.0"
+        "revision" : "0ee09031a3a00dd38c1973a439b389855a5cb4c7",
+        "version" : "1.0.4"
       }
     },
     {
@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/realm/realm-core",
       "state" : {
-        "revision" : "fd48276f88f3d55dbdcdc9e8cbf32541811d5865",
-        "version" : "12.1.0"
+        "revision" : "6f6a0f415bd33cf2ced4467e36a47f7c84f0a1d7",
+        "version" : "12.5.1"
       }
     },
     {
@@ -23,8 +23,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/realm/realm-swift.git",
       "state" : {
-        "revision" : "c54cc0bda9fb1aa94667022a46c3d079121476fc",
-        "version" : "10.28.0"
+        "revision" : "ae0ceea258fd8f58392881cc4b2228bff62f74f5",
+        "version" : "10.28.7"
       }
     }
   ],
