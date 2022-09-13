@@ -78,18 +78,16 @@ const Upload = props => {
 
     const uploadRequest = (source) => { 
         let uploadResult;
-        global.realmPrivate.write(() => {  
+        global.realm.write(() => {  
           
           let imageName = source.uri.split('/').pop(); 
           let filePath = source.type.indexOf("image") > -1 ? `images/${imageName}` : `videos/${imageName}`;
-          uploadResult = global.realmPrivate.create(Configure.Realm.cosyncAssetUpload, 
+          uploadResult = global.realm.create(Configure.Realm.cosyncAssetUpload, 
             { 
               _id: new ObjectId(),
-              _partition:  global.privatePartition,
               filePath: filePath, 
-              uid: global.user.id,
+              userId: global.user.id,
               contentType: source.type,
-              assetPartition: Configure.Realm.publicPartition,
               status: 'pending',  
               expirationHours: parseFloat(expirationHours),  
               sessionId: global.user.deviceId,
@@ -142,7 +140,7 @@ const Upload = props => {
 
     function listenCosyncAssetUpload() {
       // Query realm for all instances of the "Task" type.
-      const assets = global.realmPrivate.objects('CosyncAssetUpload').filtered(`sessionId = "${global.user.deviceId}"`);
+      const assets = global.realm.objects('CosyncAssetUpload').filtered(`sessionId = "${global.user.deviceId}"`);
     
       // Define the collection notification listener
       function listener(assets, changes) {
@@ -212,8 +210,8 @@ const Upload = props => {
 
 
     const updateUploadRecord = () => {
-      realmPrivate.write(() => { 
-        realmPrivate.create(Configure.Realm.cosyncAssetUpload, { _id: assetUpload._id, status: "uploaded" }, "modified");
+      global.realm.write(() => { 
+        global.realm.create(Configure.Realm.cosyncAssetUpload, { _id: assetUpload._id, status: "uploaded" }, "modified");
       });
     }
 

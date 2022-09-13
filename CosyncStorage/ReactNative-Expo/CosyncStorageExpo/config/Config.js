@@ -24,8 +24,7 @@
 //
 
 exports.Realm = {
-    appId: '',
-    publicPartition: 'public', 
+    appId: 'qrxtra-yenuj',
     cosyncAsset:'CosyncAsset', 
     cosyncAssetUpload : 'CosyncAssetUpload'
 }

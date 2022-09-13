@@ -70,8 +70,8 @@ const Asset = props => {
       return [];
     }); 
 
-    const assetsPublic = await global.realm.objects(Configure.Realm.cosyncAsset).filtered(`uid = '${global.user.id}'`);  
-    console.log('loadAllAssets .... assetsPublic ', assetsPublic.length);
+    const assetsPublic = await global.realm.objects(Configure.Realm.cosyncAsset);  
+    console.log('loadAllAssets .... assets ', assetsPublic.length);
 
     let sortedAssetsPublic = assetsPublic.sorted("createdAt", false);
 
@@ -88,24 +88,6 @@ const Asset = props => {
         setAssetList(prevItems => { 
           return [item, ...prevItems];
         });
-      }
-    }); 
-
-    const assetsPrivate = global.realmPrivate.objects(Configure.Realm.cosyncAsset);
-    console.log('loadAllAssets .... assetsPrivate ', assetsPrivate.length);
-
-    let sortedResult = assetsPrivate.sorted("createdAt", false);
-    assetsPrivate.removeListener(changeAssetEvent);
-    assetsPrivate.addListener(changeAssetEvent);
-
-    sortedResult.forEach(element => {
-      if(element.status == "active"){
-        let item = element;
-        item.id = element._id.toString();  
-          
-        setAssetList(prevItems => { 
-          return [item, ...prevItems];
-        });  
       }
     }); 
 
@@ -135,68 +117,7 @@ const Asset = props => {
       }); 
     }
   }
-
-    function assetsEventListener(assets, changes) { 
-      // Update UI in response to inserted objects
-      changes.insertions.forEach((index) => {
-        let item = assets[index]; 
-        
-        console.log("insertions ", item.status);
-
-        if(item.status == 'active'){ 
-          item.id = item._id.toString(); 
-          setAssetList(prevItems => { 
-            return [item, ...prevItems];
-          }); 
-        }
-      });
-
-      changes.modifications.forEach((index) => {
-
-        let item = assets[index]; 
-        console.log("modifications ", item.status);
-        console.log("modifications: id ", item._id)
-        console.log("modifications: assetList ", assetList.length)
-
-        if(item.status != 'active'){ 
-          let itemId = item._id.toString(); 
-          setAssetList(existingItems => { 
-
-            console.log("existingItems ", existingItems.length);
-
-            return existingItems.filter((asset) => {
-
-
-              console.log("existingItems asset ", asset._id);
-
-
-              asset._id !== itemId
-            });
-          }); 
-
-           
-        }
-        else if(item.status == 'active'){ 
-          item.id = item._id.toString(); 
-          setAssetList(prevItems => { 
-            return [item, ...prevItems];
-          }); 
-        }
-         
-      });
-
-      changes.deletions.forEach((index) => { 
-
-
-        setAssetList(existingItems => {
-          console.log("existingItems ", existingItems.length);
-
-          return existingItems.filter((item, i) => i !== index); 
-        }) 
-        
-      });
-       
-    }
+ 
        
       return (
         <SafeAreaView style={styles.container}>

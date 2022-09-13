@@ -51,6 +51,15 @@ const Login = ({ navigation }) => {
   const ref_input_pwd = useRef(); 
   const authCtx = useContext(AuthContext);
 
+  useEffect(() => {
+    setUserEmail("tola@cosync.io");
+    setUserPassword("qwerty");
+
+    console.log("useEffect ", userEmail);
+
+  }, []);
+
+
   const validateEmail = (text) => {
    
     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;

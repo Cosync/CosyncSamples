@@ -30,8 +30,7 @@ exports.CosyncAsset = {
     "properties": {
 
         "_id":{ "type": "objectId", "indexed": true }, 
-        "_partition":{ "type": "string", "indexed": true }, 
-        "uid":{ "type": "string", "indexed": true },  
+        "userId":{ "type": "string", "indexed": true },  
         "sessionId":{ "type": "string", "indexed": true},
         "path":{ "type": "string", "default": ""},
         "expirationHours": { "type": "double", "default": 24}, 
@@ -61,11 +60,9 @@ exports.CosyncAssetUpload = {
     "primaryKey":"_id",
     "properties": {
         "_id":{ "type": "objectId", "indexed": true }, 
-        "_partition":{ "type": "string", "indexed": true }, 
-        "uid":{ "type": "string", "indexed": true },  
+        "userId":{ "type": "string", "indexed": true },  
         "sessionId":{ "type": "string", "indexed": true},   
-        "extra":{ "type": "string", "default": ""},   
-        "assetPartition":{ "type": "string", "indexed": true },
+        "extra":{ "type": "string", "default": ""},
         "filePath": { "type": "string", "default": "" },
         "path":{ "type": "string", "default": ""},
         "expirationHours": { "type": "double", "default": 24},
