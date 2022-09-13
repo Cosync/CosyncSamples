@@ -36,7 +36,7 @@ import {
 } from 'react-native';
 
 // Import Image Picker
-import {launchImageLibrary} from 'react-native-image-picker'; 
+import {launchImageLibrary} from 'react-native-image-picker';  
 import ImageResizer from 'react-native-image-resizer';
 import Configure from '../config/Config'; 
 import * as RealmLib from '../managers/RealmManager'; 
@@ -83,14 +83,11 @@ const UploadScreen = props => {
             let user = await RealmLib.login(userEmail, userPassword);
             AsyncStorage.setItem('user_id', user.id);  
           
-        }   
-  
-        
+        }    
         
 
-        await RealmLib.openRealmPartition(Configure.Realm.publicPartition);   
-        await RealmLib.openRealmPartition(global.privatePartition);
-
+        await RealmLib.openRealm();   
+       
         setLoading(false);
        
     }
@@ -99,17 +96,15 @@ const UploadScreen = props => {
 
     const uploadRequest = (source) => { 
         let realmUpload;
-        global.realmPartition[global.privatePartition].write(() => {  
+        global.realm.write(() => {  
           
           let imageName = source.uri.split('/').pop(); 
           let filePath = source.type.indexOf("image") > -1 ? `images/${imageName}` : `videos/${imageName}`;
-          realmUpload = global.realmPartition[global.privatePartition].create(Configure.Realm.cosyncAssetUpload, 
+          realmUpload = global.realm.create(Configure.Realm.cosyncAssetUpload, 
             { 
-              _id: new ObjectId(),
-              _partition:  global.privatePartition,
+              _id: new ObjectId(), 
               filePath: filePath, 
-              uid: global.user.id,
-              assetPartition: Configure.Realm.publicPartition,
+              userId: global.user.id, 
               contentType: source.type,
               status: 'pending',  
               expirationHours: parseFloat(expirationHours),  
@@ -141,6 +136,8 @@ const UploadScreen = props => {
       };
 
       launchImageLibrary(options, (response) => {
+        console.log(response);
+
         if (response.didCancel) console.log('User cancelled image picker');
         else if (response.error)  alert(response.error)
         else if(response){
@@ -157,6 +154,7 @@ const UploadScreen = props => {
            
         }
         else {
+          setLoading(false);
           alert('Invalid file')
         }
 
@@ -178,11 +176,15 @@ const UploadScreen = props => {
 
             setCosyncAssetUpload(obj);
             cosyncAssetUpload = obj;
-            setLoading(false); 
-             
-
+            setLoading(false);  
             createUploadImages(); 
 
+        }
+        else if (obj.status == "error"){
+          setLoading(false);
+          
+          alert('Sorry! your upload is failing. Please try again.');
+         
         }
       });
     } 
@@ -221,8 +223,8 @@ const UploadScreen = props => {
 
 
     const updateUploadRecord = () => {
-      global.realmPartition[global.privatePartition].write(() => { 
-        global.realmPartition[global.privatePartition].create(Configure.Realm.cosyncAssetUpload, { _id: assetUpload._id, status: "uploaded" }, "modified");
+      global.realm.write(() => { 
+        global.realm.create(Configure.Realm.cosyncAssetUpload, { _id: assetUpload._id, status: "uploaded" }, "modified");
       });
     }
 
@@ -231,9 +233,7 @@ const UploadScreen = props => {
       if(!assetUpload || !assetUpload.status) {
         alert('Please choose an image!')
         return;
-      } 
-
-     
+      }
 
       setUploading(true); 
 

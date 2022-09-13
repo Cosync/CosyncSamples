@@ -87,8 +87,8 @@ const AssetScreen = props => {
           
         }  
 
-        await RealmLib.openRealmPartition(Configure.Realm.publicPartition);   
-        await RealmLib.openRealmPartition(`user_id=${global.user.id}`); 
+        await RealmLib.openRealm();   
+        
        
         loadAllAssets(); 
 
@@ -101,22 +101,11 @@ const AssetScreen = props => {
         return [];
       }); 
 
-      const assetsPublic = global.realmPartition[Configure.Realm.publicPartition].objects(Configure.Realm.cosyncAsset).filtered(`uid = '${global.user.id}' && status == 'active'`);  
-      let sortedAssetsPublic = assetsPublic.sorted("createdAt", false);
-      assetsPublic.removeListener(assetsEventListener); 
-      assetsPublic.addListener(assetsEventListener); 
-      sortedAssetsPublic.forEach(element => { 
-        let item = element; 
-        item.id = element._id.toString();
-        setAssetList(prevItems => { 
-          return [item, ...prevItems];
-        });
-      }); 
-
-      const assetsPrivate = global.realmPartition[`user_id=${global.user.id}`].objects(Configure.Realm.cosyncAsset).filtered(`status == 'active'`);  
-      let sortedResult = assetsPrivate.sorted("createdAt", false);
-      assetsPrivate.removeListener(assetsEventListener); 
-      assetsPrivate.addListener(assetsEventListener); 
+      
+      const assets = global.realm.objects(Configure.Realm.cosyncAsset).filtered(`userId = '${global.user.id}' && status == 'active'`);  
+      let sortedResult = assets.sorted("createdAt", false);
+      assets.removeListener(assetsEventListener); 
+      assets.addListener(assetsEventListener); 
 
       sortedResult.forEach(element => {
         let item = element;

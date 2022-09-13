@@ -36,8 +36,8 @@ export const signup = (userEmail, userPassword) => {
 
     const app = new Realm.App(appConfig);
     if(app.currentUser) app.currentUser.logOut();
-    
-    app.emailPasswordAuth.registerUser(userEmail, userPassword).then(result => { 
+    let userDetail = RegisterUserDetails(userEmail, userPassword); 
+    app.emailPasswordAuth.registerUser(userDetail).then(result => { 
       resolve(true)
     }).catch(err => {
       resolve(err)
@@ -57,14 +57,12 @@ export const login = (userEmail, userPassword) => {
 
     const app = new Realm.App(appConfig); 
     const credentials = Realm.Credentials.emailPassword(userEmail, userPassword);
-    
-    closeAllRealm();
+    global.app = app;
+
+    closeRealm();
 
     app.logIn(credentials).then(user => { 
-      global.user = user; 
-
-      global.privatePartition = `user_id=${global.user.id}`;
-
+      global.user = user;  
       resolve(user);
     }).catch(err => {
       reject(err);
@@ -72,19 +70,21 @@ export const login = (userEmail, userPassword) => {
   })
 }
 
-const closeAllRealm = () => {
+const closeRealm = () => {
   
-  try {
-    for (const key in  global.realmPartition) {
-      const realm =  global.realmPartition[key]; 
-      if(realm) realm.close(); 
-    }
+  try { 
+    if(global.realm){
+      global.realm.subscriptions.update((mutableSubs) => {
+        mutableSubs.removeAll();
+      });
+
+      global.realm.close();  
+      
+    } 
   } catch (error) {
         
   } 
-
-  global.realmPartition = {};
-
+ 
 }
 
 
@@ -92,91 +92,50 @@ export const openRealm = () => {
 
   return new Promise((resolve, reject) => {
 
-    if(global.realm && global.realmPrivate){
+    if(global.realm){
       resolve(global)
       return;
-    }
-
-    let configPublic = {
-      schema:  [Schema.CosyncAsset],
-      sync: {
-        user: global.user,
-        partitionValue: Configure.Realm.publicPartition
-      }
-    }; 
-
-    let configPrivate = {
-      schema:  [Schema.CosyncAsset, Schema.CosyncAssetUpload],
-      sync: {
-        user: global.user,
-        partitionValue: global.privatePartition,
-      }
-    };  
-      
-    try {
-
-      Realm.open(configPublic).then(realm => {
-        global.realm = realm; 
-
-        Realm.open(configPrivate).then(priRealm => {
-          global.realmPrivate = priRealm;
-          resolve({realm: realm, realmPrivate: priRealm}); 
-  
-        })
-
-      }).catch(err => {
-        reject(err);
-      })
-      
-    } catch (error) { 
-      reject(error);
-    }
-    
-  })
-}
-
-
-
-export const openRealmPartition = (partitionValue, reopen) => {
-
-  return new Promise((resolve, reject) => {
-    
-    if(global.realmPartition[partitionValue]){
-      if(!reopen){
-        resolve(global.realmPartition[partitionValue]);
-        return;
-      }  
-      
     } 
 
-    let configPartition = {
-      schema:  [Schema.CosyncAsset, Schema.CosyncAssetUpload],
-      sync: {
-        user: global.user,
-        partitionValue: partitionValue
-      }
-    };  
-      
     try {
 
-      if(global.realmPartition[partitionValue]) global.realmPartition[partitionValue].close();
-       
-      Realm.open(configPartition).then(realm => { 
-        global.realmPartition[partitionValue] = realm;
-        resolve(realm); 
+      Realm.open({
+        schema: [Schema.CosyncAsset, Schema.CosyncAssetUpload],
+        sync: {
+          user: global.user,
+          flexible: true,
+        },
+      }).then(realm => {
+
+        global.realm = realm;
+
+        realm.subscriptions.update((mutableSubs) => {
+          
+          mutableSubs.add(realm.objects(Configure.Realm.cosyncAssetUpload).filtered(`userId == '${global.user.id}'`), {
+            name: "cosyncAssetUploadSubscription",
+            throwOnUpdate: true,
+          });
+
+          mutableSubs.add(realm.objects(Configure.Realm.cosyncAsset), {
+            name: "cosyncAssetSubscription",
+            throwOnUpdate: true,
+          });
+        });
+        
+        resolve(realm);
+
       }).catch(err => {
-        console.error(err)
-        reject(err); 
+        
+        console.log(err)
+        reject(err)
       })
       
     } catch (error) { 
-      console.error(err)
       reject(error);
     }
     
   })
 }
 
- 
-
+  
 
