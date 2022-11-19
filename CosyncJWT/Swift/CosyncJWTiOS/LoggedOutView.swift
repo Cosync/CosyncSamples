@@ -88,29 +88,27 @@ struct LoginTab: View {
             }
             
             Button(action: {
-                Task {
-                    if self.email.count > 0 && self.password.count > 0 {
-                        isLoggingIn = true
-                        
-                        do {
-                            try await UserManager.shared.login(email: self.email, password: self.password)
-                            if let _ = CosyncJWTRest.shared.loginToken {
-                                self.appState.target = .loginComplete
-                            } else {
-                                self.appState.target = .loggedIn
-                            }
-                        } catch {
-                            self.showLoginInvalidParameters()
-                        }
-                                                
-                    } else {
-                        self.showLoginInvalidParameters()
-                    }
+                Task{
+                    await login()
                 }
             }) {
                 Text("Login")
                     .padding(.horizontal)
                 Image(systemName: "arrow.right.square")
+            }
+            .padding()
+            .foregroundColor(Color.white)
+            .background(Color.green)
+            .cornerRadius(8)
+            
+            Button(action: {
+                Task{
+                    await loginAnonymous()
+                }
+                  
+            }) {
+                Text("Login As Anonymous")
+                .font(.body)
             }
             .padding()
             .foregroundColor(Color.white)
@@ -125,11 +123,51 @@ struct LoginTab: View {
             }
             .padding()
             
+            
+          
+            
 
         }
         .font(.title)
         .alert(item: $message) { message in
             Alert(message)
+        }
+    }
+    
+    func login() async {
+        if self.email.count > 0 && self.password.count > 0 {
+            isLoggingIn = true
+            
+            do {
+                try await UserManager.shared.login(email: self.email, password: self.password)
+                if let _ = CosyncJWTRest.shared.loginToken {
+                    self.appState.target = .loginComplete
+                } else {
+                    self.appState.target = .loggedIn
+                }
+            } catch {
+                isLoggingIn = false
+                self.showLoginInvalidParameters()
+            }
+                                    
+        } else {
+            self.showLoginInvalidParameters()
+        }
+    }
+    
+    func loginAnonymous() async {
+        isLoggingIn = true
+        
+        do {
+            try await UserManager.shared.loginAnonymous()
+            if let _ = CosyncJWTRest.shared.loginToken {
+                self.appState.target = .loginComplete
+            } else {
+                self.appState.target = .loggedIn
+            }
+        } catch {
+            isLoggingIn = false
+            self.showLoginError(message: error.localizedDescription)
         }
     }
 }

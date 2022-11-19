@@ -23,8 +23,8 @@
 		08F58B84277A1E7B00F987ED /* LoginCompleteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F58B80277A1E7B00F987ED /* LoginCompleteView.swift */; };
 		08F58B87277A1E8700F987ED /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F58B85277A1E8600F987ED /* UserManager.swift */; };
 		08F58B88277A1E8700F987ED /* RealmManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F58B86277A1E8600F987ED /* RealmManager.swift */; };
-		08F58B94277A5D1D00F987ED /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = 08F58B93277A5D1D00F987ED /* Realm */; };
-		08F58B96277A5D1D00F987ED /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 08F58B95277A5D1D00F987ED /* RealmSwift */; };
+		52208FF8292918F5007B1126 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = 52208FF7292918F5007B1126 /* Realm */; };
+		52208FFA292918F5007B1126 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 52208FF9292918F5007B1126 /* RealmSwift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -51,9 +51,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				52208FFA292918F5007B1126 /* RealmSwift in Frameworks */,
+				52208FF8292918F5007B1126 /* Realm in Frameworks */,
 				08CA318127873166004E0A92 /* CosyncJWTSwift in Frameworks */,
-				08F58B96277A5D1D00F987ED /* RealmSwift in Frameworks */,
-				08F58B94277A5D1D00F987ED /* Realm in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -131,9 +131,9 @@
 			);
 			name = CosyncJWTiOS;
 			packageProductDependencies = (
-				08F58B93277A5D1D00F987ED /* Realm */,
-				08F58B95277A5D1D00F987ED /* RealmSwift */,
 				08CA318027873166004E0A92 /* CosyncJWTSwift */,
+				52208FF7292918F5007B1126 /* Realm */,
+				52208FF9292918F5007B1126 /* RealmSwift */,
 			);
 			productName = CosyncJWTiOS;
 			productReference = 08F58B61277A1C1000F987ED /* CosyncJWTiOS.app */;
@@ -164,8 +164,8 @@
 			);
 			mainGroup = 08F58B58277A1C1000F987ED;
 			packageReferences = (
-				08F58B92277A5D1D00F987ED /* XCRemoteSwiftPackageReference "realm-cocoa" */,
 				08CA317F27873166004E0A92 /* XCRemoteSwiftPackageReference "CosyncJWTSwift" */,
+				52208FF6292918F5007B1126 /* XCRemoteSwiftPackageReference "realm-swift" */,
 			);
 			productRefGroup = 08F58B62277A1C1000F987ED /* Products */;
 			projectDirPath = "";
@@ -415,15 +415,15 @@
 			repositoryURL = "https://github.com/Cosync/CosyncJWTSwift.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.0;
+				minimumVersion = 1.1.4;
 			};
 		};
-		08F58B92277A5D1D00F987ED /* XCRemoteSwiftPackageReference "realm-cocoa" */ = {
+		52208FF6292918F5007B1126 /* XCRemoteSwiftPackageReference "realm-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/realm/realm-cocoa.git";
+			repositoryURL = "https://github.com/realm/realm-swift.git";
 			requirement = {
-				branch = master;
-				kind = branch;
+				kind = upToNextMajorVersion;
+				minimumVersion = 10.32.3;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -434,14 +434,14 @@
 			package = 08CA317F27873166004E0A92 /* XCRemoteSwiftPackageReference "CosyncJWTSwift" */;
 			productName = CosyncJWTSwift;
 		};
-		08F58B93277A5D1D00F987ED /* Realm */ = {
+		52208FF7292918F5007B1126 /* Realm */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 08F58B92277A5D1D00F987ED /* XCRemoteSwiftPackageReference "realm-cocoa" */;
+			package = 52208FF6292918F5007B1126 /* XCRemoteSwiftPackageReference "realm-swift" */;
 			productName = Realm;
 		};
-		08F58B95277A5D1D00F987ED /* RealmSwift */ = {
+		52208FF9292918F5007B1126 /* RealmSwift */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 08F58B92277A5D1D00F987ED /* XCRemoteSwiftPackageReference "realm-cocoa" */;
+			package = 52208FF6292918F5007B1126 /* XCRemoteSwiftPackageReference "realm-swift" */;
 			productName = RealmSwift;
 		};
 /* End XCSwiftPackageProductDependency section */

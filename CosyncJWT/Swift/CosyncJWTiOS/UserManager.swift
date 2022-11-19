@@ -74,6 +74,19 @@ class UserManager {
         }
     }
     
+    @MainActor func loginAnonymous() async throws -> Void {
+        
+        let uuid = UUID().uuidString
+        try await CosyncJWTRest.shared.loginAnonymous("ANON_\(uuid)")
+        
+        if  CosyncJWTRest.shared.loginToken == nil,
+            let jwt = CosyncJWTRest.shared.jwt {
+            
+            try await RealmManager.shared.login(jwt)
+            try await UserManager.shared.loginGetUserData()
+        }
+    }
+    
     @MainActor func loginComplete(code: String) async throws -> Void  {
         
         try await CosyncJWTRest.shared.loginComplete(code)
