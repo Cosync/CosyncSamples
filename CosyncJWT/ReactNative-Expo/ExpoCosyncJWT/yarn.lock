@@ -2633,10 +2633,10 @@ cosmiconfig@^5.0.5, cosmiconfig@^5.1.0:
     js-yaml "^3.13.1"
     parse-json "^4.0.0"
 
-cosync-jwt-react-native@^1.0.6:
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/cosync-jwt-react-native/-/cosync-jwt-react-native-1.0.6.tgz#cf1d74ff419946cc13b76d6db395036a1fcaff55"
-  integrity sha512-Dt3nfKNAA7BrIOb4pOap4j9Y1OBcD8P00YJlrXbtxB/dUARnepw7Yr44NjD5xBMP7GEMn97B4hSi1+fs4FQQ1A==
+cosync-jwt-react-native@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/cosync-jwt-react-native/-/cosync-jwt-react-native-1.0.7.tgz#e34e017d98e8e8f78d513ed15b633b8250821612"
+  integrity sha512-ZgUvHNy3RwX+0PPMy+/cNw1d/zg+ofinL1Z7rIPQBWLh1mntf7AUpz3pFCHCHone6jeU2pCoWjHPddFySssZmA==
   dependencies:
     md5 "^2.3.0"
     realm "^10.4.1"
@@ -5645,6 +5645,11 @@ react-native-screens@^3.4.0, react-native-screens@~3.10.1:
   dependencies:
     react-freeze "^1.0.0"
     warn-once "^0.1.0"
+
+react-native-uuid@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/react-native-uuid/-/react-native-uuid-2.0.1.tgz#ed4e2dfb1683eddb66967eb5dca140dfe1abddb9"
+  integrity sha512-cptnoIbL53GTCrWlb/+jrDC6tvb7ypIyzbXNJcpR3Vab0mkeaaVd5qnB3f0whXYzS+SMoSQLcUUB0gEWqkPC0g==
 
 react-native-web@0.17.1:
   version "0.17.1"

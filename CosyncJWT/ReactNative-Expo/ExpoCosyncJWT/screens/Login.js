@@ -23,7 +23,7 @@
 //  Copyright © 2022 cosync. All rights reserved.
 //
 
-
+import uuid from 'react-native-uuid';
 import React, {useEffect, useState, useCallback, useRef, useContext } from 'react'; 
 import { 
 TextInput,
@@ -86,6 +86,43 @@ const Login = ({ navigation }) => {
     else return true;
   }
 
+
+  const loginAnonymous = () => {
+
+    setErrortext('');
+    setLoading(true);  
+
+    let id =  uuid.v4();
+    global.cosync.login.loginAnonymous(`ANON_${id}`).then(result => { 
+
+      console.log('CosyncJWT login result  ', result);
+      
+      global.userData = result;   
+      if(result.code){  
+        setErrortext(result.message);
+        return;
+      } 
+
+      global.cosync.profile.getUser().then(data => {  
+        global.userData.data = data;  
+        
+        global.cosync.realmManager.login(global.userData.jwt, Configure.Realm.appId).then(res => { 
+          setLoading(false);
+          authCtx.authenticate(result); 
+        })
+        .catch(err => {
+          setLoading(false);
+          setErrortext(`MongoDB Realm Error: ${err.message}`);
+        })
+
+      }); 
+      
+    }).catch(err => {
+      setLoading(false);
+      setErrortext(err.message);
+    }) 
+
+  }
   
   const handleSubmitPress = () => { 
     setErrortext('');
@@ -283,6 +320,13 @@ const Login = ({ navigation }) => {
               activeOpacity={0.5}
               onPress={handleSubmitPress}>
               <Text style={globalStyle.buttonTextStyle}>LOGIN</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={globalStyle.buttonStyle}
+              activeOpacity={0.5}
+              onPress={loginAnonymous}>
+              <Text style={globalStyle.buttonTextStyle}>LOGIN AS ANONYMOUS</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
