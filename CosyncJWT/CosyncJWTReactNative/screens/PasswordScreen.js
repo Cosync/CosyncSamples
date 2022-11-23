@@ -24,7 +24,7 @@
 //  Copyright © 2022 cosync. All rights reserved.
 //
 
-import React, {useEffect, useState, useRef } from 'react'; 
+import React, {useEffect, useState, useRef, useContext } from 'react'; 
 import {
   StyleSheet,
   TextInput,
@@ -32,11 +32,13 @@ import {
   Text,
   ScrollView, 
   TouchableOpacity,
+  Alert,
   KeyboardAvoidingView,
 } from 'react-native'; 
 import Loader from '../components/Loader'; 
 import Configure from '../config/Config';  
 import CosyncJWTReactNative from 'cosync-jwt-react-native'; 
+import { AuthContext } from '../context/AuthContext';
 
 const PasswordScreen = props => { 
 
@@ -47,6 +49,8 @@ const PasswordScreen = props => {
   let [userPassword, setUserPassword] = useState('');
   let [newUserPassword, setNewUserPassword] = useState('');
 
+  const { logout } = useContext(AuthContext);
+
   const ref_input_pwd = useRef(); 
  
   useEffect(() => {
@@ -54,6 +58,32 @@ const PasswordScreen = props => {
     if(!global.cosync) global.cosync = new CosyncJWTReactNative(Configure.CosyncApp).getInstance();
 
   }, []);
+
+  const logoutUser = () => {
+    Alert.alert(
+      'Logout',
+      'Are you sure? You want to logout?',
+      [
+        {
+          text: 'Cancel',
+          onPress: () => {
+            return null;
+          },
+        },
+        {
+          text: 'Confirm',
+          onPress: () => { 
+            global.userData = {};
+            if(global.cosync) global.cosync.logout();
+            logout()
+            
+            
+          },
+        },
+      ],
+      { cancelable: false }
+    );
+  }
 
   const handleResetPassword = () => {
     
@@ -160,6 +190,14 @@ const PasswordScreen = props => {
                 activeOpacity={0.5}
                 onPress={handleResetPassword}>
                 <Text style={styles.buttonTextStyle}>SUBMIT</Text>
+            </TouchableOpacity> 
+
+
+            <TouchableOpacity
+                style={styles.buttonStyle}
+                activeOpacity={0.5}
+                onPress={logoutUser}>
+                <Text style={styles.buttonTextStyle}>LOG OUT</Text>
             </TouchableOpacity> 
 
           </KeyboardAvoidingView>

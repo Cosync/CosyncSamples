@@ -24,7 +24,7 @@
 //  Copyright © 2022 cosync. All rights reserved.
 //
 
-import React, {useEffect, useState, useRef } from 'react'; 
+import React, {useEffect, useState, useRef, useContext } from 'react'; 
 import {
   StyleSheet,
   TextInput,
@@ -36,15 +36,16 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
 } from 'react-native'; 
-import Loader from '../components/Loader'; 
+import Loader from '../components/Loader';  
 import Configure from '../config/Config';  
 import CosyncJWTReactNative from 'cosync-jwt-react-native';  
 import uuid from 'react-native-uuid';
+import { AuthContext } from '../context/AuthContext';
 
 const LoginScreen = props => {
   
-  let [userEmail, setUserEmail] = useState('');
-  let [userPassword, setUserPassword] = useState('');
+  let [userEmail, setUserEmail] = useState('tola@cosync.io');
+  let [userPassword, setUserPassword] = useState('qwerty');
   let [loading, setLoading] = useState(false);
   let [isCompleteLogin, setCompleteLogin] = useState(false);
   let [loginCode, setLoginCode] = useState('');
@@ -52,7 +53,8 @@ const LoginScreen = props => {
 
   let [errortext, setErrortext] = useState('');
   const ref_input_pwd = useRef(); 
-  
+
+  const { login } = useContext(AuthContext)
 
   useEffect(() => {
     global.cosync = new CosyncJWTReactNative(Configure.CosyncApp).getInstance();
@@ -80,7 +82,7 @@ const LoginScreen = props => {
     setLoading(true);  
     let id =  uuid.v4();
     global.cosync.login.loginAnonymous(`ANON_${id}`).then(result => { 
-      console.log('CosyncJWT login result  ', result); 
+      console.log('CosyncJWT loginAnonymous result  ', result); 
       global.userData = result;  
 
       if(result.code){  
@@ -90,12 +92,12 @@ const LoginScreen = props => {
       
 
       global.cosync.profile.getUser().then(data => {  
-        global.userData.data = data;  
-        
-        global.cosync.realmManager.login(global.userData.jwt, Configure.Realm.appId).then(res => {
+        global.userData.data = data; 
 
+        global.cosync.realmManager.login(global.userData.jwt, Configure.Realm.appId).then(res => {
+          login();
           setLoading(false);
-          props.navigation.navigate('DrawerNavigationRoutes'); 
+          
         })
         .catch(err => {
           setLoading(false);
@@ -160,22 +162,29 @@ const LoginScreen = props => {
         setCompleteLogin(true); 
         return;
       } 
- 
-
-      global.cosync.profile.getUser().then(data => {  
-        global.userData.data = data;  
+      try {
         
-        global.cosync.realmManager.login(global.userData.jwt, Configure.Realm.appId).then(res => {
+        
+        global.cosync.profile.getUser().then(data => {  
+          global.userData.data = data;  
+          console.log('CosyncJWT getUser global.userData  ', global.userData);
+          
+          global.cosync.realmManager.login(global.userData.jwt, Configure.Realm.appId).then(res => {
+            
+            login();
 
-          setLoading(false);
-          props.navigation.navigate('DrawerNavigationRoutes'); 
-        })
-        .catch(err => {
-          setLoading(false);
-          setErrortext(`MongoDB Realm Error: ${err.message}`);
-        })
+            setLoading(false);
+          })
+          .catch(err => {
+            setLoading(false);
+            setErrortext(`MongoDB Realm Error: ${err.message}`);
+          })
 
-      }); 
+        }); 
+      } catch (error) {
+        console.log('CosyncJWT getUser error   ', error);
+      }
+    
       
     }).catch(err => {
       setLoading(false);
@@ -206,7 +215,7 @@ const LoginScreen = props => {
 
           global.cosync.realmManager.login(result.jwt, Configure.Realm.appId).then(res => {
             setLoading(false);
-            props.navigation.navigate('DrawerNavigationRoutes');
+            login();
           })
           .catch(err => {
             setLoading(false);
@@ -247,6 +256,7 @@ const LoginScreen = props => {
             <View style={styles.SectionStyle}>
               <TextInput
                 style={styles.inputStyle}
+                value={userEmail}
                 onChangeText={UserEmail => setUserEmail(UserEmail)} 
                 placeholder="Enter Email"
                 autoCapitalize="none" 
@@ -261,6 +271,7 @@ const LoginScreen = props => {
             <View style={styles.SectionStyle}>
               <TextInput
                 style={styles.inputStyle}
+                value={userPassword}
                 onChangeText={UserPassword => setUserPassword(UserPassword)} 
                 placeholder="Enter Password" 
                 keyboardType="default" 
