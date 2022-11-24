@@ -7,12 +7,9 @@
  */
 
 
- import React from 'react';  
- import { createNativeStackNavigator } from '@react-navigation/native-stack'; 
+import React from 'react';   
 import {  AuthProvider } from './context/AuthContext';
 import AppNav from './components/AppNav';
-
-const Stack = createNativeStackNavigator();
  
 
 export default function App() {  

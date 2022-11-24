@@ -37,8 +37,7 @@ import {
   KeyboardAvoidingView,
 } from 'react-native'; 
 import Loader from '../components/Loader';  
-import Configure from '../config/Config';  
-import CosyncJWTReactNative from 'cosync-jwt-react-native';  
+
 import uuid from 'react-native-uuid';
 import { AuthContext } from '../context/AuthContext';
 
@@ -54,21 +53,9 @@ const LoginScreen = props => {
   let [errortext, setErrortext] = useState('');
   const ref_input_pwd = useRef(); 
 
-  const { login } = useContext(AuthContext)
+  const { login, loginAnonymous, loginToken } = useContext(AuthContext)
 
-  useEffect(() => {
-    global.cosync = new CosyncJWTReactNative(Configure.CosyncApp).getInstance();
-
-    global.cosync.app.getApplication().then(result => {  
-      global.appData = result;
-      if(result.twoFactorVerification == 'google') setTwoFactorText('Enter Auth token verification code');
-    }).catch(err => {
-      
-      alert(`Invalid Data: ${err.message}`)
-    })
-   
-  }, []);
-
+ 
 
   const validateEmail = (text) => {
    
@@ -77,44 +64,21 @@ const LoginScreen = props => {
     else return true;
   }
 
-  const loginAnonymous = () => {
+  const loginAnonymousUser = async () => {
     
     setLoading(true);  
     let id =  uuid.v4();
-    global.cosync.login.loginAnonymous(`ANON_${id}`).then(result => { 
-      console.log('CosyncJWT loginAnonymous result  ', result); 
-      global.userData = result;  
+    let result = await loginAnonymous();
+    console.log('CosyncJWT loginAnonymous result  ', result); 
+    setLoading(false);  
 
-      if(result.code){  
-        setErrortext(result.message);
-        return;
-      }
-      
-
-      global.cosync.profile.getUser().then(data => {  
-        global.userData.data = data; 
-
-        global.cosync.realmManager.login(global.userData.jwt, Configure.Realm.appId).then(res => {
-          login();
-          setLoading(false);
-          
-        })
-        .catch(err => {
-          setLoading(false);
-          setErrortext(`MongoDB Realm Error: ${err.message}`);
-        })
-
-      }).catch(err => {
-        setLoading(false);
-        setErrortext(err.message);
-      }) 
-
-
-    })
+    if(result.code){  
+      setErrortext(result.message); 
+    }
 
   }
   
-  const handleSubmitPress = () => { 
+  const handleSubmitLogin = async () => { 
     setErrortext('');
     if (!userEmail) {
       alert('Please fill Email');
@@ -143,96 +107,35 @@ const LoginScreen = props => {
       return;
     }
 
-    
+    let result = await login(userEmail, userPassword); 
 
-    global.cosync.login.login(userEmail, userPassword).then(result => { 
-
-      console.log('CosyncJWT login result  ', result);
-      
-      global.userData = result;  
-      
-
-      if(result.code){ 
-        
-        setErrortext(result.message);
-        return;
-      }
-      else if(result['login-token']){  
-        
-        setCompleteLogin(true); 
-        return;
-      } 
-      try {
-        
-        
-        global.cosync.profile.getUser().then(data => {  
-          global.userData.data = data;  
-          console.log('CosyncJWT getUser global.userData  ', global.userData);
-          
-          global.cosync.realmManager.login(global.userData.jwt, Configure.Realm.appId).then(res => {
-            
-            login();
-
-            setLoading(false);
-          })
-          .catch(err => {
-            setLoading(false);
-            setErrortext(`MongoDB Realm Error: ${err.message}`);
-          })
-
-        }); 
-      } catch (error) {
-        console.log('CosyncJWT getUser error   ', error);
-      }
-    
-      
-    }).catch(err => {
-      setLoading(false);
-      setErrortext(err.message);
-    }) 
+    if(result.code && result.message){  
+      setErrortext(result.message); 
+    }
+    else if(result['login-token']){  
+      setCompleteLogin(true);  
+    }  
+       
   };
 
 
 
-  const completeLogin = () => {
+  const completeLogin = async () => {
 
-    setLoading(true);  
-    
-    global.cosync.login.loginComplete(global.userData['login-token'], loginCode).then(result => {
-      console.log('completeLogin', result);
+    setLoading(true); 
+
+    try {
+      let result = await loginComplete(loginToken, loginCode); 
 
       if(result.code){
         setLoading(false);
-        setErrortext(result.message);
-        return;
+        setErrortext(result.message); 
       }
-      else if(result.jwt){
-        setCompleteLogin(true);
-        global.userData = result;  
-        
-        global.cosync.profile.getUser().then(data => {
-          global.userData.data = data; 
-
-          global.cosync.realmManager.login(result.jwt, Configure.Realm.appId).then(res => {
-            setLoading(false);
-            login();
-          })
-          .catch(err => {
-            setLoading(false);
-            setErrortext(`MongoDB Realm Error: ${err.message}`);
-          })
-        });
-      }
-      else{
-        setErrortext('Invalid Data');
-      }
-
-      
-    }).catch(err => {
+    } catch (error) { 
       setErrortext('Invalid Data');
       setLoading(false);
-      console.log('completeLogin err', err);
-    })
+      console.log('completeLogin err', error);
+    }
   }
  
   return (
@@ -276,7 +179,7 @@ const LoginScreen = props => {
                 placeholder="Enter Password" 
                 keyboardType="default" 
                 returnKeyType="go"
-                onSubmitEditing={() => Keyboard.dismiss, handleSubmitPress}
+                onSubmitEditing={() => Keyboard.dismiss, handleSubmitLogin}
                 blurOnSubmit={false}
                 textContentType={'none'}
                 autoComplete= {'off'}
@@ -293,7 +196,7 @@ const LoginScreen = props => {
                 placeholder={twoFactorText}
                 keyboardType="numeric" 
                 returnKeyType="go"
-                onSubmitEditing={() => Keyboard.dismiss, handleSubmitPress}
+                onSubmitEditing={() => Keyboard.dismiss, handleSubmitLogin}
                 blurOnSubmit={false}
                 textContentType={'none'}
                 autoComplete= {'off'}  
@@ -314,14 +217,14 @@ const LoginScreen = props => {
             <TouchableOpacity
               style={styles.buttonStyle}
               activeOpacity={0.5}
-              onPress={handleSubmitPress}>
+              onPress={handleSubmitLogin}>
               <Text style={styles.buttonTextStyle}>LOGIN</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               style={styles.buttonStyle}
               activeOpacity={0.5}
-              onPress={loginAnonymous}>
+              onPress={loginAnonymousUser}>
               <Text style={styles.buttonTextStyle}>LOGIN AS ANONYMOUS</Text>
             </TouchableOpacity>
 

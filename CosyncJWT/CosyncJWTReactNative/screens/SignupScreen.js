@@ -23,7 +23,7 @@
 //  Copyright © 2022 cosync. All rights reserved.
 //
 
-import React, { useState, useRef, useEffect } from 'react'; 
+import React, { useState, useRef, useEffect, useContext } from 'react'; 
 import {  StyleSheet,
   TextInput,
   View,
@@ -33,11 +33,10 @@ import {  StyleSheet,
   Keyboard,
   TouchableOpacity,
   KeyboardAvoidingView, } from 'react-native';
-import Configure from '../config/Config';  
-import CosyncJWTReactNative from 'cosync-jwt-react-native';  
+ 
 import _ from 'lodash';
 import Loader from '../components/Loader'; 
-  
+import { AuthContext } from '../context/AuthContext';
 
 const SignupScreen = props => {
   
@@ -51,23 +50,17 @@ const SignupScreen = props => {
   let [signupCode, setSignupCode] = useState(''); 
   let [loading, setLoading] = useState(false); 
   let [verifyCode, setVerifyCode] = useState(false);  
-  
+
+  const { cosyncJWT, getApplication, appData, signup, signupComplete } = useContext(AuthContext);
+
   const ref_input_lastname = useRef();
   const ref_input_email = useRef();
   const ref_input_pwd = useRef(); 
 
-  global.realm = null;
-  global.realmPrivate = null; 
 
   useEffect(() => {
-    if(!global.cosync) global.cosync = new CosyncJWTReactNative(Configure.CosyncApp).getInstance();
-
-    global.cosync.app.getApplication().then(result => {  
-      global.appData = result;
-
-      console.log('global.appData ', global.appData);
-
-    });
+    
+    getApplication();
    
   }, []);
 
@@ -107,50 +100,32 @@ const SignupScreen = props => {
     return true;
   }
 
-  const handleSubmitVerifyCodePress = () => {
+  const handleSubmitVerifyCodePress = async () => {
+
     setLoading(true);   
 
-    
-  
-    global.cosync.signup.completeSignup(userEmail, signupCode).then(result => {
-
-      setLoading(false); 
-      
-      if(result && result.jwt){
-        
-        global.userData = result;  
-        setInfoText('Successfully Register.');  
-        global.cosync.realmManager.login(result.jwt, Configure.Realm.appId).then(res => {
-          setLoading(false);
-          props.navigation.navigate('DrawerNavigationRoutes'); 
-        })
-        .catch(err => {
-          setLoading(false);
-          setErrortext(`MongoDB Realm Error: ${err.message}`);
-        });
-      }
-      else{
-        
+    try {
+      let result = await signupComplete(userEmail, signupCode); 
+      if (result && result.message) {
         setErrorCodetext(`Error: ${result.message}`);
       }
-    }).catch(err => { 
-
+    } catch (error) { 
+      setErrorCodetext(`Error: ${error.message}`);
+    }
+    finally{
       setLoading(false); 
-      setErrorCodetext(`Error: ${err.message}`);
-    })
+    }
+    
+
   }
  
   
-  const handleSubmitPress = () => {
+  const handleSubmitPress = async () => {
 
     setErrortext('');
     setInfoText('');
 
-    if(!validateForm()){
-      return;
-    }
-
-    setLoading(true);   
+    if(!validateForm()) return;
     
     let metaData = {
       user_data : {
@@ -162,62 +137,49 @@ const SignupScreen = props => {
       email: userEmail
     };
     
-    let validate = global.cosync.password.validatePassword(userPassword);
-    if(validate){ 
-      global.cosync.signup.signup(userEmail, userPassword, metaData).then(result => { 
+    let validate = cosyncJWT.password.validatePassword(userPassword);
 
-        setLoading(false); 
-        
-        if(result == 'true' || result === true){ 
-         
+    if(validate){
 
-          if(global.appData.signupFlow == 'none'){ 
-            setInfoText('Successfully Register.');  
-          }
-          else{
-            setInfoText(`Please check your email for account verification ${global.appData.signupFlow}`); 
-            if(global.appData.signupFlow == 'code') setVerifyCode(true);
-          }
-          
+      try {
+
+        setLoading(true);
+
+        let result = await signup(userEmail, userPassword, metaData); 
+
+        if(!result){
+          setErrortext(`Error: Something went wrong.`);
         }
-        else if(result && result.jwt && global.appData.signupFlow == 'none'){ 
-
-          setLoading(true); 
-          setInfoText('Successfully Register. Logging in to Realm now...');
-      
-          global.userData = result;  
-          
-          global.cosync.realmManager.login(result.jwt, Configure.Realm.appId).then(res => {
-            setLoading(false);
-            props.navigation.navigate('DrawerNavigationRoutes'); 
-          })
-          .catch(err => {
-            setLoading(false);
-            setErrortext(`MongoDB Realm Error: ${err.message}`);
-          });
-          
-
+        else if(result === true){
+          setInfoText(`Please check your email for account verification ${appData.signupFlow}.`); 
+          if(appData.signupFlow == 'code') setVerifyCode(true); 
+        }
+        else if(result.jwt && appData.signupFlow == 'none'){  
+          setInfoText('Successfully Signup.');
         }
         else if(result.message){
           setErrortext(`Error: ${result.message}`);
         }
-        else  setErrortext(`Error: Something went wrong.`);
-         
-      }).catch(err => {
+        
+
+      } catch (error) {
+        setErrortext(`Error: ${error.message}`);
+        
+        console.error(error);
+      } 
+      finally{
         setLoading(false); 
-        console.log(err);
-        setErrortext(`Error: ${err.message}`);
-      })
+      }
 
     }
     else {
       setLoading(false);  
       let message = `
-        Error: Invalid Password Rules:\nMinimum password length : ${global.cosyncAppData.passwordMinLength}
-        Minimun upper case : ${global.cosyncAppData.passwordMinUpper}
-        Minimum lower case : ${global.cosyncAppData.passwordMinLower}
-        Minimum digit charactor : ${global.cosyncAppData.passwordMinDigit}
-        Minimum special charactor: ${global.cosyncAppData.passwordMinSpecial}
+        Error: Invalid Password Rules:\nMinimum password length : ${appData.passwordMinLength}
+        Minimun upper case : ${appData.passwordMinUpper}
+        Minimum lower case : ${appData.passwordMinLower}
+        Minimum digit charactor : ${appData.passwordMinDigit}
+        Minimum special charactor: ${appData.passwordMinSpecial}
       `;
       setErrortext(message);
     }
@@ -319,7 +281,7 @@ const SignupScreen = props => {
               style={styles.buttonStyle}
               activeOpacity={0.5}
               onPress={handleSubmitPress}>
-              <Text style={styles.buttonTextStyle}>REGISTER</Text>
+              <Text style={styles.buttonTextStyle}>SIGN UP</Text>
             </TouchableOpacity>
 
             {infotext != '' ? (

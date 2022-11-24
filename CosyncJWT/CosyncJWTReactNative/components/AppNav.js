@@ -14,11 +14,11 @@ const Stack = createNativeStackNavigator();
 
 export default function AppNav() {
   
-    const { currentUser } = useContext(AuthContext);
+    const { userTokenData } = useContext(AuthContext);
 
     return (
         <NavigationContainer>
-            {currentUser ? 
+            {userTokenData ? 
                 <AppStack/> : 
                 <AuthStack/>
             }

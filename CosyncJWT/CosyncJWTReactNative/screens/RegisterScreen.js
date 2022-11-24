@@ -23,7 +23,7 @@
 //  Copyright © 2022 cosync. All rights reserved.
 //
 
-import React, { useState, useRef, useEffect } from 'react'; 
+import React, { useState, useRef, useEffect, useContext } from 'react'; 
 import {  StyleSheet,
   TextInput,
   View,
@@ -33,8 +33,7 @@ import {  StyleSheet,
   Keyboard,
   TouchableOpacity,
   KeyboardAvoidingView, } from 'react-native';
-import Configure from '../config/Config';  
-import CosyncJWTReactNative from 'cosync-jwt-react-native';  
+import { AuthContext } from '../context/AuthContext'; 
 import Loader from '../components/Loader'; 
  
 
@@ -55,15 +54,14 @@ const RegisterScreen = props => {
   const ref_input_pwd = useRef(); 
   const ref_input_code = useRef(); 
 
+
+  const { cosyncJWT, getApplication, register, appData } = useContext(AuthContext)
+
   global.realm = null;
   global.realmPrivate = null; 
 
   useEffect(() => {
-    if(!global.cosync) global.cosync = new CosyncJWTReactNative(Configure.CosyncApp).getInstance();
-
-    global.cosync.app.getApplication().then(result => { 
-      global.appData = result;
-    });
+    getApplication();
    
   }, []);
 
@@ -113,68 +111,55 @@ const RegisterScreen = props => {
     return true;
   }
  
-  const handleSubmitPress = () => {
+  const handleSubmitPress = async () => {
 
     setErrortext('');
     setInfoText('');
 
-    if(!validateForm()){
-      return;
-    }
-
+    if(!validateForm()) return;
    
     
-    let metaData = {
-      user_data : {
-        name: {
-            first: firstName,
-            last: lastName
-        }
-      },
-      email: userEmail
-    };
  
-  let validate = global.cosync.password.validatePassword(userPassword);
-  if(!validate){
-    let message = `
-        Error: Invalid Password Rules:\nMinimum password length : ${global.cosyncAppData.passwordMinLength}
-        Minimun upper case : ${global.cosyncAppData.passwordMinUpper}
-        Minimum lower case : ${global.cosyncAppData.passwordMinLower}
-        Minimum digit charactor : ${global.cosyncAppData.passwordMinDigit}
-        Minimum special charactor: ${global.cosyncAppData.passwordMinSpecial}
-      `;
-      setErrortext(message);
-      return;
-  }
+    let validate = cosyncJWT.password.validatePassword(userPassword);
+    if(!validate){
+      let message = `
+          Error: Invalid Password Rules:\nMinimum password length : ${appData.passwordMinLength}
+          Minimun upper case : ${appData.passwordMinUpper}
+          Minimum lower case : ${appData.passwordMinLower}
+          Minimum digit charactor : ${appData.passwordMinDigit}
+          Minimum special charactor: ${appData.passwordMinSpecial}
+        `;
+        setErrortext(message);
+        return;
+    }
 
-  setLoading(true);   
-  
-  global.cosync.register.register(userEmail, userPassword, signupCode, metaData).then(result => {
+    setLoading(true);
 
-      setLoading(false);   
-      
-      
-
-      if(result.jwt){ 
-        global.userData = result;   
-        global.cosync.realmManager.login(result.jwt, Configure.Realm.appId).then(res => {
-          setLoading(false);
-          props.navigation.navigate('DrawerNavigationRoutes'); 
-        })
-        .catch(err => {
-          setLoading(false);
-          setErrortext(`MongoDB Realm Error: ${err.message}`);
-        });
-      }
-      else{
-        
+    try {
+      let metaData = {
+        user_data : {
+          name: {
+              first: firstName,
+              last: lastName
+          }
+        },
+        email: userEmail
+      };
+      let result = await register(userEmail, userPassword, signupCode, metaData);
+      if(result.message) {
         setErrortext(`Error: ${result.message}`);
       }
-    }).catch(err => {
+
+    } catch (error) {
+      
+      console.log(error);
+      setErrortext(`Error: ${error.message}`);
+    }
+    finally{
       setLoading(false); 
-      console.log(err);
-      setErrortext(`Error: ${err.message}`);
-    })
+    }
+    
+  
     
   }; 
  
