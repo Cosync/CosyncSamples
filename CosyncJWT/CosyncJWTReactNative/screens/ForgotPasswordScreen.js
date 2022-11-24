@@ -37,8 +37,7 @@ import {
   KeyboardAvoidingView,
 } from 'react-native'; 
 import Loader from '../components/Loader'; 
-import Configure from '../config/Config';  
-import CosyncJWTReactNative from 'cosync-jwt-react-native'; 
+import { AuthContext } from '../context/AuthContext';
 
 const ForgotPasswordScreen = props => { 
 
@@ -52,11 +51,10 @@ const ForgotPasswordScreen = props => {
   
   const ref_input_pwd = useRef();
   const ref_input_code = useRef();
+  const { getApplication, appData, cosyncJWT } = useContext(AuthContext)
 
   useEffect(() => {
-    
-    if(!global.cosync) global.cosync = new CosyncJWTReactNative(Configure.CosyncApp).getInstance();
-
+    getApplication(); 
   }, []);
 
   
@@ -78,9 +76,6 @@ const ForgotPasswordScreen = props => {
       alert('Please fill a valid email');
       return;
     }
-
-    
-
     
     if(verifyCode){
       handleSubmitVerifyCodePress()
@@ -88,15 +83,15 @@ const ForgotPasswordScreen = props => {
     else {
 
       setLoading(true);  
-      global.cosync.password.forgotPassword(userEmail).then(result => {
+      cosyncJWT.password.forgotPassword(userEmail).then(result => {
 
         setLoading(false);
         console.log('CosyncJWT forgotPassword result  ', result);
         
         if(result) {
-          setInfotext(`Please check your email for reset password ${global.appData.signupFlow}.`);
+          setInfotext(`Please check your email for reset password ${appData.signupFlow}.`);
 
-          if(global.appData.signupFlow == 'code') setVerifyCode(true);
+          if(appData.signupFlow == 'code') setVerifyCode(true);
         }
       }).catch(err => {
         setLoading(false);
@@ -131,14 +126,14 @@ const ForgotPasswordScreen = props => {
       return;
     }
 
-    let validate = global.cosync.password.validatePassword(userPassword);
+    let validate = cosyncJWT.password.validatePassword(userPassword);
     if(!validate){
       let message = `
-          Error: Invalid Password Rules:\nMinimum password length : ${global.cosyncAppData.passwordMinLength}
-          Minimun upper case : ${global.cosyncAppData.passwordMinUpper}
-          Minimum lower case : ${global.cosyncAppData.passwordMinLower}
-          Minimum digit charactor : ${global.cosyncAppData.passwordMinDigit}
-          Minimum special charactor: ${global.cosyncAppData.passwordMinSpecial}
+          Error: Invalid Password Rules:\nMinimum password length : ${appData.passwordMinLength}
+          Minimun upper case : ${appData.passwordMinUpper}
+          Minimum lower case : ${appData.passwordMinLower}
+          Minimum digit charactor : ${appData.passwordMinDigit}
+          Minimum special charactor: ${appData.passwordMinSpecial}
         `;
         setErrortext(message);
          
@@ -147,7 +142,7 @@ const ForgotPasswordScreen = props => {
 
       setLoading(true);   
 
-      global.cosync.password.resetPassword(userEmail, userPassword, resetCode).then(result => {
+      cosyncJWT.password.resetPassword(userEmail, userPassword, resetCode).then(result => {
         setLoading(false); 
         console.log('resetPassword ', result);
 

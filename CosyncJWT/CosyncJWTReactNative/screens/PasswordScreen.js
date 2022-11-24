@@ -36,8 +36,7 @@ import {
   KeyboardAvoidingView,
 } from 'react-native'; 
 import Loader from '../components/Loader'; 
-import Configure from '../config/Config';  
-import CosyncJWTReactNative from 'cosync-jwt-react-native'; 
+ 
 import { AuthContext } from '../context/AuthContext';
 
 const PasswordScreen = props => { 
@@ -49,14 +48,12 @@ const PasswordScreen = props => {
   let [userPassword, setUserPassword] = useState('');
   let [newUserPassword, setNewUserPassword] = useState('');
 
-  const { logout } = useContext(AuthContext);
+  const { logout, getApplication, cosyncJWT, appData } = useContext(AuthContext);
 
   const ref_input_pwd = useRef(); 
  
   useEffect(() => {
-    
-    if(!global.cosync) global.cosync = new CosyncJWTReactNative(Configure.CosyncApp).getInstance();
-
+    getApplication() 
   }, []);
 
   const logoutUser = () => {
@@ -72,12 +69,8 @@ const PasswordScreen = props => {
         },
         {
           text: 'Confirm',
-          onPress: () => { 
-            global.userData = {};
-            if(global.cosync) global.cosync.logout();
+          onPress: () => {  
             logout()
-            
-            
           },
         },
       ],
@@ -100,14 +93,14 @@ const PasswordScreen = props => {
     } 
 
 
-    let validate = global.cosync.password.validatePassword(newUserPassword);
+    let validate = cosyncJWT.password.validatePassword(newUserPassword);
     if(!validate){
       let message = `
-          Error: Invalid Password Rules:\nMinimum password length : ${global.cosyncAppData.passwordMinLength}
-          Minimun upper case : ${global.cosyncAppData.passwordMinUpper}
-          Minimum lower case : ${global.cosyncAppData.passwordMinLower}
-          Minimum digit charactor : ${global.cosyncAppData.passwordMinDigit}
-          Minimum special charactor: ${global.cosyncAppData.passwordMinSpecial}
+          Error: Invalid Password Rules:\nMinimum password length : ${appData.passwordMinLength}
+          Minimun upper case : ${appData.passwordMinUpper}
+          Minimum lower case : ${appData.passwordMinLower}
+          Minimum digit charactor : ${appData.passwordMinDigit}
+          Minimum special charactor: ${appData.passwordMinSpecial}
         `;
         setErrortext(message);
        
@@ -115,7 +108,7 @@ const PasswordScreen = props => {
     else{ 
       setLoading(true);  
       
-      global.cosync.password.changePassword(userPassword, newUserPassword).then(result => {
+      cosyncJWT.password.changePassword(userPassword, newUserPassword).then(result => {
 
         setUserPassword(' ');
         setNewUserPassword(' ');

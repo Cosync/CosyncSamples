@@ -119,14 +119,14 @@ export function AuthProvider({ children }) {
 
         let user = await cosyncJWT.realmManager.login(tokenData.jwt, Configure.Realm.appId); 
         setRealmUser(user)
-        console.log("get realm user ", user.id);
-
-        setUserTokenData(tokenData);
-        console.log("get user jwt ", tokenData);
-
+        console.log("get realm user ", user.id); 
         let data = await cosyncJWT.profile.getUser();
         setUserData(data);
         console.log("get user data ", data); 
+
+        setUserTokenData(tokenData);
+        console.log("get user jwt ", tokenData);
+        
     }
 
     async function register(userEmail, userPassword, inviteCode, metaData){
@@ -145,7 +145,7 @@ export function AuthProvider({ children }) {
 
 
     function logout() {
-        setCurrentUser();
+        setUserData();
         setUserTokenData();
         cosyncJWT.realmManager.logout();
     }

@@ -24,7 +24,7 @@
 //  Copyright © 2022 cosync. All rights reserved.
 //
 
-import React, { useEffect, useState, useRef } from 'react'; 
+import React, { useEffect, useState, useContext } from 'react'; 
 import {
   StyleSheet, 
   Switch,
@@ -39,6 +39,7 @@ import {
 import Loader from '../components/Loader'; 
 import Configure from '../config/Config';  
 import CosyncJWTReactNative from 'cosync-jwt-react-native'; 
+import { AuthContext } from '../context/AuthContext';
 
 const ProfileScreen = props => { 
   let [loading, setLoading] = useState(false);
@@ -54,36 +55,28 @@ const ProfileScreen = props => {
   let [isPhoneTwoFactor, setPhoneTwoFactor] = useState(false); 
   let [googleSecretKey, setGoogleSecretKey] = useState(''); 
 
-  
+  const { userData, getApplication, cosyncJWT, appData } = useContext(AuthContext);
  
-  useEffect(() => {
+  useEffect(() => { 
+    getApplication();
 
-    if(!global.cosync) global.cosync = new CosyncJWTReactNative(Configure.CosyncApp).getInstance();
+    console.log("Prifile userData. ", userData);
+    let twoFactor = userData ? userData.twoFactorGoogleVerification : false;
+    setGoogleTwoFactor(twoFactor);
 
-    global.cosync.app.getApplication().then(result => {  
-      global.appData = result;
+    let phone2Facor = userData ? userData.twoFactorPhoneVerification : false;
+    setPhoneTwoFactor(phone2Facor);
 
-      global.cosync.profile.getUser().then(data => { 
-        global.userData.data = data;
+    let isPhoneVerified = userData ? userData.phoneVerified : false;
+    setPhoneVerified(isPhoneVerified);
 
-        console.log("global.userData.data ", global.userData.data);
-        let twoFactor = global.userData.data ? global.userData.data.twoFactorGoogleVerification : false;
-        setGoogleTwoFactor(twoFactor);
-
-        let phone2Facor = global.userData.data ? global.userData.data.twoFactorPhoneVerification : false;
-        setPhoneTwoFactor(phone2Facor);
-
-        let isPhoneVerified = global.userData.data ? global.userData.data.phoneVerified : false;
-        setPhoneVerified(isPhoneVerified);
-
-        if(global.userData && global.userData.data && global.userData.data.phone) setCurrentUserPhone(global.userData.data.phone);
-        if(global.userData && global.userData.data && global.userData.data.handle) setUserEmail(global.userData.data.handle);
-        if(data.metaData && data.metaData.user_data) {
-          setFirstName(data.metaData.user_data.name.first);
-          setLastName(data.metaData.user_data.name.last);
-        }
-      });
-    });
+    if(userData && userData.phone) setCurrentUserPhone(userData.phone);
+    if(userData && userData.handle) setUserEmail(userData.handle);
+    if(userData && userData.metaData && userData.metaData.user_data) {
+      setFirstName(userData.metaData.user_data.name.first);
+      setLastName(userData.metaData.user_data.name.last);
+    }
+     
   }, []);
 
 
@@ -96,9 +89,8 @@ const ProfileScreen = props => {
 
 
   const handleInvite = () => { 
- 
 
-    if(!global.appData.invitationEnabled){
+    if(!appData.invitationEnabled){
       setErrortext(`This app doesn't allow invitation.`); 
       return;
     }
@@ -110,13 +102,13 @@ const ProfileScreen = props => {
 
     let metadata = {};
 
-    if(global.appData.metaDataInvite.length){
-      global.appData.metaDataInvite.forEach(field => {
+    if(appData.metaDataInvite.length){
+      appData.metaDataInvite.forEach(field => {
         _.set(metadata, field.path, `test value ${field.fieldName}`); // add your value here
       });
     }
     
-    global.cosync.profile.invite(userEmail, metadata).then(result => { 
+    cosyncJWT.profile.invite(userEmail, metadata).then(result => { 
 
       if(result == true){
         alert('Success');
@@ -138,10 +130,10 @@ const ProfileScreen = props => {
     let isTwoFactor = !isPhoneTwoFactor;
     setGoogleSecretKey(''); 
 
-    global.cosync.profile.setTwoFactorGoogleVerification(isTwoFactor).then(result => {  
+    cosyncJWT.profile.setTwoFactorGoogleVerification(isTwoFactor).then(result => {  
 
       if(result == true){ 
-        global.userData.data.twoFactorPhoneVerification = isTwoFactor; 
+        userData.twoFactorPhoneVerification = isTwoFactor; 
         if(isTwoFactor) alert('Turn on Phone Two Factor');
         else alert('Turn off Phone Two Factor');
       } 
@@ -165,16 +157,16 @@ const ProfileScreen = props => {
       }
 
 
-      global.cosync.profile.verifyPhone(userPhoneCode).then(result => { 
+      cosyncJWT.profile.verifyPhone(userPhoneCode).then(result => { 
 
         if(result == true){
           
           setVerifyPhone(false);
-          global.userData.data.phoneVerified = true;
+          userData.phoneVerified = true;
 
-          global.userData.data.phone = userPhone;
+          userData.phone = userPhone;
 
-          setCurrentUserPhone(global.userData.data.phone);
+          setCurrentUserPhone(userData.phone);
 
           setPhoneVerified(true);
           alert('Phone number is verified.')
@@ -200,7 +192,7 @@ const ProfileScreen = props => {
     
  
     
-    global.cosync.profile.setPhone(userPhone).then(result => { 
+    cosyncJWT.profile.setPhone(userPhone).then(result => { 
 
       if(result == true){
         setVerifyPhone(true);
@@ -231,11 +223,11 @@ const ProfileScreen = props => {
     let isTwoFactor = !isGoogleTwoFactor;
     setGoogleSecretKey(''); 
 
-    global.cosync.profile.setTwoFactorGoogleVerification(isTwoFactor).then(result => { 
+    cosyncJWT.profile.setTwoFactorGoogleVerification(isTwoFactor).then(result => { 
 
       if(result == true || result.googleSecretKey){
 
-        global.userData.data.twoFactorGoogleVerification = isTwoFactor;
+        userData.twoFactorGoogleVerification = isTwoFactor;
 
         if(isTwoFactor){
           console.log('handleAddGoogleTwoFactor googleSecretKey ', result.googleSecretKey);
@@ -284,7 +276,7 @@ const ProfileScreen = props => {
       } 
     };
 
-    global.cosync.profile.setUserMetadata(metadata).then(result => { 
+    cosyncJWT.profile.setUserMetadata(metadata).then(result => { 
       if(result == true){
         alert('Success');
       } 
@@ -377,7 +369,7 @@ const ProfileScreen = props => {
 
       </View>
 
-      {global.appData && global.appData.twoFactorVerification == 'phone' ? 
+      {appData && appData.twoFactorVerification == 'phone' ? 
         <View style={styles.viewSection}>
           <Text style={styles.registerTextStyle}> Add Phone </Text>
 
@@ -425,7 +417,7 @@ const ProfileScreen = props => {
                 <Text style={styles.buttonTextStyle}>Submit</Text>
             </TouchableOpacity>
 
-            {global.userData.data.phoneVerified ? 
+            {userData.phoneVerified ? 
               <View style={styles.viewSection}>
                 <Text style={styles.registerTextStyle}> Turn on Phone Two Factor </Text>  
 
@@ -444,7 +436,7 @@ const ProfileScreen = props => {
 
       : null}   
 
-      {global.appData && global.appData.twoFactorVerification == 'google' ? 
+      {appData && appData.twoFactorVerification == 'google' ? 
             <View style={styles.viewSection}>
               <Text style={styles.registerTextStyle}> Add Google Two Factor </Text>  
 

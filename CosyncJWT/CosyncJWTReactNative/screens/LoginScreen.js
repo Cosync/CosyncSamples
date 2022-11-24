@@ -43,8 +43,8 @@ import { AuthContext } from '../context/AuthContext';
 
 const LoginScreen = props => {
   
-  let [userEmail, setUserEmail] = useState('tola@cosync.io');
-  let [userPassword, setUserPassword] = useState('qwerty');
+  let [userEmail, setUserEmail] = useState('');
+  let [userPassword, setUserPassword] = useState('');
   let [loading, setLoading] = useState(false);
   let [isCompleteLogin, setCompleteLogin] = useState(false);
   let [loginCode, setLoginCode] = useState('');
@@ -53,9 +53,7 @@ const LoginScreen = props => {
   let [errortext, setErrortext] = useState('');
   const ref_input_pwd = useRef(); 
 
-  const { login, loginAnonymous, loginToken } = useContext(AuthContext)
-
- 
+  const { login, loginAnonymous, loginToken } = useContext(AuthContext);
 
   const validateEmail = (text) => {
    
@@ -65,15 +63,21 @@ const LoginScreen = props => {
   }
 
   const loginAnonymousUser = async () => {
-    
-    setLoading(true);  
-    let id =  uuid.v4();
-    let result = await loginAnonymous();
-    console.log('CosyncJWT loginAnonymous result  ', result); 
-    setLoading(false);  
 
-    if(result.code){  
-      setErrortext(result.message); 
+    try { 
+      setLoading(true);  
+      let id =  uuid.v4();
+      let result = await loginAnonymous();
+      console.log('CosyncJWT loginAnonymous result  ', result);  
+      if(result.code){  
+        setErrortext(result.message); 
+      }
+
+    } catch (error) {
+      setErrortext(error.message); 
+    }
+    finally{
+      setLoading(false);  
     }
 
   }
@@ -107,14 +111,22 @@ const LoginScreen = props => {
       return;
     }
 
-    let result = await login(userEmail, userPassword); 
+    try {
+      let result = await login(userEmail, userPassword); 
 
-    if(result.code && result.message){  
-      setErrortext(result.message); 
+      if(result.code && result.message){  
+        setErrortext(result.message); 
+      }
+      else if(result['login-token']){  
+        setCompleteLogin(true);  
+      }  
+    } catch (error) {
+      setErrortext(error.message); 
     }
-    else if(result['login-token']){  
-      setCompleteLogin(true);  
-    }  
+    finally{
+      setLoading(false);  
+    }
+    
        
   };
 

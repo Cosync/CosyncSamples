@@ -57,9 +57,6 @@ const RegisterScreen = props => {
 
   const { cosyncJWT, getApplication, register, appData } = useContext(AuthContext)
 
-  global.realm = null;
-  global.realmPrivate = null; 
-
   useEffect(() => {
     getApplication();
    
