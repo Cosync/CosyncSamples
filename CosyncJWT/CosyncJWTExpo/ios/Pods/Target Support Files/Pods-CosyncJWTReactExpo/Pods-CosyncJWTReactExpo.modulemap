@@ -1,0 +1,6 @@
+module Pods_CosyncJWTReactExpo {
+  umbrella header "Pods-CosyncJWTReactExpo-umbrella.h"
+
+  export *
+  module * { export * }
+}
