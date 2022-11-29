@@ -24,7 +24,7 @@
 //  Copyright © 2022 cosync. All rights reserved.
 //
 
-import React, {useEffect, useState, useRef } from 'react'; 
+import React, {useEffect, useState, useRef, useContext } from 'react'; 
 import {
   StyleSheet,
   TextInput,
@@ -148,7 +148,7 @@ const ForgotPasswordScreen = props => {
 
         if(result === true){  
           alert('Please login with your new password');
-          props.navigation.navigate('LoginScreen');
+          
         }
         else{
           

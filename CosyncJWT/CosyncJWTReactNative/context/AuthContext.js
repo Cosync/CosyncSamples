@@ -2,8 +2,7 @@
 import React, {createContext, useState, useEffect} from "react"
 import Configure from '../config/Config';  
 import CosyncJWTReactNative from 'cosync-jwt-react-native';  
-import uuid from 'react-native-uuid';
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import uuid from 'react-native-uuid'; 
 
 
 export const AuthContext = createContext();

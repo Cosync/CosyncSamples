@@ -43,8 +43,8 @@ import { AuthContext } from '../context/AuthContext';
 
 const LoginScreen = props => {
   
-  let [userEmail, setUserEmail] = useState('');
-  let [userPassword, setUserPassword] = useState('');
+  let [userEmail, setUserEmail] = useState('tola@cosync.io');
+  let [userPassword, setUserPassword] = useState('qwerty');
   let [loading, setLoading] = useState(false);
   let [isCompleteLogin, setCompleteLogin] = useState(false);
   let [loginCode, setLoginCode] = useState('');
