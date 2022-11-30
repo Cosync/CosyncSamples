@@ -27,9 +27,9 @@
 import React, {useState} from 'react';
 
 //Import all required component
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, Platform } from 'react-native';
 import Request from './Request';  
-import * as Progress from 'react-native-progress';
+ 
 
 const UploadFile = props => {
 
@@ -73,9 +73,12 @@ const UploadFile = props => {
         <View style={styles.container}> 
            
             <View style={styles.progressCircle}> 
-
-                <Progress.Bar progress={progress/100} width={100} />
-
+            
+                <ActivityIndicator size='large' 
+                    animating={true}
+                    hidesWhenStopped = {true}
+                />
+            
                 <Text style={{ fontSize: 18 }}>{item.sizeType} </Text>
                 {totalFileZise > 0 ? <Text>{totalFileZise } MB </Text> : null}
                 <Text>{`${progress}%`}</Text>

@@ -43,8 +43,8 @@ import { AuthContext } from '../context/AuthContext';
 
 const LoginScreen = props => {
   
-  let [userEmail, setUserEmail] = useState('tola1@cosync.io');
-  let [userPassword, setUserPassword] = useState('qwerty');
+  let [userEmail, setUserEmail] = useState('');
+  let [userPassword, setUserPassword] = useState('');
   let [loading, setLoading] = useState(false);
   let [errortext, setErrortext] = useState('');
   const ref_input_pwd = useRef();
