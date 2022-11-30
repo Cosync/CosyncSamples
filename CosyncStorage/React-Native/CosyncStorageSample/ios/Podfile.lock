@@ -251,7 +251,7 @@ PODS:
     - React-cxxreact (= 0.63.3)
     - React-jsi (= 0.63.3)
   - React-jsinspector (0.63.3)
-  - react-native-image-picker (3.3.2):
+  - react-native-image-picker (4.10.1):
     - React-Core
   - react-native-image-resizer (1.4.1):
     - React-Core
@@ -528,7 +528,7 @@ SPEC CHECKSUMS:
   React-jsi: df07aa95b39c5be3e41199921509bfa929ed2b9d
   React-jsiexecutor: b56c03e61c0dd5f5801255f2160a815f4a53d451
   React-jsinspector: 8e68ffbfe23880d3ee9bafa8be2777f60b25cbe2
-  react-native-image-picker: b42940647478bf106ad3c491d6f5d9d40916d865
+  react-native-image-picker: f2ab1215d17bcfe27b0eb6417cc236fd1f4775e7
   react-native-image-resizer: 354b09df56858289f386dfbd804e318155c14c8f
   react-native-safe-area-context: b6e0e284002381d2ff29fa4fff42b4d8282e3c94
   react-native-video: 0bb76b6d6b77da3009611586c7dbf817b947f30e
@@ -552,6 +552,6 @@ SPEC CHECKSUMS:
   Yoga: 7d13633d129fd179e01b8953d38d47be90db185a
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: 7bad11f840bc83ddfcd9f5bf321296c87b481129
+PODFILE CHECKSUM: 03670a3ace420a1a4ecf62162aea07c0a2df4fee
 
 COCOAPODS: 1.11.3

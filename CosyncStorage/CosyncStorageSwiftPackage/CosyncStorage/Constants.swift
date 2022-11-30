@@ -10,7 +10,7 @@ import Foundation
 
 struct Constants {
     
-    static let REALM_APP_ID = "" // <- update this with your Realm App ID
-    static let LOGIN_EMAIL = "" // <- update this with your Realm User Email
-    static let LOGIN_PASSWORD = "" // <- update this with your Realm User Password
+    static let REALM_APP_ID = "cosyncstorage-krgfv" // <- update this with your Realm App ID
+        static let LOGIN_EMAIL = "rckrueger@gmail.com" // <- update this with your Realm User Email
+        static let LOGIN_PASSWORD = "qwerty" // <- update this with your Realm User Password
 }

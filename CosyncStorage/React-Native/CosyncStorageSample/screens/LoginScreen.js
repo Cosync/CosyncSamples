@@ -122,6 +122,7 @@ const LoginScreen = props => {
                 placeholder="Enter Email" 
                 autoCapitalize="none"
                 keyboardType="email-address" 
+                autoComplete= {'off'}
                 returnKeyType="next" 
                 onSubmitEditing={() => ref_input_pwd.current.focus()}
                 blurOnSubmit={false}
