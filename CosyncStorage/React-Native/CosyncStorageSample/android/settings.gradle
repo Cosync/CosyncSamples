@@ -1,7 +1,0 @@
-rootProject.name = 'CosyncStorageSample'
-include ':react-native-image-picker'
-project(':react-native-image-picker').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-image-picker/android')
-include ':react-native-thumbnail'
-project(':react-native-thumbnail').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-thumbnail/android')
-apply from: file("../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesSettingsGradle(settings)
-include ':app'
