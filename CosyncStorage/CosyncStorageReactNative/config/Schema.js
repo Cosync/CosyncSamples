@@ -20,7 +20,7 @@
 //  under the License.
 //
 //  Created by Tola Voeung.
-//  Copyright © 2020 cosync. All rights reserved.
+//  Copyright © 2022 cosync. All rights reserved.
 //
  
 

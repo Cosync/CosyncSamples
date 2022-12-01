@@ -20,19 +20,20 @@
 //  under the License.
 //
 //  Created by Tola Voeung.
-//  Copyright © 2020 cosync. All rights reserved.
+//  Copyright © 2022 cosync. All rights reserved.
 //
 
 //Import React and Hook we needed
-import React, {useRef, useEffect, useState} from 'react';
+import React, {useContext, useState} from 'react';
 
 //Import all required component
 import { StyleSheet, View, Text, Image, ActivityIndicator,TouchableOpacity } from 'react-native'; 
 import VideoPlayer from './VideoPlayer'; 
 import Sound from 'react-native-sound';
+import { AuthContext } from '../context/AuthContext';
 
 const ProgressiveAsset = props => {
-
+    const {  realmUser } = useContext(AuthContext); 
     const { item, ...attributes } = props; 
     let [loading, setLoading] = useState(false);
     let [error, setLoadingError] = useState(false); 
@@ -49,7 +50,7 @@ const ProgressiveAsset = props => {
 
         let id = asset._id.toString();
         
-        global.user.functions.CosyncRefreshAsset(id).then(newAsset => { 
+        realmUser.functions.CosyncRefreshAsset(id).then(newAsset => { 
 
             //if(!newAsset || !newAsset._id) setLoadingError(true);  
             setLoading(false);
