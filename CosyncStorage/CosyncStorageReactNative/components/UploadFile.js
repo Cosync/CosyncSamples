@@ -75,7 +75,7 @@ const UploadFile = props => {
             <View style={styles.progressCircle}> 
             
                 <ActivityIndicator size='large' 
-                    animating={true}
+                    animating={progress > 0 && progress < 100}
                     hidesWhenStopped = {true}
                 />
             
