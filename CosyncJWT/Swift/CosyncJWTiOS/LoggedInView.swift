@@ -32,10 +32,14 @@ struct LoggedInView: View {
     @State var phone = CosyncJWTRest.shared.phone ?? ""
     @State var phoneVerified = CosyncJWTRest.shared.phoneVerified ?? false
     @State var twoFactorPhoneVerification = CosyncJWTRest.shared.twoFactorPhoneVerification ?? false
+    @State var twoFactorGoogleVerification = CosyncJWTRest.shared.twoFactorGoogleVerification ?? false
+    @State var googleSecretKey = CosyncJWTRest.shared.googleSecretKey ?? ""
+    @State var QRDataImage = CosyncJWTRest.shared.QRDataImage
     @State var phoneCode = ""
     @State var changePhoneNumber = false
     @State var verifyCode = false
     @State private var message: AlertMessage? = nil
+    @State var qrUIImage: UIImage? = nil
     
     func errorSetPhone(err: Error?){
         if let cosyncJWTError = err as? CosyncJWTError {
@@ -46,6 +50,12 @@ struct LoggedInView: View {
     func errorVerifyPhone(err: Error?){
         if let cosyncJWTError = err as? CosyncJWTError {
             self.message = AlertMessage(title: "Verify Phone", message: cosyncJWTError.message, target: .none, state: self.appState)
+        }
+    }
+    
+    func errorSet2FAGoogle(err: Error?){
+        if let cosyncJWTError = err as? CosyncJWTError {
+            self.message = AlertMessage(title: "Set Two-Factor Google Verification", message: cosyncJWTError.message, target: .none, state: self.appState)
         }
     }
     
@@ -81,6 +91,7 @@ struct LoggedInView: View {
                                 } else {
                                     do {
                                         try await CosyncJWTRest.shared.setPhone(phone)
+                                        self.verifyCode = true
                                     } catch {
                                         errorSetPhone(err: error)
                                     }
@@ -119,14 +130,48 @@ struct LoggedInView: View {
                             }.accentColor(.blue)
                         }
                     }
+                    
+                    if phoneVerified {
+                        Toggle("Enable 2-Factor verification", isOn: $twoFactorPhoneVerification)
+                        .onChange(of: twoFactorPhoneVerification) { value in
+                            Task {
+                                do {
+                                    try await CosyncJWTRest.shared.setTwoFactorPhoneVerification(value)
+                                } catch {
+                                    errorSetPhone(err: error)
+                                }
+
+                            }
+
+                        }
+                    }
                 }
                 
-                if phoneVerified {
-                    Toggle("Enable 2-Factor verification", isOn: $twoFactorPhoneVerification)
-                    .onChange(of: twoFactorPhoneVerification) { value in
+                // show phone number stuff if app supports 2-factor phone verification
+                if let  twofactorVerification = CosyncJWTRest.shared.twoFactorVerification,
+                   twofactorVerification == "google" {
+                    Divider()
+                    
+                    Toggle("Enable Google 2FA", isOn: $twoFactorGoogleVerification)
+                    .onChange(of: twoFactorGoogleVerification) { value in
                         Task {
                             do {
-                                try await CosyncJWTRest.shared.setTwoFactorPhoneVerification(value)
+                                try await CosyncJWTRest.shared.setTwoFactorGoogleVerification(value)
+                                googleSecretKey = CosyncJWTRest.shared.googleSecretKey ?? ""
+                                QRDataImage = CosyncJWTRest.shared.QRDataImage
+                                
+                                self.qrUIImage = nil
+                                if let qrDataImage = QRDataImage {
+                                                      
+                                    // remove "data:image/png;base64," prefix (Swift does not like it)
+                                    let suffix = qrDataImage.components(separatedBy: ",")[1]
+                                    
+                                    if let data = Data(base64Encoded: suffix, options: .ignoreUnknownCharacters) {
+                                        if let image = UIImage(data: data) {
+                                            self.qrUIImage = image
+                                        }
+                                    }
+                               }
                             } catch {
                                 errorSetPhone(err: error)
                             }
@@ -135,9 +180,24 @@ struct LoggedInView: View {
 
                     }
                 }
+                
+                if !self.googleSecretKey.isEmpty {
+
+                    Text("Secret Key:")
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .fontWeight(.bold)
+                    Text(self.googleSecretKey)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    
+                    if let uiImage = self.qrUIImage {
+                        Image(uiImage: uiImage)
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 300, height: 300)
+                    }
+                }
 
                 Divider()
-                
+
                 NavigationLink(destination: InviteView()) {
                     Text("Invite Email")
                     Image(systemName: "person.crop.circle.badge.plus")
@@ -147,7 +207,6 @@ struct LoggedInView: View {
                 .background(Color.blue)
                 .cornerRadius(8)
                 .font(.title)
-                
                 
                 Spacer()
             }
@@ -178,6 +237,9 @@ struct LoggedInView: View {
                 }
             )
             .edgesIgnoringSafeArea(.bottom)
+        }
+        .onAppear() {
+            print("ContentView appeared!")
         }
     }
 }
