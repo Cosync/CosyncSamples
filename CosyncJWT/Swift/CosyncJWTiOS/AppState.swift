@@ -30,6 +30,7 @@ enum TargetUI: Int {
     case none
     case loggedOut
     case loginComplete
+    case loginUserName
     case loggedIn
     case password
 }
@@ -46,5 +47,6 @@ struct AlertMessage: Identifiable {
 // Global state observable used to trigger routing
 class AppState: ObservableObject {
     @Published var target: TargetUI = .loggedOut
+    @Published var anonymousLoginEnabled: Bool = false
     var context: Any = ""
 }

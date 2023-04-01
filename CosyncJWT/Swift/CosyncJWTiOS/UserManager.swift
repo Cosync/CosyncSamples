@@ -108,4 +108,29 @@ class UserManager {
         })
     }
     
+    @MainActor func setUserName(userName: String) async throws -> Void  {
+        
+        try await CosyncJWTRest.shared.setUserName(userName)
+    }
+    
+    @MainActor func userNameAvailable(userName: String) async throws -> Bool  {
+        
+        return try await CosyncJWTRest.shared.userNameAvailable(userName)
+    }
+    
+    @MainActor func shouldSetUserName() -> Bool  {
+        
+        var retval = false
+        if let userNameEnabled = CosyncJWTRest.shared.userNamesEnabled, userNameEnabled {
+            if let userName = CosyncJWTRest.shared.userName {
+                if userName.isEmpty {
+                    retval = true
+                }
+            } else {
+                retval = true
+            }
+        }
+        return retval
+    }
+    
 }

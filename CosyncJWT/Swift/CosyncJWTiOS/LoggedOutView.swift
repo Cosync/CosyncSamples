@@ -101,20 +101,22 @@ struct LoginTab: View {
             .background(Color.green)
             .cornerRadius(8)
             
-            Button(action: {
-                Task{
-                    await loginAnonymous()
+            if appState.anonymousLoginEnabled {
+                Button(action: {
+                    Task{
+                        await loginAnonymous()
+                    }
+                      
+                }) {
+                    Text("Login As Anonymous")
+                    .font(.body)
                 }
-                  
-            }) {
-                Text("Login As Anonymous")
-                .font(.body)
+                .padding()
+                .foregroundColor(Color.white)
+                .background(Color.green)
+                .cornerRadius(8)
             }
-            .padding()
-            .foregroundColor(Color.white)
-            .background(Color.green)
-            .cornerRadius(8)
-            
+
             Button(action: {
                 self.appState.target = .password
             }) {
@@ -142,6 +144,8 @@ struct LoginTab: View {
                 try await UserManager.shared.login(email: self.email, password: self.password)
                 if let _ = CosyncJWTRest.shared.loginToken {
                     self.appState.target = .loginComplete
+                } else if UserManager.shared.shouldSetUserName() {
+                    self.appState.target = .loginUserName
                 } else {
                     self.appState.target = .loggedIn
                 }
@@ -160,11 +164,7 @@ struct LoginTab: View {
         
         do {
             try await UserManager.shared.loginAnonymous()
-            if let _ = CosyncJWTRest.shared.loginToken {
-                self.appState.target = .loginComplete
-            } else {
-                self.appState.target = .loggedIn
-            }
+            self.appState.target = .loggedIn
         } catch {
             isLoggingIn = false
             self.showLoginError(message: error.localizedDescription)
@@ -300,7 +300,11 @@ struct SignupTab: View {
                                     
                                     try await UserManager.shared.login(email: self.email, password: self.password)
                                     isLoggingIn = false
-                                    self.appState.target = .loggedIn
+                                    if UserManager.shared.shouldSetUserName() {
+                                        self.appState.target = .loginUserName
+                                    } else {
+                                        self.appState.target = .loggedIn
+                                    }
                                     
                                 } catch let error as CosyncJWTError {
                                     isLoggingIn = false
@@ -338,7 +342,12 @@ struct SignupTab: View {
                                 
                                 isLoggingIn = false
                                 self.signupUI = .signup
-                                self.appState.target = .loggedIn
+                                
+                                if UserManager.shared.shouldSetUserName() {
+                                    self.appState.target = .loginUserName
+                                } else {
+                                    self.appState.target = .loggedIn
+                                }
                                 
                             } catch let error as CosyncJWTError {
                                 isLoggingIn = false

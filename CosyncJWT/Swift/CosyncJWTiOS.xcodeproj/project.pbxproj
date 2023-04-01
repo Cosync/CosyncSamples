@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		086982EF29D76E3600175744 /* LoginUserNameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086982EE29D76E3600175744 /* LoginUserNameView.swift */; };
 		08CA318127873166004E0A92 /* CosyncJWTSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 08CA318027873166004E0A92 /* CosyncJWTSwift */; };
 		08F58B65277A1C1000F987ED /* CosyncJWTiOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F58B64277A1C1000F987ED /* CosyncJWTiOSApp.swift */; };
 		08F58B67277A1C1000F987ED /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F58B66277A1C1000F987ED /* ContentView.swift */; };
@@ -28,6 +29,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		086982EE29D76E3600175744 /* LoginUserNameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginUserNameView.swift; sourceTree = "<group>"; };
 		08F58B61277A1C1000F987ED /* CosyncJWTiOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CosyncJWTiOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		08F58B64277A1C1000F987ED /* CosyncJWTiOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CosyncJWTiOSApp.swift; sourceTree = "<group>"; };
 		08F58B66277A1C1000F987ED /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -85,6 +87,7 @@
 				08F58B7E277A1E7B00F987ED /* LoggedOutView.swift */,
 				08F58B7D277A1E7B00F987ED /* LoggedInView.swift */,
 				08F58B80277A1E7B00F987ED /* LoginCompleteView.swift */,
+				086982EE29D76E3600175744 /* LoginUserNameView.swift */,
 				08F58B7F277A1E7B00F987ED /* PasswordView.swift */,
 				08F58B77277A1E2200F987ED /* AppState.swift */,
 				08F58B86277A1E8600F987ED /* RealmManager.swift */,
@@ -206,6 +209,7 @@
 				08F58B7A277A1E3400F987ED /* Constants.swift in Sources */,
 				08F58B87277A1E8700F987ED /* UserManager.swift in Sources */,
 				08F58B84277A1E7B00F987ED /* LoginCompleteView.swift in Sources */,
+				086982EF29D76E3600175744 /* LoginUserNameView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

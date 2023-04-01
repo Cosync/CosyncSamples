@@ -27,8 +27,16 @@ struct ContentView: View {
                 LoggedInView()
             } else if self.appState.target == .loginComplete {
                 LoginCompleteView()
+            } else if self.appState.target == .loginUserName {
+                LoginUserNameView()
             } else {
                 PasswordView()
+            }
+        }
+        .task {
+            try! await CosyncJWTRest.shared.getApplication()
+            if let anonymousLoginEnabled = CosyncJWTRest.shared.anonymousLoginEnabled {
+                appState.anonymousLoginEnabled = anonymousLoginEnabled
             }
         }
     }

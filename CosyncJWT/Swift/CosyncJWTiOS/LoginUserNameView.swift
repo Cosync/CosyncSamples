@@ -1,29 +1,28 @@
 //
-//  LoginCompleteView.swift
+//  LoginUserNameView.swift
 //  CosyncJWTiOS
 //
-//  Created by Richard Krueger on 5/19/21.
-//  Copyright © 2021 cosync. All rights reserved.
+//  Created by Richard Krueger on 3/31/23.
 //
 
 import SwiftUI
 import CosyncJWTSwift
 
 
-struct LoginCompleteView: View {
+struct LoginUserNameView: View {
     @EnvironmentObject var appState: AppState
-    @State private var code = ""
+    @State private var userName = ""
     @State private var message: AlertMessage? = nil
-    @State var isLoggingIn = false
+    @State var isSettingUserName = false
 
 
-    func invalidCode(){
-        self.message = AlertMessage(title: "Login Complete", message: "Code is empty", target: .none, state: self.appState)
+    func userNameIsEmpty(){
+        self.message = AlertMessage(title: "Set User Name", message: "user name is empty", target: .none, state: self.appState)
     }
     
-    func showErrorLoginComplete(err: Error?){
+    func showErrorLoginUserName(err: Error?){
         if let cosyncJWTError = err as? CosyncJWTError {
-            self.message = AlertMessage(title: "Login Complete", message: cosyncJWTError.message, target: .none, state: self.appState)
+            self.message = AlertMessage(title: "Set User Name", message: cosyncJWTError.message, target: .none, state: self.appState)
         }
     }
     
@@ -33,7 +32,7 @@ struct LoginCompleteView: View {
                 
                 Divider()
                 
-                TextField("Code", text: $code)
+                TextField("User Name", text: $userName)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .disableAutocorrection(true)
                     .keyboardType(.numberPad)
@@ -42,29 +41,29 @@ struct LoginCompleteView: View {
                 
                 Divider()
                 
-                if isLoggingIn {
+                if isSettingUserName {
                     ProgressView()
                 }
                 
                 Button(action: {
                     Task {
-                        if code.isEmpty {
-                            invalidCode()
+                        if userName.isEmpty {
+                            userNameIsEmpty()
                         } else {
-                            isLoggingIn = true
+                            isSettingUserName = true
                             do {
-                                try await UserManager.shared.loginComplete(code: code)
-                                isLoggingIn = false
+                                try await UserManager.shared.setUserName(userName: userName)
+                                isSettingUserName = false
                                 self.appState.target = .loggedIn
                             } catch {
-                                isLoggingIn = false
-                                self.showErrorLoginComplete(err: error)
+                                isSettingUserName = false
+                                self.showErrorLoginUserName(err: error)
                             }
                         }
                     }
                 }) {
                     
-                    Text("Validate")
+                    Text("Set UserName")
                     
                 }.accentColor(.blue)
                 
@@ -76,7 +75,7 @@ struct LoginCompleteView: View {
             }
             
             // Use .inline for the smaller nav bar
-            .navigationBarTitle(Text("Complete Login"), displayMode: .inline)
+            .navigationBarTitle(Text("Set User Name"), displayMode: .inline)
             .navigationBarItems(
                 // Button on the leading side
                 leading:
@@ -92,8 +91,8 @@ struct LoginCompleteView: View {
     }
 }
 
-struct LoginCompleteView_Previews: PreviewProvider {
+struct LoginUserNameView_Previews: PreviewProvider {
     static var previews: some View {
-        LoginCompleteView()
+        LoginUserNameView()
     }
 }
