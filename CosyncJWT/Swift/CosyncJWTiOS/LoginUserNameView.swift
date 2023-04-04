@@ -52,7 +52,9 @@ struct LoginUserNameView: View {
                         } else {
                             isSettingUserName = true
                             do {
-                                try await UserManager.shared.setUserName(userName: userName)
+                                if try await UserManager.shared.userNameAvailable(userName: userName) {
+                                    try await UserManager.shared.setUserName(userName: userName)
+                                }
                                 isSettingUserName = false
                                 self.appState.target = .loggedIn
                             } catch {

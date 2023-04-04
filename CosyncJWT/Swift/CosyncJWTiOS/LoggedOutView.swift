@@ -145,6 +145,7 @@ struct LoginTab: View {
                 if let _ = CosyncJWTRest.shared.loginToken {
                     self.appState.target = .loginComplete
                 } else if UserManager.shared.shouldSetUserName() {
+                    print(CosyncJWTRest.shared.accessToken!)
                     self.appState.target = .loginUserName
                 } else {
                     self.appState.target = .loggedIn

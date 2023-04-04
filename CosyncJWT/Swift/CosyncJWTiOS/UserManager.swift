@@ -82,6 +82,7 @@ class UserManager {
         if  CosyncJWTRest.shared.loginToken == nil,
             let jwt = CosyncJWTRest.shared.jwt {
             
+            print(jwt)
             try await RealmManager.shared.login(jwt)
             try await UserManager.shared.loginGetUserData()
         }
