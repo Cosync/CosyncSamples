@@ -37,8 +37,6 @@ import {
   KeyboardAvoidingView,
 } from 'react-native'; 
 import Loader from '../components/Loader';  
-
-import uuid from 'react-native-uuid';
 import { AuthContext } from '../context/AuthContext';
 
 const LoginScreen = props => {
@@ -66,7 +64,7 @@ const LoginScreen = props => {
 
     try { 
       setLoading(true);  
-      let id =  uuid.v4();
+      
       let result = await loginAnonymous();
       console.log('CosyncJWT loginAnonymous result  ', result);  
       if(result.code){  

@@ -29,7 +29,7 @@
 import React, {createContext, useState, useEffect} from "react"
 import Configure from '../config/Config';  
 import CosyncJWTReactNative from 'cosync-jwt-react-native';  
-import uuid from 'react-native-uuid'; 
+import * as Crypto from 'expo-crypto';
 
 export const AuthContext = createContext();
   
@@ -62,7 +62,7 @@ export function AuthProvider({ children }) {
         
         try {
 
-            let id =  uuid.v4();
+            let id = Crypto.randomUUID();
             let result = await cosyncJWT.login.loginAnonymous(`ANON_${id}`); 
 
             if(result.jwt) loginJWT(result);

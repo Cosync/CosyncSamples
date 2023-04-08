@@ -1,5 +1,5 @@
 {
-  "scheme": "com.tolacambo.CosyncJWTReactExpo",
+  "scheme": "com.cosync.CosyncJWTExpo",
   "hostType": "lan",
   "lanType": "ip",
   "devClient": true,
