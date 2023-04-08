@@ -24,7 +24,7 @@
 //
 
 exports.Realm = {
-    appId: 'application-1-hoiez', 
+    appId: 'application-qrxtranew-dsqdo', 
     cosyncAsset:'CosyncAsset', 
     cosyncAssetUpload : 'CosyncAssetUpload'
 }

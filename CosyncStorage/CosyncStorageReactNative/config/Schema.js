@@ -24,6 +24,7 @@
 //
  
 
+
 exports.CosyncAsset = {
     "name":"CosyncAsset",
     "primaryKey":"_id",
@@ -31,6 +32,7 @@ exports.CosyncAsset = {
         "_id":{ "type": "objectId", "indexed": true },  
         "userId":{ "type": "string", "indexed": true },  
         "sessionId":{ "type": "string", "indexed": true},
+        "transactionId":{ "type": "string", "default": ""},
         "path":{ "type": "string", "default": ""},
         "expirationHours": { "type": "double", "default": 24}, 
         "expiration":  { "type": "date", "optional": true},
@@ -40,6 +42,7 @@ exports.CosyncAsset = {
         "color": { "type": "string", "default":"#000000"},
         "xRes": { "type": "int", "default": 0 },
         "yRes": { "type": "int", "default": 0 }, 
+        "title": { "type": "string", "default": "" }, 
         "caption": { "type": "string", "default": "" }, 
         "status":{ "type": "string", "default": "active", "indexed": true },
         "url":{ "type": "string", "optional": true },
@@ -60,7 +63,8 @@ exports.CosyncAssetUpload = {
     "properties": {
         "_id":{ "type": "objectId", "indexed": true }, 
         "userId":{ "type": "string", "indexed": true },  
-        "sessionId":{ "type": "string", "indexed": true},   
+        "sessionId":{ "type": "string", "indexed": true},
+        "transactionId":{ "type": "string", "default": ""},
         "extra":{ "type": "string", "default": ""},  
         "filePath": { "type": "string", "default": "" },
         "path":{ "type": "string", "default": ""},
@@ -71,6 +75,7 @@ exports.CosyncAssetUpload = {
         "color": { "type": "string", "default":"#000000"},
         "xRes": { "type": "int", "default": 0 },
         "yRes": { "type": "int", "default": 0 }, 
+        "title": { "type": "string", "default": "" }, 
         "caption": { "type": "string", "default": "" }, 
         "writeUrl":{ "type": "string", "optional": true},    
         "writeUrlSmall":{ "type": "string", "optional": true},   
