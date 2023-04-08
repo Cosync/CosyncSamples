@@ -3,7 +3,6 @@
  * https://github.com/facebook/react-native
  *
  * @format
- * @flow strict-local
  */
 
 
@@ -20,5 +19,3 @@ export default function App() {
    
   );
 }
-  
- 
