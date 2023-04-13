@@ -14,7 +14,8 @@ struct ContentView: View {
     
     init() {
         CosyncJWTRest.shared.configure(appToken: Constants.APP_TOKEN,
-                                       cosyncRestAddress: Constants.COSYNC_REST_ADDRESS)
+                                       cosyncRestAddress: Constants.COSYNC_REST_ADDRESS,
+                                       rawPublicKey: Constants.RAW_PUBLIC_KEY)
 
     }
 

@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Cosync/CosyncJWTSwift.git",
       "state" : {
-        "revision" : "3f0a6cac824f8ae775dca52ca5575f6137156524",
-        "version" : "1.1.5"
+        "revision" : "9ba2b5b82eacf5bccb9dc126e97a1dd11d4a9e8f",
+        "version" : "1.1.12"
       }
     },
     {

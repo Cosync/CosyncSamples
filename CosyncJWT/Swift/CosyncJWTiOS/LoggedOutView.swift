@@ -26,7 +26,6 @@
 import SwiftUI
 import CosyncJWTSwift
 
-
 struct LoggedOutView: View {
     var body: some View {
         TabView {
