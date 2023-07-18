@@ -1,2 +1,2 @@
 yarn install
-expo run:ios
+npx expo run:ios
