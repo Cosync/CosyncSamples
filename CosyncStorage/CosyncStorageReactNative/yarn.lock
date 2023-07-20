@@ -1718,12 +1718,11 @@
     abort-controller "^3.0.0"
     node-fetch "^2.6.0"
 
-"@realm/react@^0.4.1":
-  version "0.4.3"
-  resolved "https://registry.yarnpkg.com/@realm/react/-/react-0.4.3.tgz#32c47e186d13c2c296e2aa9c31e424d85155ad9b"
-  integrity sha512-jDD/xUHhIVKKJa7Pp4tYEztuJRgSDRyqfuRSfIoBiYjrg+NTg2Qmoy+8n9tiAUhYES22v64A+hsmPSOLHimviA==
+"@realm/react@^0.5.1":
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/@realm/react/-/react-0.5.1.tgz#b08346a6be96f9fc94e29ed12fb91e8206ad412e"
+  integrity sha512-lYPS/qFWfROO7qPEb1Mu+OvC+Q/tKsF9nNT7a0+09SRFI9q/dO483E43aOJsXd3fH2JEeAucAyIRGSZqlnZ6gg==
   dependencies:
-    "@realm/common" "^0.1.4"
     lodash "^4.17.21"
   optionalDependencies:
     "@babel/runtime" ">=7"

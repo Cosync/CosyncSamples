@@ -138,10 +138,10 @@ export function AuthProvider({ children }) {
                         resolve(user)
                     }); 
                      
-                });
-            
-                
-               
+                }).catch(err => {
+                    console.log("logging in error...", err);
+                    reject(err); 
+                })
 
             } catch (error) {
 

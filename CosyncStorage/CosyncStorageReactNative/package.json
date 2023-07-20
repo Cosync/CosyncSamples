@@ -11,11 +11,11 @@
   },
   "dependencies": {
     "@bam.tech/react-native-image-resizer": "^3.0.4",
-    "@react-native-async-storage/async-storage": "^1.17.11", 
+    "@react-native-async-storage/async-storage": "^1.17.11",
     "@react-navigation/bottom-tabs": "^6.4.1",
     "@react-navigation/native": "^6.0.14",
     "@react-navigation/native-stack": "^6.9.2",
-    "@realm/react": "^0.4.1",
+    "@realm/react": "^0.5.1",
     "react": "18.2.0",
     "react-native": "0.71.6",
     "react-native-image-picker": "^4.10.1",
