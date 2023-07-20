@@ -140,9 +140,12 @@ export function AuthProvider({ children }) {
                         setRealmUser(user);
                         console.log("logging in realm user...", user.id);
                         resolve(user)
-                    }); 
+                    });
                      
-                });
+                }).catch(err => {
+                    console.log("logging in err...", err);
+                    reject(err)
+                })
             
                 
                
