@@ -2872,10 +2872,10 @@
     "js-yaml" "^3.13.1"
     "parse-json" "^4.0.0"
 
-"cosync-jwt-react-native@^1.0.9":
-  "integrity" "sha512-cprFLLoWjtpmmTSLc+NEO7LCUcezqu3thXBxryRFcoD0w47Dcvja9+7cNKxioxbasKqHxzO9ehAzfTSRNFMv9g=="
-  "resolved" "https://registry.npmjs.org/cosync-jwt-react-native/-/cosync-jwt-react-native-1.0.9.tgz"
-  "version" "1.0.9"
+"cosync-jwt-react-native@^1.0.10":
+  "integrity" "sha512-Eju9tPCJJHy+aMqqOXhC8bTCkPLa5mrf5Kcf2hqgHy5aG7nIdGEBtBDmQyNHFy+gBUh/UnRrAEcJ/wzLqE39sQ=="
+  "resolved" "https://registry.npmjs.org/cosync-jwt-react-native/-/cosync-jwt-react-native-1.0.10.tgz"
+  "version" "1.0.10"
   dependencies:
     "@realm/react" "^0.5.1"
     "md5" "^2.3.0"
@@ -6402,6 +6402,13 @@
     "flow-parser" "^0.185.0"
     "jscodeshift" "^0.13.1"
     "nullthrows" "^1.1.1"
+
+"react-native-element-dropdown@^2.9.0":
+  "integrity" "sha512-2Y/bmoFPTdKOUXbYloEKpMTWYE2VHrvva/5tgEuHqAlfAtGGr3r/ob0L0YYH1am5N0n1PKo3+eLf0c79QUSzYw=="
+  "resolved" "https://registry.npmjs.org/react-native-element-dropdown/-/react-native-element-dropdown-2.9.0.tgz"
+  "version" "2.9.0"
+  dependencies:
+    "lodash" "^4.17.21"
 
 "react-native-gradle-plugin@^0.71.17":
   "integrity" "sha512-OXXYgpISEqERwjSlaCiaQY6cTY5CH6j73gdkWpK0hedxtiWMWgH+i5TOi4hIGYitm9kQBeyDu+wim9fA8ROFJA=="
