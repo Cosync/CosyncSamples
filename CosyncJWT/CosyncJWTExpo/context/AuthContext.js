@@ -41,6 +41,7 @@ export function AuthProvider({ children }) {
     const [userData, setUserData] = useState() 
     const [appData, setAppData] = useState()  
     const [realmUser, setRealmUser] = useState() 
+    const [appLocales, setAppLocales] = useState([]); 
     const cosyncJWT = new CosyncJWTReactNative(Configure.CosyncApp).getInstance();
 
     useEffect(() => {
@@ -50,7 +51,22 @@ export function AuthProvider({ children }) {
     async function getApplication() {
         cosyncJWT.app.getApplication().then(result => {  
             setAppData(result) 
+
+            setAppLocales(prevItems => { 
+                return [];
+            }); 
+
             console.log('AuthContext getApplication ', result);
+
+            if(result.locales) {
+                result.locales.map( item => {
+                    let locale = {label: item, value: item};
+                    setAppLocales(prevItems => { 
+                        return [locale , ...prevItems];
+                    });
+                })
+            } 
+
 
         }).catch(err => {
           
@@ -190,6 +206,7 @@ export function AuthProvider({ children }) {
         userData,
         userTokenData,
         appData,
+        appLocales,
         realmUser
       }
 

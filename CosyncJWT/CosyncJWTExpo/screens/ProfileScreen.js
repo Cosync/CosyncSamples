@@ -37,8 +37,7 @@ import {
  
 //import Clipboard from '@react-native-clipboard/clipboard';
 import Loader from '../components/Loader'; 
-import Configure from '../config/Config';  
-import CosyncJWTReactNative from 'cosync-jwt-react-native'; 
+import { Dropdown } from 'react-native-element-dropdown';
 import { AuthContext } from '../context/AuthContext';
 
 const ProfileScreen = props => { 
@@ -51,11 +50,12 @@ const ProfileScreen = props => {
   let [phoneVerified, setPhoneVerified] = useState(false);
   let [firstName, setFirstName] = useState('');
   let [lastName, setLastName] = useState('');
+  let [userLocale, setLocale] = useState('EN');
   let [isGoogleTwoFactor, setGoogleTwoFactor] = useState(false); 
   let [isPhoneTwoFactor, setPhoneTwoFactor] = useState(false); 
   let [googleSecretKey, setGoogleSecretKey] = useState(''); 
 
-  const { userData, getApplication, cosyncJWT, appData } = useContext(AuthContext);
+  const { userData, getApplication, cosyncJWT, appData, appLocales } = useContext(AuthContext);
  
   useEffect(() => { 
     getApplication();
@@ -69,7 +69,7 @@ const ProfileScreen = props => {
 
     let isPhoneVerified = userData ? userData.phoneVerified : false;
     setPhoneVerified(isPhoneVerified);
-
+    if(userData && userData.locale) setLocale(userData.locale)
     if(userData && userData.phone) setCurrentUserPhone(userData.phone);
     if(userData && userData.handle) setUserEmail(userData.handle);
     if(userData && userData.metaData && userData.metaData.user_data) {
@@ -85,6 +85,26 @@ const ProfileScreen = props => {
     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     if (reg.test(text) === false) return false;
     else return true;
+  }
+
+  const setUserLocale = (locale) => {
+
+    console.log('setUserLocale locale ', locale);
+
+    if (locale == userLocale) {
+      return;
+    }
+    cosyncJWT.profile.setLocale(locale).then(result => { 
+      console.log('setUserLocale result ', result);
+      if(result == true){
+        setLocale(locale);
+      } 
+      else{ 
+        alert(`Fails: ${result.message}`);
+      }
+    }).catch(err => {
+      alert(`Error: ${err.message}`);
+    })
   }
 
 
@@ -327,6 +347,29 @@ const ProfileScreen = props => {
               
             />
       </View>
+
+      {appLocales && appLocales.length > 1 ? 
+       <View style={styles.viewSection}>
+        <Text style={styles.textItem}>Set Localization</Text>
+        <Dropdown
+          style={styles.dropdown}
+          placeholderStyle={styles.placeholderStyle}
+          selectedTextStyle={styles.selectedTextStyle}  
+          data={appLocales} 
+          maxHeight={300}
+          labelField="label"
+          valueField="value"
+          placeholder="Set Localization" 
+          value={userLocale}
+          onChange={item => {
+            setUserLocale(item.value);
+          }}
+           
+        />
+       </View>
+      : null
+     
+      }
       
       <View style={styles.viewSection}>
 
@@ -519,5 +562,29 @@ const styles = StyleSheet.create({
     color: 'red',
     textAlign: 'center',
     fontSize: 14,
+  },
+  dropdown: {
+    margin: 16,
+    height: 50,
+    width: 150,
+    borderBottomColor: 'gray',
+    borderBottomWidth: 0.5,
+  },
+  icon: {
+    marginRight: 5,
+  },
+  placeholderStyle: {
+    fontSize: 16,
+  },
+  selectedTextStyle: {
+    fontSize: 16,
+  },
+  iconStyle: {
+    width: 20,
+    height: 20,
+  },
+  inputSearchStyle: {
+    height: 40,
+    fontSize: 16,
   },
 });
