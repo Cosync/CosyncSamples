@@ -107,9 +107,14 @@ const SignupScreen = props => {
 
     try {
       let result = await signupComplete(userEmail, signupCode); 
+      
       if (result && result.message) {
         setErrorCodetext(`Error: ${result.message}`);
       }
+      else if (result){ 
+        setInfoText('Successfully Signup.'); 
+      }
+      
     } catch (error) { 
       setErrorCodetext(`Error: ${error.message}`);
     }
@@ -221,7 +226,7 @@ const SignupScreen = props => {
               <View style={styles.SectionStyle}>
                 <TextInput
                   style={styles.inputStyle}
-                  value=''
+                  value={signupCode}
                   onChangeText={value => setSignupCode(value)} 
                   placeholder="Enter 6 digits Code"
                   keyboardType="numeric" 

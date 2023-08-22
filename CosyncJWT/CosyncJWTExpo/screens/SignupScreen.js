@@ -105,11 +105,14 @@ const SignupScreen = props => {
   const handleSubmitVerifyCodePress = async () => {
 
     setLoading(true);   
-
+    setErrorCodetext('');
     try {
       let result = await signupComplete(userEmail, signupCode); 
       if (result && result.message) {
         setErrorCodetext(`Error: ${result.message}`);
+      }
+      else if (result){ 
+        setInfoText('Successfully Signup.'); 
       }
     } catch (error) { 
       setErrorCodetext(`Error: ${error.message}`);
@@ -219,6 +222,7 @@ const SignupScreen = props => {
                   placeholder="Enter Signupb Code"
                   keyboardType="numeric" 
                   returnKeyType="go" 
+                  value={signupCode}
                   blurOnSubmit={false} 
                   textContentType={'none'}
                   autoComplete= {'off'}
@@ -248,8 +252,7 @@ const SignupScreen = props => {
                     style={styles.inputStyle}
                     onChangeText={value => setFirstName(value)}
                     //underlineColorAndroid="#4638ab"
-                    placeholder="Enter First Name"
-                    autoCapitalize="none" 
+                    placeholder="Enter First Name" 
                     autoCorrect={false}
                     keyboardType="default" 
                     returnKeyType="next" 
@@ -263,8 +266,7 @@ const SignupScreen = props => {
                     style={styles.inputStyle}
                     onChangeText={value => setLastName(value)}
                     //underlineColorAndroid="#4638ab"
-                    placeholder="Enter Last Name"
-                    autoCapitalize="none" 
+                    placeholder="Enter Last Name" 
                     autoCorrect={false}
                     keyboardType="default" 
                     returnKeyType="next" 
