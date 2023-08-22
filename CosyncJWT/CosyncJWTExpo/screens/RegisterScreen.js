@@ -35,7 +35,7 @@ import {  StyleSheet,
   KeyboardAvoidingView, } from 'react-native';
 import { AuthContext } from '../context/AuthContext'; 
 import Loader from '../components/Loader'; 
- 
+import { Dropdown } from 'react-native-element-dropdown';
 
 const RegisterScreen = props => {
   
@@ -48,14 +48,14 @@ const RegisterScreen = props => {
   let [userPassword, setUserPassword] = useState(''); 
   let [signupCode, setSignupCode] = useState(''); 
   let [loading, setLoading] = useState(false);  
-  
+  let [userLocale, setUserLocale] = useState('EN');
   const ref_input_lastname = useRef();
   const ref_input_email = useRef();
   const ref_input_pwd = useRef(); 
   const ref_input_code = useRef(); 
 
 
-  const { cosyncJWT, getApplication, register, appData } = useContext(AuthContext)
+  const { cosyncJWT, getApplication, register, appData, appLocales } = useContext(AuthContext)
 
   useEffect(() => {
     getApplication();
@@ -142,7 +142,7 @@ const RegisterScreen = props => {
         },
         email: userEmail
       };
-      let result = await register(userEmail, userPassword, signupCode, metaData);
+      let result = await register(userEmail, userPassword, signupCode, metaData, userLocale);
       if(result.message) {
         setErrortext(`Error: ${result.message}`);
       }
@@ -257,6 +257,28 @@ const RegisterScreen = props => {
 
               </View> 
 
+      {appLocales && appLocales.length > 1 ? 
+       <View style={styles.viewSection}>
+        <Text style={styles.textItem}>Set Localization</Text>
+        <Dropdown
+          style={styles.dropdown}
+          placeholderStyle={styles.placeholderStyle}
+          selectedTextStyle={styles.selectedTextStyle}  
+          data={appLocales} 
+          maxHeight={300}
+          labelField="label"
+          valueField="value"
+          placeholder="Set Localization" 
+          value={userLocale}
+          onChange={item => {
+            setUserLocale(item.value);
+          }}
+           
+        />
+       </View>
+      : null
+     
+      }
             {errortext != '' ? (
               <Text style={styles.errorTextStyle}> {errortext} </Text>
             ) : null}
@@ -332,4 +354,18 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 14,
   },
+  dropdown: {
+    margin: 16,
+    height: 50,
+    width: 150,
+    borderBottomColor: 'gray',
+    borderBottomWidth: 0.5,
+  },
+  
+  placeholderStyle: {
+    fontSize: 16,
+  },
+  selectedTextStyle: {
+    fontSize: 16,
+  } 
 });

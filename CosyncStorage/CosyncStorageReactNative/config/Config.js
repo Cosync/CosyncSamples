@@ -24,7 +24,7 @@
 //
 
 exports.Realm = {
-    appId: 'application-qrxtranew-dsqdo', 
+    appId: 'qrow-dev-pguiq',
     cosyncAsset:'CosyncAsset', 
     cosyncAssetUpload : 'CosyncAssetUpload'
 }

@@ -37,6 +37,7 @@ import {  StyleSheet,
 import _ from 'lodash';
 import Loader from '../components/Loader'; 
 import { AuthContext } from '../context/AuthContext';
+import { Dropdown } from 'react-native-element-dropdown';
 
 const SignupScreen = props => {
   
@@ -50,8 +51,9 @@ const SignupScreen = props => {
   let [signupCode, setSignupCode] = useState(''); 
   let [loading, setLoading] = useState(false); 
   let [verifyCode, setVerifyCode] = useState(false);  
+  let [userLocale, setUserLocale] = useState('EN');
 
-  const { cosyncJWT, getApplication, appData, signup, signupComplete } = useContext(AuthContext);
+  const { cosyncJWT, getApplication, appData, signup, signupComplete, appLocales } = useContext(AuthContext);
 
   const ref_input_lastname = useRef();
   const ref_input_email = useRef();
@@ -145,8 +147,8 @@ const SignupScreen = props => {
 
         setLoading(true);
 
-        let result = await signup(userEmail, userPassword, metaData); 
-
+        let result = await signup(userEmail, userPassword, metaData, userLocale); 
+       
         if(!result){
           setErrortext(`Error: Something went wrong.`);
         }
@@ -186,10 +188,6 @@ const SignupScreen = props => {
      
     
   };
-
- 
-   
-
  
 
   return (
@@ -206,89 +204,14 @@ const SignupScreen = props => {
                   margin: 30,
                 }}
               />
-            </View>
-
-            
-
-            <View style={styles.SectionStyle}>
-              <TextInput
-                style={styles.inputStyle}
-                onChangeText={value => setFirstName(value)}
-                //underlineColorAndroid="#4638ab"
-                placeholder="Enter First Name"
-                autoCapitalize="none" 
-                autoCorrect={false}
-                keyboardType="default" 
-                returnKeyType="next" 
-                onSubmitEditing={() => ref_input_lastname.current.focus()}
-                blurOnSubmit={false}
-              />
-            </View>
-
-            <View style={styles.SectionStyle}>
-              <TextInput
-                style={styles.inputStyle}
-                onChangeText={value => setLastName(value)}
-                //underlineColorAndroid="#4638ab"
-                placeholder="Enter Last Name"
-                autoCapitalize="none" 
-                autoCorrect={false}
-                keyboardType="default" 
-                returnKeyType="next" 
-                onSubmitEditing={() => ref_input_email.current.focus()}
-                blurOnSubmit={false}
-                ref={ref_input_lastname}
-              />
-            </View>
-
-            <View style={styles.SectionStyle}>
-              <TextInput
-                style={styles.inputStyle}
-                onChangeText={value => setUserEmail(value)}
-                //underlineColorAndroid="#4638ab"
-                placeholder="Enter Email"
-                autoCapitalize="none" 
-                autoCorrect={false}
-                keyboardType="email-address" 
-                returnKeyType="next" 
-                onSubmitEditing={() => ref_input_pwd.current.focus()}
-                blurOnSubmit={false}
-                ref={ref_input_email}
-              />
-            </View>
-
-            <View style={styles.SectionStyle}>
-              <TextInput
-                style={styles.inputStyle}
-                onChangeText={value => setUserPassword(value)}
-                //underlineColorAndroid="#4638ab"
-                placeholder="Enter Password"
-                keyboardType="default" 
-                returnKeyType="go" 
-                blurOnSubmit={false}
-                secureTextEntry={true}
-                ref={ref_input_pwd}
-                textContentType={'none'}
-                autoComplete= {'off'}
-                onSubmitEditing={() => Keyboard.dismiss, handleSubmitPress}
-              />
-            </View> 
-            {errortext != '' ? (
-              <Text style={styles.errorTextStyle}> {errortext} </Text>
-            ) : null}
-
-            <TouchableOpacity
-              style={styles.buttonStyle}
-              activeOpacity={0.5}
-              onPress={handleSubmitPress}>
-              <Text style={styles.buttonTextStyle}>SIGN UP</Text>
-            </TouchableOpacity>
+            </View>  
 
             {infotext != '' ? (
-              <Text style={styles.registerTextStyle}> {infotext} </Text>
-            ) : null}
-
-            {verifyCode ?<View> 
+                <Text style={styles.registerTextStyle}> {infotext} </Text>
+              ) : null}
+              
+            {verifyCode ?
+            <View> 
               <View style={styles.SectionStyle}>
                 <TextInput
                   style={styles.inputStyle}
@@ -306,7 +229,7 @@ const SignupScreen = props => {
 
               {errorcodetext != '' ? (
               <Text style={styles.errorTextStyle}> {errorcodetext} </Text>
-            ) : null}
+              ) : null}
 
               <TouchableOpacity
                 style={styles.buttonStyle}
@@ -315,7 +238,113 @@ const SignupScreen = props => {
                 <Text style={styles.buttonTextStyle}>SUBMIT</Text>
               </TouchableOpacity>
 
-            </View>: null}
+            </View> : 
+            
+            
+            <View>
+
+                <View style={styles.SectionStyle}>
+                  <TextInput
+                    style={styles.inputStyle}
+                    onChangeText={value => setFirstName(value)}
+                    //underlineColorAndroid="#4638ab"
+                    placeholder="Enter First Name"
+                    autoCapitalize="none" 
+                    autoCorrect={false}
+                    keyboardType="default" 
+                    returnKeyType="next" 
+                    onSubmitEditing={() => ref_input_lastname.current.focus()}
+                    blurOnSubmit={false}
+                  />
+                </View>
+
+                <View style={styles.SectionStyle}>
+                  <TextInput
+                    style={styles.inputStyle}
+                    onChangeText={value => setLastName(value)}
+                    //underlineColorAndroid="#4638ab"
+                    placeholder="Enter Last Name"
+                    autoCapitalize="none" 
+                    autoCorrect={false}
+                    keyboardType="default" 
+                    returnKeyType="next" 
+                    onSubmitEditing={() => ref_input_email.current.focus()}
+                    blurOnSubmit={false}
+                    ref={ref_input_lastname}
+                  />
+                </View>
+
+                <View style={styles.SectionStyle}>
+                  <TextInput
+                    style={styles.inputStyle}
+                    onChangeText={value => setUserEmail(value)}
+                    //underlineColorAndroid="#4638ab"
+                    placeholder="Enter Email"
+                    autoCapitalize="none" 
+                    autoCorrect={false}
+                    keyboardType="email-address" 
+                    returnKeyType="next" 
+                    onSubmitEditing={() => ref_input_pwd.current.focus()}
+                    blurOnSubmit={false}
+                    ref={ref_input_email}
+                  />
+                </View>
+
+                <View style={styles.SectionStyle}>
+                  <TextInput
+                    style={styles.inputStyle}
+                    onChangeText={value => setUserPassword(value)}
+                    //underlineColorAndroid="#4638ab"
+                    placeholder="Enter Password"
+                    keyboardType="default" 
+                    returnKeyType="go" 
+                    blurOnSubmit={false}
+                    secureTextEntry={true}
+                    ref={ref_input_pwd}
+                    textContentType={'none'}
+                    autoComplete= {'off'}
+                    onSubmitEditing={() => Keyboard.dismiss, handleSubmitPress}
+                  />
+                </View> 
+
+
+              {appLocales && appLocales.length > 1 ? 
+              <View style={styles.viewSection}>
+                <Text style={styles.textItem}>Set Localization</Text>
+                <Dropdown
+                  style={styles.dropdown}
+                  placeholderStyle={styles.placeholderStyle}
+                  selectedTextStyle={styles.selectedTextStyle}  
+                  data={appLocales} 
+                  maxHeight={300}
+                  labelField="label"
+                  valueField="value"
+                  placeholder="Set Localization" 
+                  value={userLocale}
+                  onChange={item => {
+                    setUserLocale(item.value);
+                  }}
+                  
+                />
+              </View>
+              : null
+            
+              }
+            
+              {errortext != '' ? (
+                <Text style={styles.errorTextStyle}> {errortext} </Text>
+              ) : null}
+
+              <TouchableOpacity
+                style={styles.buttonStyle}
+                activeOpacity={0.5}
+                onPress={handleSubmitPress}>
+                <Text style={styles.buttonTextStyle}>SIGN UP</Text>
+              </TouchableOpacity>
+
+             
+            </View>
+            }
 
         </KeyboardAvoidingView>
       </ScrollView>
@@ -330,6 +359,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     backgroundColor: '#fff',
+  },
+  viewSection: {  
+    marginTop: 20, 
+    marginBottom: 20,
+    alignItems: "center",
   },
   SectionStyle: {
     flexDirection: 'row',
@@ -377,4 +411,18 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 14,
   },
+  dropdown: {
+    margin: 16,
+    height: 50,
+    width: 150,
+    borderBottomColor: 'gray',
+    borderBottomWidth: 0.5,
+  },
+  
+  placeholderStyle: {
+    fontSize: 16,
+  },
+  selectedTextStyle: {
+    fontSize: 16,
+  } 
 });
