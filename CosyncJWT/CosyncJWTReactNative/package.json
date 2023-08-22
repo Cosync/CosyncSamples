@@ -14,7 +14,7 @@
     "@react-navigation/native": "^6.0.14",
     "@react-navigation/native-stack": "^6.9.2",
     "@realm/react": "^0.5.1",
-    "cosync-jwt-react-native": "^1.0.10",
+    "cosync-jwt-react-native": "^1.0.11",
     "react": "18.2.0",
     "react-native": "0.71.6",
     "react-native-element-dropdown": "^2.9.0",

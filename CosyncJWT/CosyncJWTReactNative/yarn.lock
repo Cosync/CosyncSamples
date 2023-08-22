@@ -2872,10 +2872,10 @@
     "js-yaml" "^3.13.1"
     "parse-json" "^4.0.0"
 
-"cosync-jwt-react-native@^1.0.10":
-  "integrity" "sha512-Eju9tPCJJHy+aMqqOXhC8bTCkPLa5mrf5Kcf2hqgHy5aG7nIdGEBtBDmQyNHFy+gBUh/UnRrAEcJ/wzLqE39sQ=="
-  "resolved" "https://registry.npmjs.org/cosync-jwt-react-native/-/cosync-jwt-react-native-1.0.10.tgz"
-  "version" "1.0.10"
+"cosync-jwt-react-native@^1.0.11":
+  "integrity" "sha512-nIak76TP7AqKW9wvmVk8sj9TMoFsVAc+HjdOJwd8sDksDhiBi0h8pYmcQ2SG/xVhtPAnhkjlqQhU1PI0IrRPRQ=="
+  "resolved" "https://registry.npmjs.org/cosync-jwt-react-native/-/cosync-jwt-react-native-1.0.11.tgz"
+  "version" "1.0.11"
   dependencies:
     "@realm/react" "^0.5.1"
     "md5" "^2.3.0"

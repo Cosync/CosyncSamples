@@ -37,6 +37,7 @@ import {  StyleSheet,
 import _ from 'lodash';
 import Loader from '../components/Loader'; 
 import { AuthContext } from '../context/AuthContext';
+import { Dropdown } from 'react-native-element-dropdown';
 
 const SignupScreen = props => {
   
@@ -50,8 +51,8 @@ const SignupScreen = props => {
   let [signupCode, setSignupCode] = useState(''); 
   let [loading, setLoading] = useState(false); 
   let [verifyCode, setVerifyCode] = useState(false);  
-
-  const { cosyncJWT, getApplication, appData, signup, signupComplete } = useContext(AuthContext);
+  let [userLocale, setUserLocale] = useState('EN');
+  const { cosyncJWT, getApplication, appData, signup, signupComplete, appLocales } = useContext(AuthContext);
 
   const ref_input_lastname = useRef();
   const ref_input_email = useRef();
@@ -101,7 +102,7 @@ const SignupScreen = props => {
   }
 
   const handleSubmitVerifyCodePress = async () => {
-
+    setErrorCodetext('');
     setLoading(true);   
 
     try {
@@ -144,9 +145,9 @@ const SignupScreen = props => {
       try {
 
         setLoading(true);
-
-        let result = await signup(userEmail, userPassword, metaData); 
-
+        console.log(userLocale);
+        let result = await signup(userEmail, userPassword, metaData, userLocale); 
+         
         if(!result){
           setErrortext(`Error: Something went wrong.`);
         }
@@ -209,14 +210,48 @@ const SignupScreen = props => {
             </View>
 
             
+            {infotext != '' ? (
+              <Text style={styles.registerTextStyle}> {infotext} </Text>
+            ) : null}
 
-            <View style={styles.SectionStyle}>
+            
+         
+
+            {verifyCode ?<View> 
+              <View style={styles.SectionStyle}>
+                <TextInput
+                  style={styles.inputStyle}
+                  value=''
+                  onChangeText={value => setSignupCode(value)} 
+                  placeholder="Enter 6 digits Code"
+                  keyboardType="numeric" 
+                  returnKeyType="go" 
+                  blurOnSubmit={false} 
+                
+                  onSubmitEditing={() => Keyboard.dismiss, handleSubmitVerifyCodePress}
+                /> 
+
+              </View> 
+
+              {errorcodetext != '' ? (
+              <Text style={styles.errorTextStyle}> {errorcodetext} </Text>
+            ) : null}
+
+              <TouchableOpacity
+                style={styles.buttonStyle}
+                activeOpacity={0.5}
+                onPress={handleSubmitVerifyCodePress}>
+                <Text style={styles.buttonTextStyle}>SUBMIT</Text>
+              </TouchableOpacity>
+
+            </View> : 
+            <View>
+              <View style={styles.SectionStyle}>
               <TextInput
                 style={styles.inputStyle}
                 onChangeText={value => setFirstName(value)}
                 //underlineColorAndroid="#4638ab"
-                placeholder="Enter First Name"
-                autoCapitalize="none" 
+                placeholder="Enter First Name" 
                 autoCorrect={false}
                 keyboardType="default" 
                 returnKeyType="next" 
@@ -230,8 +265,7 @@ const SignupScreen = props => {
                 style={styles.inputStyle}
                 onChangeText={value => setLastName(value)}
                 //underlineColorAndroid="#4638ab"
-                placeholder="Enter Last Name"
-                autoCapitalize="none" 
+                placeholder="Enter Last Name" 
                 autoCorrect={false}
                 keyboardType="default" 
                 returnKeyType="next" 
@@ -273,6 +307,30 @@ const SignupScreen = props => {
                 onSubmitEditing={() => Keyboard.dismiss, handleSubmitPress}
               />
             </View> 
+
+            {appLocales && appLocales.length > 1 ? 
+              <View style={styles.viewSection}>
+                <Text style={styles.textItem}>Set Localization</Text>
+                <Dropdown
+                  style={styles.dropdown}
+                  placeholderStyle={styles.placeholderStyle}
+                  selectedTextStyle={styles.selectedTextStyle}  
+                  data={appLocales} 
+                  maxHeight={300}
+                  labelField="label"
+                  valueField="value"
+                  placeholder="Set Localization" 
+                  value={userLocale}
+                  onChange={item => {
+                    setUserLocale(item.value);
+                  }}
+                  
+                />
+              </View>
+              : null
+            
+              }
+
             {errortext != '' ? (
               <Text style={styles.errorTextStyle}> {errortext} </Text>
             ) : null}
@@ -284,38 +342,7 @@ const SignupScreen = props => {
               <Text style={styles.buttonTextStyle}>SIGN UP</Text>
             </TouchableOpacity>
 
-            {infotext != '' ? (
-              <Text style={styles.registerTextStyle}> {infotext} </Text>
-            ) : null}
-
-            {verifyCode ?<View> 
-              <View style={styles.SectionStyle}>
-                <TextInput
-                  style={styles.inputStyle}
-                  onChangeText={value => setSignupCode(value)} 
-                  placeholder="Enter Signupb Code"
-                  keyboardType="numeric" 
-                  returnKeyType="go" 
-                  blurOnSubmit={false} 
-                  textContentType={'none'}
-                  autoComplete= {'off'}
-                  onSubmitEditing={() => Keyboard.dismiss, handleSubmitVerifyCodePress}
-                /> 
-
-              </View> 
-
-              {errorcodetext != '' ? (
-              <Text style={styles.errorTextStyle}> {errorcodetext} </Text>
-            ) : null}
-
-              <TouchableOpacity
-                style={styles.buttonStyle}
-                activeOpacity={0.5}
-                onPress={handleSubmitVerifyCodePress}>
-                <Text style={styles.buttonTextStyle}>SUBMIT</Text>
-              </TouchableOpacity>
-
-            </View>: null}
+            </View>}
 
         </KeyboardAvoidingView>
       </ScrollView>
@@ -377,4 +404,23 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 14,
   },
+  viewSection: {  
+    marginTop: 20, 
+    marginBottom: 20,
+    alignItems: "center",
+  },
+  dropdown: {
+    margin: 16,
+    height: 50,
+    width: 150,
+    borderBottomColor: 'gray',
+    borderBottomWidth: 0.5,
+  },
+  
+  placeholderStyle: {
+    fontSize: 16,
+  },
+  selectedTextStyle: {
+    fontSize: 16,
+  } 
 });

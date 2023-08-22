@@ -23,13 +23,14 @@ export function AuthProvider({ children }) {
     }, []);
 
     async function getApplication() {
+
+        setAppLocales(prevItems => { 
+            return [];
+        }); 
+
         cosyncJWT.app.getApplication().then(result => {  
             setAppData(result) 
             console.log('AuthContext getApplication ', result);
-
-            setAppLocales(prevItems => { 
-                return [];
-              }); 
 
             if(result.locales) {
                 result.locales.map( item => {
@@ -38,9 +39,7 @@ export function AuthProvider({ children }) {
                         return [locale , ...prevItems];
                     });
                 })
-            } 
-
-            console.log('AuthContext appLocales ', appLocales);
+            }  
 
         }).catch(err => {
           
@@ -100,9 +99,12 @@ export function AuthProvider({ children }) {
     }
 
     
-    async function signup(userEmail, userPassword, metaData){
+    async function signup(userEmail, userPassword, metaData, locale){
         try {
-            let result = await cosyncJWT.signup.signup(userEmail, userPassword, metaData); 
+            let result = await cosyncJWT.signup.signup(userEmail, userPassword, metaData, locale); 
+
+            
+
             if(result && result.jwt && appData.signupFlow == 'none'){ 
                 loginJWT(result)
             }
@@ -119,7 +121,7 @@ export function AuthProvider({ children }) {
     async function signupComplete(userEmail, signupCode){
         try {
             let result = await cosyncJWT.signup.completeSignup(userEmail, signupCode);
-            if(result && result.jwt && appData.signupFlow == 'none'){ 
+            if(result && result.jwt){ 
                 loginJWT(result)
             }
 
@@ -144,9 +146,9 @@ export function AuthProvider({ children }) {
         
     }
 
-    async function register(userEmail, userPassword, inviteCode, metaData){
+    async function register(userEmail, userPassword, inviteCode, metaData, locale){
         try {
-            let result = await cosyncJWT.register.register(userEmail, userPassword, inviteCode, metaData);
+            let result = await cosyncJWT.register.register(userEmail, userPassword, inviteCode, metaData, locale);
             if(result && result.jwt){ 
                 loginJWT(result)
             }
@@ -162,7 +164,7 @@ export function AuthProvider({ children }) {
     function logout() {
         setUserData();
         setUserTokenData();
-        cosyncJWT.realmManager.logout();
+        cosyncJWT.logout();
     }
 
 

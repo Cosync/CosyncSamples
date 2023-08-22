@@ -148,7 +148,7 @@ const ForgotPasswordScreen = props => {
 
         if(result === true){  
           alert('Please login with your new password');
-          
+          props.navigation.navigate('Login');
         }
         else{
           
