@@ -29,6 +29,7 @@ import CosyncJWTSwift
 
 struct LoggedInView: View {
     @EnvironmentObject var appState: AppState
+    @State var locale = CosyncJWTRest.shared.locale ?? "None"
     @State var phone = CosyncJWTRest.shared.phone ?? ""
     @State var phoneVerified = CosyncJWTRest.shared.phoneVerified ?? false
     @State var twoFactorPhoneVerification = CosyncJWTRest.shared.twoFactorPhoneVerification ?? false
@@ -65,9 +66,23 @@ struct LoggedInView: View {
                 
             VStack(spacing: 20) {
                 Divider()
-                Text(UserManager.shared.handle)
-                Text(UserManager.shared.firstName)
-                Text(UserManager.shared.lastName)
+                if let userName = CosyncJWTRest.shared.userName {
+                    Text(userName + " - " + UserManager.shared.handle)
+                } else {
+                    Text(UserManager.shared.handle)
+                }
+
+                Text(UserManager.shared.firstName + " " + UserManager.shared.lastName)
+                HStack(spacing: 10) {
+                    Text("Locale:" + " \"" + locale + "\"")
+                    NavigationLink(destination: LocaleView(locale: $locale)) {
+                        Text("Change")
+                    }
+                    .foregroundColor(Color.blue)
+                    .background(Color.white)
+                    .font(.body)
+                }
+
                 
                 // show phone number stuff if app supports 2-factor phone verification
                 if let  twofactorVerification = CosyncJWTRest.shared.twoFactorVerification,
@@ -232,9 +247,9 @@ struct LoggedInView: View {
                 }.accentColor(.blue),
                 
                 trailing:
-                NavigationLink(destination: ChangePasswordView()) {
-                    Text("Password")
-                }
+                    NavigationLink(destination: ChangePasswordView()) {
+                        Text("Password")
+                    }
             )
             .edgesIgnoringSafeArea(.bottom)
         }
@@ -242,7 +257,7 @@ struct LoggedInView: View {
             print("ContentView appeared!")
         }
     }
-}
+} 
 
 
 struct ChangePasswordView: View {
@@ -379,13 +394,81 @@ struct InviteView: View {
             
             Spacer()
         }
-        .navigationBarTitle("Change Password")
+        .navigationBarTitle("Invite")
         .alert(item: $message) { message in
             Alert(message)
         }
     }
 }
 
+struct LocaleView: View {
+    @Binding var locale : String
+    @EnvironmentObject var appState: AppState
+    @State private var message: AlertMessage? = nil
+    @Environment(\.presentationMode) var presentationMode
+    
+    func showSetLocaleInvalidParameters(){
+        self.message = AlertMessage(title: "Set Locale Failed", message: "You have entered an invalid locale", target: .none, state: self.appState)
+    }
+
+    func showSetLocaleSuccess(){
+        self.message = AlertMessage(title: "Set Locale Success", message: "Your locale has been changed", target: .none, state: self.appState)
+    }
+    
+    var body: some View {
+        VStack(spacing: 20) {
+            Divider()
+            Group {
+                TextField("Locale", text: $locale)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .disableAutocorrection(true)
+                .autocapitalization(UITextAutocapitalizationType.allCharacters)
+
+                
+            }
+            .padding(.horizontal)
+            Divider()
+            
+            Button(action: {
+                
+                Task {
+                    print(self.locale.count)
+                    if  self.locale.count == 2   {
+                        
+                        do {
+                            try await CosyncJWTRest.shared.setLocale(self.locale)
+                            self.showSetLocaleSuccess()
+                            self.presentationMode.wrappedValue.dismiss()
+                        } catch {
+                            self.showSetLocaleInvalidParameters()
+                        }
+                        
+                    } else {
+                        self.showSetLocaleInvalidParameters()
+                    }
+                    
+                }
+                
+
+                
+            }) {
+                Text("Set Locale")
+                    .padding(.horizontal)
+                Image(systemName: "globe")
+            }
+            .padding()
+            .foregroundColor(Color.white)
+            .background(Color.blue)
+            .cornerRadius(8)
+            
+            Spacer()
+        }
+        .navigationBarTitle("Set Locale")
+        .alert(item: $message) { message in
+            Alert(message)
+        }
+    }
+}
 
 
 struct LoggedInView_Previews: PreviewProvider {

@@ -5,17 +5,17 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Cosync/CosyncJWTSwift.git",
       "state" : {
-        "revision" : "9ba2b5b82eacf5bccb9dc126e97a1dd11d4a9e8f",
-        "version" : "1.1.12"
+        "revision" : "10e2606ecbfe1b1f8571760b508fd54f114121dc",
+        "version" : "1.1.18"
       }
     },
     {
       "identity" : "realm-core",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/realm/realm-core",
+      "location" : "https://github.com/realm/realm-core.git",
       "state" : {
-        "revision" : "3c4b86da569368c4ee5ccca2a112d511cc6fa936",
-        "version" : "12.11.0"
+        "revision" : "c04f5e401a1ec682e6b08b1ee157e19a0f834a5f",
+        "version" : "13.17.1"
       }
     },
     {
@@ -23,8 +23,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/realm/realm-swift.git",
       "state" : {
-        "revision" : "72a0dd9dc0ec1bab417155471191ef68e1bb0eaf",
-        "version" : "10.32.3"
+        "revision" : "933abaa8076966e237e66497def74df84c6adbb4",
+        "version" : "10.42.0"
       }
     }
   ],
